@@ -12,6 +12,7 @@ def ARP_LOCAL_SCAN(target_ip="172.20.10.4/28"):
     """
     ARP SCAN pour les machines locales
     """
+    routerhop1 = conf.route.route("0.0.0.0")[2]
     #récuperation de l'adresse IP locale
     #172.20.10.4/28 -- 192.168.1.0/24
     arp = ARP(pdst=target_ip)
@@ -35,8 +36,8 @@ def ARP_LOCAL_SCAN(target_ip="172.20.10.4/28"):
         ip.append((client['ip']))
         mac.append((client['mac']))
     #mac = getmacbyip(IPIPIP) pour avoir l'adresse mac avec une IP
-
-    return(ip, mac)
+    
+    return(ip, mac, routerhop1)
 
 
 def TEMPLATE():
