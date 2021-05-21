@@ -66,7 +66,7 @@ def out_in_json(i):
         osfamily = "uknown"
         accuracy = "uknown"
 
-    return(nom,vendeur,osfamily,accuracy)
+    return(nom, vendeur, osfamily, accuracy)
 
 def creation_data_nmap(machines):
     iter = out_in_json(machines)
@@ -86,7 +86,7 @@ def iteraliste(target):
     for i in target:
         liste_ip.append(creation_data_nmap(i))
 
-    return json.dumps(liste_ip)
+    return liste_ip
 
 
 def recon_fast_ping (a):
