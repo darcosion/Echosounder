@@ -14,32 +14,63 @@
     <div id="mynetwork"></div>
 
     <script type="text/javascript">
-      // create an array with nodes
-      var nodes = new vis.DataSet([
-        { id: 1, label: "Node 1" },
-        { id: 2, label: "Node 2" },
-        { id: 3, label: "Node 3" },
-        { id: 4, label: "Node 4" },
-        { id: 5, label: "Node 5" },
-      ]);
+      // fonctionnalités de gestion des appels d'API
+      let request = new XMLHttpRequest();
 
-      // create an array with edges
-      var edges = new vis.DataSet([
-        { from: 1, to: 3 },
-        { from: 1, to: 2 },
-        { from: 2, to: 4 },
-        { from: 2, to: 5 },
-        { from: 3, to: 3 },
-      ]);
-
-      // create a network
-      var container = document.getElementById("mynetwork");
-      var data = {
-        nodes: nodes,
-        edges: edges,
+      // fonction de récupération d'un scan complet
+      function requestAllData() {
+        request.open('GET', "/json/collecte"); // on crée la requête
+        request.responseType = 'json'; // on spécifie qu'on attends du json
+        request.send(); // on envoie la requête
+        request.onload = function() {
+          let response = request.response;
+          console.log(response);
+          createGraph(response); // on envoie le retour du scan à la fonction de création du graph
+        }
       };
-      var options = {};
-      var network = new vis.Network(container, data, options);
+
+      console.log("lancement d'un scan complet");
+      requestAllData();
+
+      // ici commence le vis.js
+      // fonction de génération du graph, prenant un scan complet en entrée :
+      function createGraph(scan_complet) {
+        // liste des noeuds
+        let nodes = new vis.DataSet([]);
+
+        // ajout de la gateway :
+        nodes.add([
+          {id: "gateway", label: 'gateway ' + scan_complet.arp_scan[2]},
+        ]);
+
+        // ajout des entités nmap :
+        let i = 0;
+        scan_complet.nmap.forEach(function(nodeAdd) {
+          nodes.add([
+            {id: i, label: nodeAdd.IP, nom: nodeAdd.nom},
+          ]);
+          i++;
+        });
+
+        // liste des chemins
+        let edges = new vis.DataSet([]);
+
+        // liaison de toutes les entité nmap avec la gateway :
+        for(i; i >= 0; i--) {
+          edges.add([
+            { from: i, to: "gateway" },
+          ]);
+        }
+
+        // créaction de l'objet graph
+        let container = document.getElementById("mynetwork");
+        let data = {
+          nodes: nodes,
+          edges: edges,
+        };
+        let options = {};
+        let network = new vis.Network(container, data, options);
+      }
     </script>
   </body>
 </html>
