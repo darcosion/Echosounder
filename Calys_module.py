@@ -39,7 +39,7 @@ def ARP_LOCAL_SCAN(target_ip="172.20.10.4/28"):
     return(ip, mac)
 
 
-def TEMPLATE(selfinterface):
+def TEMPLATE():
     """
     grab l'ip locale de la machine ainsi que l'adresse mac
     """
@@ -48,6 +48,7 @@ def TEMPLATE(selfinterface):
 
     routerhop1 = conf.route.route("0.0.0.0")[2]
     routerhop1mac = getmacbyip(routerhop1)
+    return iplocale, maclocale, routerhop1, routerhop1mac
 
 def out_in_json(i):
     nm = nmap.PortScanner()

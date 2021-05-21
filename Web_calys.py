@@ -16,9 +16,10 @@ def index():
 
 @app.route('/json/collecte')
 def all_data():
-    a = Calysmod.ARP_LOCAL_SCAN("192.168.1.0/24")
-    b = Calysmod.iteraliste(a[0])
-    return(b)
+    a = Calysmod.TEMPLATE()
+    b = Calysmod.ARP_LOCAL_SCAN("192.168.1.0/24")
+    c = Calysmod.iteraliste(a[0])
+    return {a, b, c}
 
 
 if __name__ == "__main__":
