@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 
 from scapy.all import *
-import socket, sys, time
+import socket, sys, time, os, platform
 from pprint import pprint
 import netifaces
 import time
 import nmap
 import json
 
-def ARP_LOCAL_SCAN(target_ip="172.20.10.4/28"):
+def ARP_LOCAL_SCAN(target_ip):
     """
     ARP SCAN pour les machines locales
     """
@@ -89,15 +89,14 @@ def iteraliste(target):
 
     return liste_ip
 
-
-def recon_fast_ping (a):
+def recon_fast_ping (rapide):
     IP_local = get_if_addr(conf.iface)
     liste_ttl = []
     os_liste_ttl = []
     plateforme_hote = platform.system()
     os_liste_ttl.append(plateforme_hote)
 
-    retour_de_scan = ARP_LOCAL_SCAN(2)
+    retour_de_scan = ARP_LOCAL_SCAN(rapide)
     ip = retour_de_scan[0]
     mac = retour_de_scan[1]
 
@@ -116,9 +115,29 @@ def recon_fast_ping (a):
         elif liste_ttl[z] == 254 :
             os_liste_ttl.append("Cisco")
 
-    return (os_liste_ttl)
+    return (ip, mac, os_liste_ttl)
+
+def creation_data_fast_ping(rapide):
+    a = recon_fast_ping(rapide)
+    liste_ip = [a[0]]
+    liste_mac = [a[1]]
+    liste_os = [a[2]]
+    liste_global = []
+
+    for k in range (len(liste_ip)):
+        a = liste_ip[k]
+        b = liste_mac[k]
+        c = liste_os[k]
+        resultat = {
+            "IP" : a,
+            "mac" : b,
+            "OS" : c,
+        }
+        
+        liste_global.append(json.dumps(resultat))
+
+    print(liste_global)
 
 if __name__ == "__main__":
     print("IUT")
-    a = ARP_LOCAL_SCAN()
-    print(iteraliste(a[0]))
+    creation_data_fast_ping('192.168.1.0/24')
