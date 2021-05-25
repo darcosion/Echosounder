@@ -23,6 +23,10 @@ def all_data():
                     arp_scan=b,
                     nmap=c)
 
+@app.route('/json/fast_scan')
+def scan_rapide():
+    l = Calysmod.creation_data_fast_ping('192.168.1.0/24')
+    return l
 
 if __name__ == "__main__":
     app.run(host=IPlocale ,debug=True)

@@ -119,9 +119,9 @@ def recon_fast_ping (rapide):
 
 def creation_data_fast_ping(rapide):
     a = recon_fast_ping(rapide)
-    liste_ip = [a[0]]
-    liste_mac = [a[1]]
-    liste_os = [a[2]]
+    liste_ip = a[0]
+    liste_mac = a[1]
+    liste_os = a[2]
     liste_global = []
 
     for k in range (len(liste_ip)):
@@ -133,10 +133,9 @@ def creation_data_fast_ping(rapide):
             "mac" : b,
             "OS" : c,
         }
-        
         liste_global.append(json.dumps(resultat))
 
-    print(liste_global)
+    return json.dumps(liste_global)
 
 if __name__ == "__main__":
     print("IUT")
