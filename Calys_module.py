@@ -36,7 +36,7 @@ def ARP_LOCAL_SCAN(target_ip):
         ip.append((client['ip']))
         mac.append((client['mac']))
     #mac = getmacbyip(IPIPIP) pour avoir l'adresse mac avec une IP
-    
+
     return(ip, mac, routerhop1)
 
 
@@ -62,10 +62,10 @@ def out_in_json(i):
         osfamily = (ab["scan"][i]["osmatch"][0]["osclass"][0]["osfamily"])
         accuracy = (ab["scan"][i]["osmatch"][0]["accuracy"])
     except:
-        nom = "uknown"
-        vendeur = "uknown"
-        osfamily = "uknown"
-        accuracy = "uknown"
+        nom = "unknown"
+        vendeur = "unknown"
+        osfamily = "unknown"
+        accuracy = "unknown"
 
     return(nom, vendeur, osfamily, accuracy)
 
@@ -104,8 +104,11 @@ def recon_fast_ping (rapide):
         if i == IP_local:
             liste_ttl.append('0')
         else:
-            aaa = sr1(IP(dst=(i))/ICMP())
-            liste_ttl.append(aaa.ttl)
+            aaa = sr1(IP(dst=(i))/ICMP(), timeout=15)
+            if(aaa is None):
+                pass
+            else:
+                liste_ttl.append(aaa.ttl)
 
     for z in range(len(liste_ttl)):
         if liste_ttl[z] == 64 or liste_ttl[z] == 255 :
@@ -114,17 +117,20 @@ def recon_fast_ping (rapide):
             os_liste_ttl.append("Windows")
         elif liste_ttl[z] == 254 :
             os_liste_ttl.append("Cisco")
+        else:
+            os_liste_ttl.append("Unknow")
 
     return (ip, mac, os_liste_ttl)
 
 def creation_data_fast_ping(rapide):
     a = recon_fast_ping(rapide)
+    print(a)
     liste_ip = a[0]
     liste_mac = a[1]
     liste_os = a[2]
     liste_global = []
 
-    for k in range (len(liste_ip)):
+    for k in range(len(liste_ip)):
         a = liste_ip[k]
         b = liste_mac[k]
         c = liste_os[k]
@@ -133,9 +139,9 @@ def creation_data_fast_ping(rapide):
             "mac" : b,
             "OS" : c,
         }
-        liste_global.append(json.dumps(resultat))
+        liste_global.append(resultat)
 
-    return json.dumps(liste_global)
+    return liste_global
 
 if __name__ == "__main__":
     print("IUT")

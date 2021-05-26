@@ -16,10 +16,10 @@
     <script type="text/javascript">
       // fonctionnalités de gestion des appels d'API
       let request = new XMLHttpRequest();
-
+      
       // fonction de récupération d'un scan complet
       function requestAllData() {
-        request.open('GET', "/json/collecte"); // on crée la requête
+        request.open('GET', "/json/fast_scan"); // on crée la requête
         request.responseType = 'json'; // on spécifie qu'on attends du json
         request.send(); // on envoie la requête
         request.onload = function() {
@@ -34,20 +34,20 @@
 
       // ici commence le vis.js
       // fonction de génération du graph, prenant un scan complet en entrée :
-      function createGraph(scan_complet) {
+      function createGraph(scan_data) {
         // liste des noeuds
         let nodes = new vis.DataSet([]);
 
         // ajout de la gateway :
         nodes.add([
-          {id: "gateway", label: 'gateway ' + scan_complet.arp_scan[2]},
+          {id: "gateway", label: 'gateway ' + scan_data.local_data[2]},
         ]);
 
         // ajout des entités nmap :
         let i = 0;
-        scan_complet.nmap.forEach(function(nodeAdd) {
+        scan_data.scan.forEach(function(nodeAdd) {
           nodes.add([
-            {id: i, label: nodeAdd.IP, nom: nodeAdd.nom},
+            {id: i, label: nodeAdd.IP, os: nodeAdd.OS, mac: nodeAdd.mac},
           ]);
           i++;
         });
