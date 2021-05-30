@@ -3,18 +3,26 @@
   <head>
     <meta charset ="UTF-8">
   	<title>Calys</title>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}" />
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='vis.min.css')}}" />
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='vis-network.min.css')}}" />
     <script type="text/javascript" src="{{ url_for('static', filename='vis.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vis-network.min.js')}}"></script>
   </head>
   <body>
-    <p>ouais</p>
+    <center><p>Calys analyser</p></center>
 
     <div id="mynetwork"></div>
     <style>
+    html {
+      height: 100%;
+    }
+    body {
+      min-height: 100%;
+    }
+
     #mynetwork {
-      
+      min-height: 100%;
     }
     </style>
     <script type="text/javascript">
@@ -72,8 +80,17 @@
           nodes: nodes,
           edges: edges,
         };
-        let options = {};
+        let options = {
+          height: getHeigthWindows80() + "px",
+        };
         let network = new vis.Network(container, data, options);
+      }
+
+      // get windows size 80% :
+      function getHeigthWindows80() {
+        let heigth = window.innerHeight;
+        heigth = heigth - (heigth/5);
+        return heigth.toString();
       }
     </script>
   </body>
