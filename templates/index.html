@@ -12,11 +12,15 @@
     <p>ouais</p>
 
     <div id="mynetwork"></div>
-
+    <style>
+    #mynetwork {
+      
+    }
+    </style>
     <script type="text/javascript">
       // fonctionnalités de gestion des appels d'API
       let request = new XMLHttpRequest();
-      
+
       // fonction de récupération d'un scan complet
       function requestAllData() {
         request.open('GET', "/json/fast_scan"); // on crée la requête

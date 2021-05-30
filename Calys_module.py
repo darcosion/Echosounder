@@ -106,6 +106,7 @@ def recon_fast_ping (rapide):
         else:
             aaa = sr1(IP(dst=(i))/ICMP(), timeout=15)
             if(aaa is None):
+                liste_ttl.append('0')
                 pass
             else:
                 liste_ttl.append(aaa.ttl)
@@ -124,7 +125,6 @@ def recon_fast_ping (rapide):
 
 def creation_data_fast_ping(rapide):
     a = recon_fast_ping(rapide)
-    print(a)
     liste_ip = a[0]
     liste_mac = a[1]
     liste_os = a[2]
