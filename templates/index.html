@@ -59,7 +59,7 @@
         let i = 0;
         scan_data.scan.forEach(function(nodeAdd) {
           nodes.add([
-            {id: i, label: nodeAdd.IP, os: nodeAdd.OS, mac: nodeAdd.mac},
+            {id: i, label: (nodeAdd.IP + '\n' + nodeAdd.OS + '\n' + nodeAdd.mac)},
           ]);
           i++;
         });
