@@ -63,7 +63,7 @@
       };
 
       console.log("lancement d'un scan complet");
-      requestAllData();
+      window.setInterval(requestAllData,20000);
 
       // ici commence le vis.js
       // fonction de génération du graph, prenant un scan complet en entrée :
