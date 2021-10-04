@@ -1,6 +1,6 @@
 # Echosounder :anchor:
 
-<img width="841" alt="Capture d’écran 2021-10-04 à 12 48 08" src="https://user-images.githubusercontent.com/49996859/135838544-cc671c1b-ed3f-403d-8b37-d4e9fb5552bf.png">
+<img width="841" alt="135838544-cc671c1b-ed3f-403d-8b37-d4e9fb5552bf" src="https://user-images.githubusercontent.com/49996859/135839433-4c0bc099-2676-468f-b0bb-66e32719ba09.png">
 
 Let's explore your local network
 
