@@ -31,4 +31,4 @@ def scan_rapide():
     return jsonify(local_data=a, scan=l)
 
 if __name__ == "__main__":
-    app.run(host=IPlocale ,debug=True)
+    app.run(host=IPlocale ,port=5042,debug=True)
