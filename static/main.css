@@ -27,3 +27,15 @@
     background-color: var(--widget-blue2);
     color: var(--text1);
   }
+
+  #placeNetwork {
+    position: relative;
+    height: 80vh;
+  }
+
+  #mynetwork {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }

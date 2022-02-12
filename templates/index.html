@@ -8,15 +8,22 @@
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='vis-network.min.css')}}" />
     <script type="text/javascript" src="{{ url_for('static', filename='vis.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vis-network.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='cytoscape.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='layout-base.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='cose-base.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='cytoscape-fcose.js')}}"></script>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
   </head>
   <body id="backgroundquadrillage">
     <header>
-      <center>Calys analyser</center>
+      <center>Echosounder analyser</center>
     </header>
 
-    <div id="mynetwork"></div>
+    <div id="placeNetwork">
+      <div id="mynetwork"></div>
+    </div>
+    
     <script type="text/javascript" src="{{ url_for('static', filename='main.js')}}"></script>
   </body>
 </html>
