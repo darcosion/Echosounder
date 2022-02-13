@@ -1,29 +1,33 @@
-// fonctionnalités de gestion des appels d'API
-let request = new XMLHttpRequest();
+let epicApp = angular.module('epicApp', []);
 
-// fonction de récupération d'un scan complet
-function requestAllData() {
-  request.open('GET', "/json/fast_scan"); // on crée la requête
-  request.responseType = 'json'; // on spécifie qu'on attends du json
-  request.send(); // on envoie la requête
-  request.onload = function() {
-    let response = request.response;
-    console.log(response);
-    createCytoGraph(response); // on envoie le retour du scan à la fonction de création du graph
-  }
-};
+epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
+  // fonctions de récupérations de donnée
+  $scope.getFastScan = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/fast_scan',
+    };
+    
+    $http(req).then(
+      // si la requête passe :
+      function(response) {
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        $scope.createCytoGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        console.log(error);
+      }
+    );
+  };
 
-console.log("lancement d'un scan complet");
-window.setInterval(requestAllData,20000);
-
-/// ici commence le graph
-// Fonction de génération du graph basé sur cytoscape (refactoring)
-function createCytoGraph(scan_data) {
-    let cyto = cytoscape({
+  // partie gestion du graph
+  $scope.cyto = cytoscape({
 		container: document.getElementById('mynetwork')
 	});
 
-    let options = {
+  $scope.options = {
 		name: 'fcose', // cose est quand même pas mal...
 		fit: true,  // Whether to fit the network view after when done
 		padding: 10,
@@ -35,84 +39,95 @@ function createCytoGraph(scan_data) {
 		randomize: false, // ça semble mettre les noeud dans leur ordre d'arrivée, ça me plait.
 	};
 
-    let styles = [
-      {
-        selector: 'node',
-        css: {
-          'color' : '#4ec0e9',
-          'background-color' : '#102324', // --fond-color-tres-noir-bleue
-          'border-width': 4,
-          'content': 'data(id)',
-          'text-outline-color': '#080808',
-          'text-outline-width' : 3,
-          'text-valign': 'center',
-          'text-halign': 'center'
-        },
-      },
-      {
-        selector: 'edge',
-        css: {
-          'line-color' : '#4b948c', // --widget-blue3
-          'target-arrow-color' : '#5c202a', // --widget-red1
-          'curve-style': 'bezier',
-          'target-arrow-shape': 'triangle'
+  $scope.styles = [
+    {
+      selector: 'node',
+      css: {
+        'color' : '#4ec0e9',
+        'background-color' : '#102324', // --fond-color-tres-noir-bleue
+        'border-width': 4,
+        'content': 'data(id)',
+        'text-outline-color': '#080808',
+        'text-outline-width' : 3,
+        'text-valign': 'center',
+        'text-halign': 'center'
       },
     },
-	];
+    {
+      selector: 'edge',
+      css: {
+        'line-color' : '#4b948c', // --widget-blue3
+        'target-arrow-color' : '#5c202a', // --widget-red1
+        'curve-style': 'bezier',
+        'target-arrow-shape': 'triangle'
+      },
+    },
+  ];
+  $scope.cyto.style($scope.styles);
 
-    cyto.style(styles);
+  $scope.nodes = [];
+  $scope.edges = [];
 
-    let nodes = [];
-    let edges = [];
+  // fonction de création du graph
+  $scope.createCytoGraph = function(scan_data) {
+    $scope.nodes = [];
+    $scope.edges = [];
 
     // ajout de la gateway
-    nodes.push(
-        {
-            group:'nodes',
-			data: {
-				id : "gateway",
-				type : 'IP',
-				data : scan_data.local_data,
-			},
-        }
+    $scope.nodes.push(
+      {
+        group:'nodes',
+        data: {
+          id : "gateway",
+          type : 'IP',
+          data : scan_data.local_data,
+        },
+      }
     );
 
     // ajout des entités nmap :
     scan_data.scan.forEach(function(nodeAdd) {
       if(nodeAdd.IP != scan_data.local_data[2]) {
-        nodes.push(
-            {
-                group:'nodes',
-                data: {
-                    id : (nodeAdd.IP),
-                    type : 'IP',
-                    data : nodeAdd,
-                },
-            }
+        $scope.nodes.push(
+          {
+            group:'nodes',
+            data: {
+              id : (nodeAdd.IP),
+              type : 'IP',
+              data : nodeAdd,
+            },
+          }
         );
       }
-
     });
 
     // liaison de l'ensemble des entités nmap à la gateway : 
-    nodes.forEach(function(nodeI) {
-        if(nodeI.data.id != "gateway") {
-            edges.push({
-                group:'edges',
-					data : {
-						id : ('link ' + nodes[0].data.id + " " + nodeI.data.id + " "),
-						source : nodeI.data.id,
-						target : nodes[0].data.id,
-					}
-            });
+    $scope.nodes.forEach(function(nodeI) {
+      if(nodeI.data.id != "gateway") {
+        $scope.edges.push({
+              group:'edges',
+        data : {
+          id : ('link ' + $scope.nodes[0].data.id + " " + nodeI.data.id + " "),
+          source : nodeI.data.id,
+          target : $scope.nodes[0].data.id,
         }
+          });
+      }
     });
 
     // on ajoute l'ensemble des ip au graph
-	cyto.add(nodes);
-	// on ajoute l'ensemble des lien au graph
-	cyto.add(edges);
-	// on actualise la vue
-	let layout = cyto.layout(options);
-	layout.run();
-}
+    $scope.cyto.add($scope.nodes);
+    // on ajoute l'ensemble des lien au graph
+    $scope.cyto.add($scope.edges);
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
+  };
+
+  console.log("lancement d'un scan complet");
+  window.setInterval($scope.getFastScan,20000);
+});
+
+angular.element(document).ready(function() {
+	angular.bootstrap(document, [ 'epicApp' ]);
+});
