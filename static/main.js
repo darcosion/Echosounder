@@ -45,12 +45,13 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       css: {
         'color' : '#4ec0e9',
         'background-color' : '#102324', // --fond-color-tres-noir-bleue
-        'border-width': 4,
-        'content': 'data(id)',
+        'border-style' : 'none',
+        'content': 'data(id)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
         'text-outline-color': '#080808',
         'text-outline-width' : 3,
         'text-valign': 'center',
-        'text-halign': 'center'
+        'text-halign': 'center',
+        'opacity' : 1,
       },
     },
     {
@@ -59,7 +60,8 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'line-color' : '#4b948c', // --widget-blue3
         'target-arrow-color' : '#5c202a', // --widget-red1
         'curve-style': 'bezier',
-        'target-arrow-shape': 'triangle'
+        'target-arrow-shape': 'triangle',
+        'opacity' : 0.5,
       },
     },
   ];
