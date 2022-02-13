@@ -2,16 +2,17 @@
 <html lang='fr'>
   <head>
     <meta charset ="UTF-8">
-  	<title>Calys</title>
+  	<title>Echosounder</title>
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}" />
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='vis.min.css')}}" />
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='vis-network.min.css')}}" />
-    <script type="text/javascript" src="{{ url_for('static', filename='vis.min.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vis-network.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='cytoscape.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='layout-base.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='cose-base.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='cytoscape-fcose.js')}}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='angular.min.js')}}"></script>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='angular-csp.min.css')}}"></link>
+
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='normalize.css')}}"></link>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
   </head>
@@ -20,7 +21,7 @@
       <center>Echosounder analyser</center>
     </header>
 
-    <div id="placeNetwork">
+    <div id="placeNetwork" ng-controller="graphNetwork">
       <div id="mynetwork"></div>
     </div>
     
