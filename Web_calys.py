@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 from scapy.all import *
 
@@ -26,7 +26,6 @@ def all_data():
 @app.route('/json/fast_scan')
 def scan_rapide():
     a = Calysmod.TEMPLATE()
-    #b = Calysmod.ARP_LOCAL_SCAN(target_ip="192.168.1.0/24")
     l = Calysmod.creation_data_fast_ping('192.168.1.0/24')
     return jsonify(local_data=a, scan=l)
 
