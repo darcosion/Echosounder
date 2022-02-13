@@ -144,5 +144,5 @@ def creation_data_fast_ping(rapide):
     return liste_global
 
 if __name__ == "__main__":
-    print("IUT")
+    print("TEST")
     creation_data_fast_ping('192.168.1.0/24')
