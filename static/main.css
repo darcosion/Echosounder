@@ -24,7 +24,7 @@
   }
 
   header {
-    background-color: var(--widget-blue2);
+    background: linear-gradient(to left, var(--background-gradiance1), var(--widget-blue2), var(--background-gradiance1));
     color: var(--text1);
   }
 
