@@ -43,6 +43,7 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     {
       selector: 'node',
       css: {
+        'shape' : 'octagone',
         'color' : '#4ec0e9',
         'background-color' : '#102324', // --fond-color-tres-noir-bleue
         'border-style' : 'none',
@@ -52,6 +53,7 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'text-valign': 'center',
         'text-halign': 'center',
         'opacity' : 1,
+        'text-wrap': 'wrap',
       },
     },
     {
@@ -94,7 +96,7 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           {
             group:'nodes',
             data: {
-              id : (nodeAdd.IP),
+              id : (nodeAdd.IP + '\n' + nodeAdd.OS + '\n' + nodeAdd.mac),
               type : 'IP',
               data : nodeAdd,
             },
