@@ -1,6 +1,18 @@
-let epicApp = angular.module('epicApp', []);
+let EchoApp = angular.module('EchoApp', []);
 
-epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
+EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
+  $scope.showMenu1 = false;
+  $scope.showMenu2 = false;
+  $scope.showMenu3 = false;
+});
+
+EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
+  $scope.showMenu1 = false;
+  $scope.showMenu2 = false;
+  $scope.showMenu3 = false;
+});
+
+EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée
   $scope.getFastScan = function() {
     let req = {
@@ -133,5 +145,5 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 });
 
 angular.element(document).ready(function() {
-	angular.bootstrap(document, [ 'epicApp' ]);
+	angular.bootstrap(document, [ 'EchoApp' ]);
 });

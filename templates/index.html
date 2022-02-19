@@ -23,17 +23,42 @@
     </header>
 
     <!-- panels de manipulation de gauche (bobo) -->
-    <div class="echo_panel_left">
-      <div class="echo_panel_openbutton echo_panel_openbutton_left"></div>
-      <div class="echo_panel_openbutton echo_panel_openbutton_left"></div>
-      <div class="echo_panel_openbutton echo_panel_openbutton_left"></div>
+    <div class="echo_panel_left" ng-controller="leftPanelMenu">
+      <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu1 = !showMenu1; showMenu2 = false; showMenu3 = false">
+      </div>
+      <div class="echo_menu_left" ng-show="showMenu1">
+        <p>test1</p>
+      </div>
+
+      <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu2 = !showMenu2; showMenu3 = false; showMenu1 = false">
+      </div>
+      <div class="echo_menu_left" ng-show="showMenu2">
+        <p>test3</p>
+      </div>
+      <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu3 = !showMenu3; showMenu2 = false; showMenu1 = false;">
+      </div>
+      <div class="echo_menu_left" ng-show="showMenu3">
+        <p>test5</p>
+      </div>
     </div>
 
     <!-- panels de manipulation de droite (facho) -->
-    <div class="echo_panel_right">
-      <div class="echo_panel_openbutton echo_panel_openbutton_right"></div>
-      <div class="echo_panel_openbutton echo_panel_openbutton_right"></div>
-      <div class="echo_panel_openbutton echo_panel_openbutton_right"></div>
+    <div class="echo_panel_right" ng-controller="rightPanelMenu">
+      <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu1 = !showMenu1; showMenu2 = false; showMenu3 = false">
+      </div>
+      <div class="echo_menu_right" ng-show="showMenu1">
+        <p>test2</p>
+      </div>
+      <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu2 = !showMenu2; showMenu1 = false; showMenu3 = false">
+      </div>
+      <div class="echo_menu_right" ng-show="showMenu2">
+        <p>test4</p>
+      </div>
+      <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu3 = !showMenu3; showMenu2 = false; showMenu1 = false">
+      </div>
+      <div class="echo_menu_right" ng-show="showMenu3">
+        <p>test6</p>
+      </div>
     </div>
 
     <div id="placeNetwork" ng-controller="graphNetwork">
