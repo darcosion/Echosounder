@@ -27,6 +27,8 @@ body {
   background-image: linear-gradient(transparent 61px, rgba(75,148,140,0.3) 62px, transparent 62px),
                     linear-gradient(90deg, transparent 61px, rgba(75,148,140,0.3) 62px, transparent 62px);
   background-size: 100% 62px, 62px 100%;
+
+  color: var(--text1);
 }
 
 /* CSS du header */
@@ -69,7 +71,9 @@ header {
   top: 0px;
   left: 62px;
 
-  background: transparent;
+  width: calc(100% * 12);
+
+  background-color: rgba(5, 12, 18, 0.6);
   border: 1px solid var(--widget-grey2);
 }
 
@@ -92,8 +96,9 @@ header {
   position: absolute;
   top: 0px;
   right: 62px;
+  width: calc(100% * 12);
 
-  background: transparent;
+  background-color: rgba(5, 12, 18, 0.6);
   border: 1px solid var(--widget-grey2);
 }
 
@@ -107,12 +112,20 @@ header {
   transition: all 0.4s ease-out;
 }
 
+.echo_button_scan {
+  margin: 2px;
+  padding-left: 1px;
+  padding-right: 1px;
+  border-radius: 1px;
+  background-color: var(--widget-blue2);
+  filter: opacity(80%);
+}
 
 
 
 
 
-/** Ressources externes internalisés **/
+/** Ressources externes internalisés (ça veut dire "bouts de CSS copié collés d'ailleurs de l'interne qui peuvent servir") **/
 
 
 /* Sweep To Right */
