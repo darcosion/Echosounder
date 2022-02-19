@@ -43,7 +43,7 @@ epicApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     {
       selector: 'node',
       css: {
-        'shape' : 'octagone',
+        'shape' : 'octagon',
         'color' : '#4ec0e9',
         'background-color' : '#102324', // --fond-color-tres-noir-bleue
         'border-style' : 'none',
