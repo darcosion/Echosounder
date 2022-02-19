@@ -17,9 +17,18 @@
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
   </head>
   <body id="backgroundquadrillage">
+    <!-- barre de menu affichant juste le titre du logiciel -->
     <header>
       <center>Echosounder analyser</center>
     </header>
+
+    <!-- panels de manipulation de gauche (bobo) -->
+    <div class="echo_panel_left">
+    </div>
+
+    <!-- panels de manipulation de droite (facho) -->
+    <div class="echo_panel_right">
+    </div>
 
     <div id="placeNetwork" ng-controller="graphNetwork">
       <div id="mynetwork"></div>
