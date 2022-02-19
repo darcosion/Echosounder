@@ -1,9 +1,16 @@
 let EchoApp = angular.module('EchoApp', []);
 
+EchoApp.controller("ParentCtrl", function($scope) {});
+
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
+
+  $scope.clickFastPing = function() {
+    console.log("emit fast ping request");
+    $rootScope.$broadcast('request_fast_ping', {});
+  }
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
@@ -140,8 +147,10 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
-  console.log("lancement d'un scan complet");
-  window.setInterval($scope.getFastScan,20000);
+  $scope.$on('request_fast_ping', function(event, args) {
+    console.log("lancement d'un scan complet");
+    $scope.getFastScan();
+  })
 });
 
 angular.element(document).ready(function() {
