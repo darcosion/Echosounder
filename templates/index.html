@@ -27,13 +27,13 @@
       <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu1 = !showMenu1; showMenu2 = false; showMenu3 = false">
       </div>
       <!-- liaison bouton de menu <-> menu -->
-      <div class="spinner echo_spinner_left" ng-show="showMenu1">
+      <div class="spinner echo_spinner_left ng-hide" ng-hide="!showMenu1">
         <div class="rect1"></div>
         <div class="rect2"></div>
         <div class="rect3"></div>
       </div>
       <!-- menu de scan basique -->
-      <div class="echo_menu_left d-flex flex-wrap" ng-show="showMenu1">
+      <div class="d-flex flex-wrap echo_menu_left ng-hide" ng-hide="!showMenu1">
         <!-- pleins de noms de scan à la con ont été inventés pour tester le placement css -->
         <div class="echo_button_scan hvr-hollow" ng-click="clickFastPing()">Scan Ping</div>
         <div class="echo_button_scan hvr-hollow" ng-click="clickScanARP()">Scan ARP</div>
@@ -47,22 +47,22 @@
 
       <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu2 = !showMenu2; showMenu3 = false; showMenu1 = false">
       </div>
-      <div class="spinner echo_spinner_left" ng-show="showMenu2">
+      <div class="spinner echo_spinner_left ng-hide" ng-show="showMenu2">
         <div class="rect1"></div>
         <div class="rect2"></div>
         <div class="rect3"></div>
       </div>
-      <div class="echo_menu_left" ng-show="showMenu2">
+      <div class="echo_menu_left ng-hide" ng-show="showMenu2">
         <p>test3</p>
       </div>
       <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right" ng-click="showMenu3 = !showMenu3; showMenu2 = false; showMenu1 = false;">
       </div>
-      <div class="spinner echo_spinner_left" ng-show="showMenu3">
+      <div class="spinner echo_spinner_left ng-hide" ng-show="showMenu3">
         <div class="rect1"></div>
         <div class="rect2"></div>
         <div class="rect3"></div>
       </div>
-      <div class="echo_menu_left" ng-show="showMenu3">
+      <div class="echo_menu_left ng-hide" ng-show="showMenu3">
         <p>test5</p>
       </div>
     </div>
@@ -71,17 +71,17 @@
     <div class="echo_panel_right" ng-controller="rightPanelMenu">
       <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu1 = !showMenu1; showMenu2 = false; showMenu3 = false">
       </div>
-      <div class="echo_menu_right" ng-show="showMenu1">
+      <div class="echo_menu_right ng-hide" ng-show="showMenu1">
         <p>test2</p>
       </div>
       <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu2 = !showMenu2; showMenu1 = false; showMenu3 = false">
       </div>
-      <div class="echo_menu_right" ng-show="showMenu2">
+      <div class="echo_menu_right ng-hide" ng-show="showMenu2">
         <p>test4</p>
       </div>
       <div class="echo_panel_openbutton echo_panel_openbutton_right hvr-sweep-to-left" ng-click="showMenu3 = !showMenu3; showMenu2 = false; showMenu1 = false">
       </div>
-      <div class="echo_menu_right" ng-show="showMenu3">
+      <div class="echo_menu_right ng-hide" ng-show="showMenu3">
         <p>test6</p>
       </div>
     </div>
