@@ -70,7 +70,17 @@ header {
   position: absolute;
   top: 0px;
   left: calc(62px /2);
+  transition: all linear 0.5s;
 }
+
+.echo_spinner_left.ng-hide {
+  left: -400px;
+  opacity: 0;
+}
+
+.echo_spinner_left.ng-hide-add, .echo_spinner_left.ng-hide-remove {
+}
+
 
 .echo_menu_left {
   position: absolute;
@@ -81,7 +91,17 @@ header {
 
   background-color: rgba(5, 12, 18, 0.6);
   border: 1px solid var(--widget-grey2);
+  transition: all linear 0.5s;
 }
+
+.echo_menu_left.ng-hide {
+  left: -400px;
+  opacity: 0;
+}
+
+.echo_menu_left.ng-hide-add, .echo_menu_left.ng-hide-remove {
+}
+
 
 /* CSS du panel de droite */
 
@@ -106,6 +126,12 @@ header {
 
   background-color: rgba(5, 12, 18, 0.6);
   border: 1px solid var(--widget-grey2);
+  transition: all linear 0.5s;
+}
+
+.echo_menu_right.ng-hide {
+  right: -400px;
+  opacity: 0;
 }
 
 
@@ -127,7 +153,10 @@ header {
 }
 
 
-
+.ng-hide:not(.ng-hide-animate) {
+  /* overriding pour cacher les mécanismes d'animations de base qui sont foireux */
+  display: initial!important;
+}
 
 
 /** Ressources externes internalisés (ça veut dire "bouts de CSS copié collés d'ailleurs que de l'interne qui peuvent servir") **/
