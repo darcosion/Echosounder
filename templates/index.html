@@ -86,6 +86,16 @@
       </div>
     </div>
 
+    <!-- panel de notification de bas de fenêtre -->
+    <div class="echo_panel_notification" ng-controller="notificationPanelMenu">
+      <div class="echo_toast_list">
+        <div class="echo_toast" ng-repeat="toast in listToast">
+          <span>{{"{{toast.titre}}"}}</span>
+          <span>{{"{{toast.texte}}"}}</span>
+        </div>
+      </div>
+    </div>
+
     <div id="placeNetwork" ng-controller="graphNetwork">
       <div id="mynetwork"></div>
     </div>
