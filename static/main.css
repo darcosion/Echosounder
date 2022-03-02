@@ -1,5 +1,6 @@
 /* CSS du projet EchoSounder*/
 
+/* palette de couleur */
 :root {
   --background-color-black: #010b0d; /* var(--background-color-black) */
   --background-gradiance1 : #050c12; /* var(--background-gradiance1) */
@@ -15,6 +16,13 @@
   --text1 : #a5b0a9; /* var(--text1) */
   --text2 : #abd6db; /* var(--text2) */
 };
+
+/* configuration spécifique */
+
+.ng-hide:not(.ng-hide-animate) {
+  /* overriding pour cacher les mécanismes d'animations ngAnimate de base qui sont foireux */
+  display: initial!important;
+}
 
 /* règles CSS de base */
 html {
@@ -134,6 +142,16 @@ header {
   opacity: 0;
 }
 
+/* CSS de panel de notification */
+
+.echo_panel_notification {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+
+  z-index: 100;
+}
+
 
 /* CSS général de panel */
 
@@ -151,13 +169,6 @@ header {
   background-color: var(--widget-blue2);
   filter: opacity(80%);
 }
-
-
-.ng-hide:not(.ng-hide-animate) {
-  /* overriding pour cacher les mécanismes d'animations de base qui sont foireux */
-  display: initial!important;
-}
-
 
 /** Ressources externes internalisés (ça veut dire "bouts de CSS copié collés d'ailleurs que de l'interne qui peuvent servir") **/
 

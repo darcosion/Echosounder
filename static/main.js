@@ -1,6 +1,13 @@
 let EchoApp = angular.module('EchoApp', []);
 
-EchoApp.controller("ParentCtrl", function($scope) {});
+EchoApp.controller("ParentCtrl", function($scope) {
+  $scope.sendToastData = function(titre, texte) {
+    $scope.$broadcast('ToastMessage', {
+      'titre' : titre,
+      'texte' : texte,
+    })
+  }
+});
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
@@ -19,6 +26,33 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu3 = false;
 });
 
+EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
+  $scope.listToast = [];
+
+  $scope.$on('ToastMessage', function(evt, toastData) {
+    // fonction ajoutant un toast lors qu'elle reçoit les informations d'une notification
+    // attends en entrée un objet de type : 
+    // {
+    //   'titre' : "un titre",
+    //   'texte' : 'texte explicatif'
+    // }
+    $scope.listToast.push({
+      'titre' : toastData.titre, 
+      'texte' : toastData.texte,
+    });
+  });
+
+  // fonction de trigger de watch tant que $scope.listToast n'est pas vide
+  $scope.$watchCollection('listToast', function(newListToard, oldListToad) {
+    if(newListToard.length == 0) {
+      // on ne fait rien
+    }else {
+      // place un delay de 3 secondes plus on efface le premier élément de la liste
+      $timeout(function() { $scope.listToast = $scope.listToast.slice(1); console.log($scope.listToast);}, 5000);
+    }
+  })
+});
+
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée
   $scope.getFastScan = function() {
@@ -29,13 +63,16 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     
     $http(req).then(
       // si la requête passe :
+      
       function(response) {
+        $scope.$parent.sendToastData('FastPing', "réception d'un scan Fast Ping");
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
+        $scope.$parent.sendToastData('FastPing', "erreur Fast Ping : " + error);
         console.log(error);
       }
     );
@@ -149,8 +186,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.$on('request_fast_ping', function(event, args) {
     console.log("lancement d'un scan complet");
+    $scope.$parent.sendToastData('FastPing', "lancement d'un scan Fast Ping");
     $scope.getFastScan();
-  })
+  });
 });
 
 angular.element(document).ready(function() {
