@@ -10,6 +10,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='cytoscape-fcose.js')}}"></script>
 
     <script type="text/javascript" src="{{ url_for('static', filename='angular.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='angular-animate.min.js')}}"></script>
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='angular-csp.min.css')}}"></link>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='normalize.css')}}"></link>
@@ -90,8 +91,8 @@
     <div class="echo_panel_notification" ng-controller="notificationPanelMenu">
       <div class="echo_toast_list">
         <div class="echo_toast" ng-repeat="toast in listToast">
-          <span>{{"{{toast.titre}}"}}</span>
-          <span>{{"{{toast.texte}}"}}</span>
+          <div>{{"{{toast.titre}}"}}</div>
+          <div>{{"{{toast.texte}}"}}</div>
         </div>
       </div>
     </div>
