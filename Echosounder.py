@@ -69,18 +69,6 @@ def out_in_json(i):
 
     return(nom, vendeur, osfamily, accuracy)
 
-def creation_data_nmap(machines):
-    iter = out_in_json(machines)
-
-    result = {
-        "IP" : machines,
-        "nom" : iter[0],
-        "vendeur" : iter[1],
-        "osfamily" : iter[2],
-        "accuracy" : iter[3],
-    }
-    return result
-
 def iteraliste(target):
     liste_ip = []
 
@@ -123,8 +111,37 @@ def recon_fast_ping (rapide):
 
     return (ip, mac, os_liste_ttl)
 
-def creation_data_fast_ping(rapide):
-    a = recon_fast_ping(rapide)
+def creation_data_nmap(machines):
+    iter = out_in_json(machines)
+
+    result = {
+        "IP" : machines,
+        "nom" : iter[0],
+        "vendeur" : iter[1],
+        "osfamily" : iter[2],
+        "accuracy" : iter[3],
+    }
+    return result
+
+def creation_data_scan_arp(cible):
+    a = ARP_LOCAL_SCAN(cible)
+    liste_ip = a[0]
+    liste_mac = a[1]
+    liste_global = []
+
+    for k in range(len(liste_ip)):
+        a = liste_ip[k]
+        b = liste_mac[k]
+        resultat = {
+            "IP" : a,
+            "mac" : b,
+        }
+        liste_global.append(resultat)
+
+    return liste_global
+
+def creation_data_fast_ping(cible):
+    a = recon_fast_ping(cible)
     liste_ip = a[0]
     liste_mac = a[1]
     liste_os = a[2]

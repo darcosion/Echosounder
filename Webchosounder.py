@@ -14,14 +14,13 @@ app.config["CACHE_TYPE"] = "null"
 def index():
     return render_template("index.html")
 
-@app.route('/json/collecte')
-def all_data():
+@app.route('/json/arp_scan')
+def scan_arp():
+    print("start arp scan")
     a = Echomod.TEMPLATE()
-    b = Echomod.ARP_LOCAL_SCAN(target_ip="192.168.1.0/24")
-    c = Echomod.iteraliste(b[0])
-    return jsonify(local_data=a,
-                    arp_scan=b,
-                    nmap=c)
+    b = Echomod.creation_data_scan_arp("192.168.1.0/24")
+    print("return arp scan")
+    return jsonify(local_data=a, scan=b)
 
 @app.route('/json/fast_scan')
 def scan_rapide():
