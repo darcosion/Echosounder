@@ -152,6 +152,28 @@ header {
   z-index: 100;
 }
 
+.echo_toast_list {
+
+}
+
+.echo_toast {
+  text-align: center;
+  padding: 2px;
+  margin: 2px;
+  border: 1px solid var(--widget-grey2);
+  border-radius: 3px;
+  opacity: 1;
+}
+
+.echo_toast.ng-enter {
+  transition:all ease-in 1s;
+  opacity: 0;
+}
+
+.echo_toast.ng-enter-active {
+  opacity: 1;
+}
+
 
 /* CSS général de panel */
 

@@ -1,4 +1,4 @@
-let EchoApp = angular.module('EchoApp', []);
+let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope) {
   $scope.sendToastData = function(titre, texte) {
