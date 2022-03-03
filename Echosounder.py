@@ -8,6 +8,18 @@ import time
 import nmap
 import json
 
+
+def TEMPLATE():
+    """
+    grab l'ip locale de la machine ainsi que l'adresse mac
+    """
+    iplocale = get_if_addr(conf.iface)
+    maclocale = get_if_hwaddr(conf.iface)
+
+    routerhop1 = conf.route.route("0.0.0.0")[2]
+    routerhop1mac = getmacbyip(routerhop1)
+    return {"local_ip" : iplocale, "local_map" : maclocale, "gateway_ip" : routerhop1, "gateway_mac" : routerhop1mac}
+
 def ARP_LOCAL_SCAN(target_ip):
     """
     ARP SCAN pour les machines locales
@@ -38,18 +50,6 @@ def ARP_LOCAL_SCAN(target_ip):
     #mac = getmacbyip(IPIPIP) pour avoir l'adresse mac avec une IP
 
     return(ip, mac, routerhop1)
-
-
-def TEMPLATE():
-    """
-    grab l'ip locale de la machine ainsi que l'adresse mac
-    """
-    iplocale = get_if_addr(conf.iface)
-    maclocale = get_if_hwaddr(conf.iface)
-
-    routerhop1 = conf.route.route("0.0.0.0")[2]
-    routerhop1mac = getmacbyip(routerhop1)
-    return iplocale, maclocale, routerhop1, routerhop1mac
 
 def out_in_json(i):
     nm = nmap.PortScanner()

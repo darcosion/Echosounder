@@ -159,15 +159,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction de création du graph
   $scope.createCytoGraph = function(scan_data) {
-    $scope.nodes = [];
-    $scope.edges = [];
-
     // ajout de la gateway
     $scope.nodes.push(
       {
         group:'nodes',
         data: {
           id : "gateway",
+          label : ("gateway " + scan_data.local_data.gateway_ip + "\n" + scan_data.local_data.gateway_mac),
           type : 'IP',
           data : scan_data.local_data,
         },

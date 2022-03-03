@@ -49,7 +49,7 @@ header {
 /* CSS du graph prenant toute la page */
 #placeNetwork {
   position: relative;
-  height: 80vh;
+  height: 90vh;
 }
 
 #mynetwork {
