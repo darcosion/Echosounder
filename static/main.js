@@ -18,6 +18,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     console.log("emit fast ping request");
     $rootScope.$broadcast('request_fast_ping', {});
   }
+
+  $scope.clickScanARP = function() {
+    console.log("emit arp scan request");
+    $rootScope.$broadcast('request_arp_scan', {});
+  }
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
@@ -48,13 +53,13 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
       // on ne fait rien
     }else {
       // place un delay de 3 secondes plus on efface le premier élément de la liste
-      $timeout(function() { $scope.listToast = $scope.listToast.slice(1); console.log($scope.listToast);}, 5000);
+      $timeout(function() { $scope.listToast = $scope.listToast.slice(1);}, 5000);
     }
   })
 });
 
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
-  // fonctions de récupérations de donnée
+  // fonctions de récupérations de donnée Fast Scan
   $scope.getFastScan = function() {
     let req = {
       method : 'GET',
@@ -73,6 +78,30 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête échoue :
       function(error) {
         $scope.$parent.sendToastData('FastPing', "erreur Fast Ping : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  // fonctions de récupération de donnée scan ARP
+  $scope.getARPScan = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/arp_scan',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('ARP Scan', "réception d'un scan ARP");
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        $scope.createCytoGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('ARP Scan', "erreur Scan ARP : " + error);
         console.log(error);
       }
     );
@@ -103,7 +132,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'color' : '#4ec0e9',
         'background-color' : '#102324', // --fond-color-tres-noir-bleue
         'border-style' : 'none',
-        'content': 'data(id)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
+        'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
         'text-outline-color': '#080808',
         'text-outline-width' : 3,
         'text-valign': 'center',
@@ -152,7 +181,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           {
             group:'nodes',
             data: {
-              id : (nodeAdd.IP + '\n' + nodeAdd.OS + '\n' + nodeAdd.mac),
+              id : (nodeAdd.IP + '\n' + nodeAdd.mac),
+              label : (nodeAdd.IP + '\n' + nodeAdd.OS + '\n' + nodeAdd.mac),
               type : 'IP',
               data : nodeAdd,
             },
@@ -188,6 +218,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     console.log("lancement d'un scan complet");
     $scope.$parent.sendToastData('FastPing', "lancement d'un scan Fast Ping");
     $scope.getFastScan();
+  });
+
+  $scope.$on('request_arp_scan', function(event, args) {
+    console.log("lancement d'un scan ARP");
+    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan ARP");
+    $scope.getARPScan();
   });
 });
 
