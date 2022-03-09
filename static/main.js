@@ -70,14 +70,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('FastPing', "réception d'un scan Fast Ping");
+        $scope.$parent.sendToastData('FastPing', "réception d'un scan");
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('FastPing', "erreur Fast Ping : " + error);
+        $scope.$parent.sendToastData('FastPing', "erreur : " + error);
         console.log(error);
       }
     );
@@ -94,14 +94,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('ARP Scan', "réception d'un scan ARP");
+        $scope.$parent.sendToastData('ARP Scan', "réception d'un scan");
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('ARP Scan', "erreur Scan ARP : " + error);
+        $scope.$parent.sendToastData('ARP Scan', "erreur Scan : " + error);
         console.log(error);
       }
     );
@@ -129,7 +129,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       selector: 'node',
       css: {
         'shape' : 'octagon',
-        'color' : '#4ec0e9',
+        'color' : '#abd6db',
         'background-color' : '#102324', // --fond-color-tres-noir-bleue
         'border-style' : 'none',
         'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
@@ -214,13 +214,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.$on('request_fast_ping', function(event, args) {
     console.log("lancement d'un scan complet");
-    $scope.$parent.sendToastData('FastPing', "lancement d'un scan Fast Ping");
+    $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
     $scope.getFastScan();
   });
 
   $scope.$on('request_arp_scan', function(event, args) {
     console.log("lancement d'un scan ARP");
-    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan ARP");
+    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     $scope.getARPScan();
   });
 });
