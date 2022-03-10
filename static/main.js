@@ -164,7 +164,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       {
         group:'nodes',
         data: {
-          id : "gateway",
+          id : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
           label : ("gateway " + scan_data.local_data.gateway_ip + "\n" + scan_data.local_data.gateway_mac),
           type : 'IP',
           data : scan_data.local_data,
@@ -191,7 +191,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
     // liaison de l'ensemble des entités nmap à la gateway : 
     $scope.nodes.forEach(function(nodeI) {
-      if(nodeI.data.id != "gateway") {
+      if(nodeI.data.id != $scope.nodes[0].data.id) { // on évite de créer un lien entre la gateway et elle-même.
         $scope.edges.push({
               group:'edges',
         data : {
