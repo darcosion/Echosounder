@@ -134,7 +134,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'border-style' : 'none',
         'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
         'text-outline-color': '#080808',
-        'text-outline-width' : 3,
+        'text-outline-width' : 1,
         'text-valign': 'center',
         'text-halign': 'center',
         'opacity' : 1,
