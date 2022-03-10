@@ -15,6 +15,7 @@
   --widget-red2 : #371921; /* var(--widget-red2) */
   --text1 : #a5b0a9; /* var(--text1) */
   --text2 : #abd6db; /* var(--text2) */
+  --micro-text : #11998e; /* var(--micro-text) */
 };
 
 /* configuration spécifique */
@@ -94,6 +95,66 @@ header {
 }
 
 .echo_menu_left.ng-hide-add, .echo_menu_left.ng-hide-remove {
+}
+
+.echo_scan_cible {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.echo_cible_ip_cidr {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: #fff;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.echo_cible_ip_cidr::placeholder {
+  color: transparent;
+}
+.echo_cible_ip_cidr:placeholder-shown ~ .echo_cible_label {
+  font-size: 1.3rem;
+  cursor: text;
+}
+
+.echo_cible_label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: #9b9b9b;
+}
+
+.echo_cible_ip_cidr:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #4b948c, #bac9b0);
+  border-image-slice: 1;
+}
+.echo_cible_ip_cidr:focus ~ .echo_cible_label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 0.6rem;
+  color: var(--micro-text);
+}
+
+/* reset input */
+.echo_cible_ip_cidr:required, .echo_cible_ip_cidr:invalid {
+  box-shadow: none;
+}
+
+.echo_scan_panel {
+  display: contents;
 }
 
 
