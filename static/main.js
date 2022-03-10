@@ -14,14 +14,16 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
 
+  $scope.cible = "192.168.1.0/24";
+
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
-    $rootScope.$broadcast('request_fast_ping', {});
+    $rootScope.$broadcast('request_fast_ping', {'cible' : $scope.cible});
   }
 
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
-    $rootScope.$broadcast('request_arp_scan', {});
+    $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
   }
 });
 
@@ -60,10 +62,12 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée Fast Scan
-  $scope.getFastScan = function() {
+  $scope.getFastScan = function(cible) {
     let req = {
-      method : 'GET',
+      method : 'POST',
       url : '/json/fast_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
     };
     
     $http(req).then(
@@ -84,10 +88,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   // fonctions de récupération de donnée scan ARP
-  $scope.getARPScan = function() {
+  $scope.getARPScan = function(cible) {
     let req = {
-      method : 'GET',
+      method : 'POST',
       url : '/json/arp_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
     };
 
     $http(req).then(
@@ -215,13 +221,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_fast_ping', function(event, args) {
     console.log("lancement d'un scan complet");
     $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
-    $scope.getFastScan();
+    $scope.getFastScan(args.cible);
   });
 
   $scope.$on('request_arp_scan', function(event, args) {
     console.log("lancement d'un scan ARP");
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
-    $scope.getARPScan();
+    $scope.getARPScan(args.cible);
   });
 });
 
