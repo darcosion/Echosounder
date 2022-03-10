@@ -191,6 +191,11 @@ header {
   opacity: 0;
 }
 
+.echo_node_data {
+  word-wrap: anywhere; /* sans ça il y a un overflow bizarre du texte... */
+
+}
+
 /* CSS de panel de notification */
 
 .echo_panel_notification {
@@ -240,6 +245,10 @@ header {
   background-color: var(--widget-blue2);
   filter: opacity(80%);
 }
+
+/* CYTOSCAPE CLASS */
+
+
 
 /** Ressources externes internalisés (ça veut dire "bouts de CSS copié collés d'ailleurs que de l'interne qui peuvent servir") **/
 

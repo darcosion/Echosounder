@@ -31,6 +31,21 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
+
+  $scope.nodedata = undefined;
+
+  $scope.$on('updatePanelNodeData', function(event, node, typenode) {
+    if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
+      console.log("Clic sur un noeud");
+      console.log(node);
+      $scope.nodedata = node;
+      $scope.showMenu1 = true;
+      $scope.showMenu2 = false;
+      $scope.showMenu3 = false;
+      // on demande à angularJS d'actualiser sa vue
+      $scope.$apply();
+    }
+  });
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -217,6 +232,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
   };
+
+  // évènement en cas de clic sur un noeud :
+	$scope.cyto.on('tap', 'node', function(evt){
+		// on envoie au parent le noeud à afficher :
+		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data('data'), evt.target.data('type'));
+	});
 
   $scope.$on('request_fast_ping', function(event, args) {
     console.log("lancement d'un scan complet");
