@@ -25,6 +25,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     console.log("emit arp scan request");
     $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
   }
+
+  $scope.clickScanProfiling = function() {
+    console.log("emit profiling scan request");
+    $rootScope.$broadcast('request_profiling_scan', {'cible' : "10.0.2.15"});
+  }
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
@@ -46,6 +51,9 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       $scope.$apply();
     }
   });
+  $scope.exportJSON= function() {
+    console.log("test");
+  };
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -123,6 +131,32 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête échoue :
       function(error) {
         $scope.$parent.sendToastData('ARP Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  // fonctions de profiling machine (OS, device, ...)
+  $scope.getProfilingScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/profiling_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan");
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        //$scope.createCytoGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Profiling Scan', "erreur Scan : " + error);
         console.log(error);
       }
     );
@@ -250,6 +284,26 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     $scope.getARPScan(args.cible);
   });
+
+  $scope.$on('request_profiling_scan', function(event, args) {
+    console.log("lancement d'un scan complet");
+    $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
+    $scope.getProfilingScan(args.cible);
+  });
+
+
+  $scope.getCytoJSON = function() {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.cyto.json()));
+    element.setAttribute('download', "resultat.txt");
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  };
 });
 
 angular.element(document).ready(function() {

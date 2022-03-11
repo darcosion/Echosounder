@@ -39,7 +39,7 @@ def arp_local_scan(target_ip) -> tuple:
     # ff:ff:ff:ff:ff:ff broadcast mac address
     ether = scapy.layers.l2.Ether(dst="ff:ff:ff:ff:ff:ff")
 
-    # stack the protocoles
+    # stack the protocols
     packet = ether / arp
     result: tuple = srp(packet, timeout=3, verbose=0)[0]
 
