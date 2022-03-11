@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 from typing import List
-import Echosounder
+import echosounder
 from flask import Flask, jsonify, render_template, request
 from scapy.arch import get_if_addr
 from scapy.config import conf
@@ -22,8 +22,8 @@ def scan_arp():
     if not if_contain_cible(request.json):
         return {'error': "malformed request"}
     else:
-        local_ip_mac_and_gateway: dict = Echosounder.template()
-        local_ip_mac: List[dict] = Echosounder.data_creation_arp_scan(request.json['cible'])
+        local_ip_mac_and_gateway: dict = echosounder.template()
+        local_ip_mac: List[dict] = echosounder.data_creation_arp_scan(request.json['cible'])
         return jsonify(local_data=local_ip_mac_and_gateway, scan=local_ip_mac)
 
 
@@ -32,8 +32,8 @@ def scan_rapide():
     if not if_contain_cible(request.json):
         return {'error': "malformed request"}
     else:
-        local_ip_mac_and_gateway: dict = Echosounder.template()
-        ip_mac_os: List[dict] = Echosounder.data_creation_fast_ping(request.json['cible'])
+        local_ip_mac_and_gateway: dict = echosounder.template()
+        ip_mac_os: List[dict] = echosounder.data_creation_fast_ping(request.json['cible'])
         return jsonify(local_data=local_ip_mac_and_gateway, scan=ip_mac_os)
 
 
