@@ -51,9 +51,11 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       $scope.$apply();
     }
   });
+
   $scope.exportJSON= function() {
-    console.log("test");
+    $rootScope.$broadcast('request_export_json', {});
   };
+
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -291,11 +293,15 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.getProfilingScan(args.cible);
   });
 
+  $scope.$on('request_export_json', function(event, args) {
+    console.log("lancement d'un export JSON");
+    $scope.getCytoJSON();
+  })
 
   $scope.getCytoJSON = function() {
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.cyto.json()));
-    element.setAttribute('download', "resultat.txt");
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent($scope.cyto.json()));
+    element.setAttribute('download', "graph.json");
   
     element.style.display = 'none';
     document.body.appendChild(element);
