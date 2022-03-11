@@ -32,8 +32,8 @@
         <!-- cible à scanner -->
         <div class="container echo_menu_title">Scan réseau</div>
         <div class="container echo_scan_cible">
-          <input class="echo_cible_ip_cidr" type="text" name="cible_ip_cidr" placeholder="cidr" ng-model="cible" required>
-          <label for="name" class="echo_cible_label">IP/CIDR</label>
+          <input class="echo_input_effect" type="text" name="cible_ip_cidr" placeholder="cidr" ng-model="cible" required>
+          <label for="name" class="echo_input_effect_label">IP/CIDR</label>
         </div>
         <!-- pleins de noms de scan à la con ont été inventés pour tester le placement css -->
         <div class="container echo_scan_panel">
@@ -53,6 +53,10 @@
       <div class="d-flex flex-wrap echo_menu_left ng-hide" ng-show="showMenu2">
         <div class="container echo_menu_title">Scan machine</div>
         <!-- Ensemble des boutons de scan d'une machine spécifique -->
+        <div class="container echo_scan_cible">
+          <input class="echo_input_effect" type="text" name="cible_machine_cible" placeholder="ip" ng-model="machineCible" required>
+          <label for="name" class="echo_input_effect_label">IP CIBLE</label>
+        </div>
         <div class="container echo_scan_panel"> 
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanProfiling()">Scan profiling</div>
           <div class="echo_button_scan">Scan profiling2</div>

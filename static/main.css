@@ -102,7 +102,7 @@ header {
   margin-bottom: 10px;
 }
 
-.echo_cible_ip_cidr {
+.echo_input_effect {
   font-family: inherit;
   width: 100%;
   border: 0;
@@ -115,15 +115,15 @@ header {
   transition: border-color 0.2s;
 }
 
-.echo_cible_ip_cidr::placeholder {
+.echo_input_effect::placeholder {
   color: transparent;
 }
-.echo_cible_ip_cidr:placeholder-shown ~ .echo_cible_label {
+.echo_input_effect:placeholder-shown ~ .echo_input_effect_label {
   font-size: 1.3rem;
   cursor: text;
 }
 
-.echo_cible_label {
+.echo_input_effect_label {
   position: absolute;
   top: 0;
   display: block;
@@ -132,14 +132,14 @@ header {
   color: #9b9b9b;
 }
 
-.echo_cible_ip_cidr:focus {
+.echo_input_effect:focus {
   padding-bottom: 6px;
   font-weight: 700;
   border-width: 3px;
   border-image: linear-gradient(to right, #4b948c, #bac9b0);
   border-image-slice: 1;
 }
-.echo_cible_ip_cidr:focus ~ .echo_cible_label {
+.echo_input_effect:focus ~ .echo_input_effect_label {
   position: absolute;
   top: 0;
   display: block;
@@ -149,7 +149,7 @@ header {
 }
 
 /* reset input */
-.echo_cible_ip_cidr:required, .echo_cible_ip_cidr:invalid {
+.echo_input_effect:required, .echo_input_effect:invalid {
   box-shadow: none;
 }
 
