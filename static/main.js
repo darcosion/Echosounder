@@ -41,8 +41,6 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
     if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
-      console.log("Clic sur un noeud");
-      console.log(node);
       $scope.nodedata = node;
       $scope.showMenu1 = true;
       $scope.showMenu2 = false;
@@ -299,8 +297,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   })
 
   $scope.getCytoJSON = function() {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent($scope.cyto.json()));
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify($scope.cyto.json())));
     element.setAttribute('download', "graph.json");
   
     element.style.display = 'none';
