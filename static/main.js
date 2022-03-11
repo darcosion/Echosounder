@@ -16,6 +16,8 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.cible = "192.168.1.0/24";
 
+  $scope.machineCible = "0.0.0.0"
+
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
     $rootScope.$broadcast('request_fast_ping', {'cible' : $scope.cible});
@@ -28,8 +30,20 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.clickScanProfiling = function() {
     console.log("emit profiling scan request");
-    $rootScope.$broadcast('request_profiling_scan', {'cible' : "10.0.2.15"});
+    $rootScope.$broadcast('request_profiling_scan', {'cible' : $scope.machineCible});
   }
+
+  $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
+    console.log("test change machine");
+    console.log(nodedata);
+    console.log(nodetype);
+    if(nodetype == 'IP') { // on prend que les IP
+      if('IP' in nodedata) { // on vérifie qu'il y a une IP dans le nodedata
+        $scope.machineCible = nodedata['IP'];
+        $scope.$apply();
+      }
+    }
+  });
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
