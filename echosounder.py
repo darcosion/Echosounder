@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import sys
 from typing import Optional, List, Tuple
 import json
 import platform
@@ -57,6 +58,30 @@ def arp_local_scan(target_ip) -> tuple:
         mac_list.append((client['mac']))
     # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
+
+
+def device_ip_local_scan(target_ip) -> tuple:
+    """
+    ARP SCAN for local machines
+    """
+    # retrieve local IP address
+    arp = scapy.layers.l2.ARP(pdst=target_ip)
+
+    ether = scapy.layers.l2.Ether(dst="ff:ff:ff:ff:ff:ff")
+
+    # stack the protocols
+    packet = ether / arp
+    result: tuple = srp(packet, timeout=3, verbose=0)[0]
+
+    # initialisation de la liste des clients
+    clients: List[dict] = []
+    ip_list: List[str] = [scapy.arch.get_if_addr(conf.iface)]
+
+    for sent, received in result:  # all the responses are implemented in "clients"
+        clients.append({'ip': received.psrc})
+    for client in clients:  # display the clients
+        ip_list.append((client['ip']))
+    return tuple(ip_list)
 
 
 def out_in_json(machine) -> tuple:
@@ -142,14 +167,19 @@ def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
     if scan_type == "ARP":
         scan_result: tuple = arp_local_scan(target_ip)
         os_list: None = None
+        mac_list: List[str] = scan_result[1]
     elif scan_type == "FAST_PING":  # FAST_PING
         scan_result: tuple = recon_fast_ping(target_ip)
         os_list: List[str] = scan_result[2]
+        mac_list: List[str] = scan_result[1]
+    elif scan_type == "NMAP":
+        scan_result: tuple = device_ip_local_scan(target_ip)
+        os_list: None = None
+        mac_list: None = None
     else:
         raise NotImplementedError(f"This scan has not been implemented yet, "
                                   f"or wrong parameter '{scan_type}'")
     ip_list: List[str] = scan_result[0]
-    mac_list: List[str] = scan_result[1]
     global_list: List[dict] = []
     return ip_list, mac_list, os_list, global_list
 
@@ -184,6 +214,79 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
     return global_list
 
 
+def retrieve_services_from_scan(target_ip, dev: bool) -> List[dict]:
+    """
+    If dev, then many ports are skipped to test faster the program
+
+    Retrieve all the services available using an nmap scan.
+    Exemple of value returned (only 1 service : SSH on port 22 TCP)
+    Services found:
+    [{
+        'IP': '10.289.69.11',
+        'protocols': {
+            'tcp': {
+                22: {
+                    'state': 'open',
+                    'reason':
+                    'syn-ack',
+                    'name': 'ssh',
+                    'product':
+                    'OpenSSH',
+                    'version': '8.6',
+                    'extrainfo': 'protocol 2.0',
+                    'conf': '10',
+                    'cpe':
+                    'cpe:/a:openbsd:openssh:8.6'
+                }
+            }
+        }
+    }]
+    """
+    try:
+        nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    except nmap.PortScannerError:
+        print('Nmap not found', sys.exc_info()[0])
+        sys.exit(1)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        sys.exit(1)
+
+    ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
+    global_list: List[dict] = retrieve_services(ip_list, nm, dev)
+    return global_list
+
+
+def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, dev: bool) -> List[dict]:
+    """
+    Extract the service data after performing an nmap scan
+    """
+    global_list: List[dict] = []
+    for i in range(len(ip_list)):
+        if dev:  # faster for dev (no time to lose!)
+            nmap_scan_result: dict = nm.scan(ip_list[i], '22-3007', arguments="-sV")
+        else:
+            nmap_scan_result: dict = nm.scan(ip_list[i], arguments="-sV -p-")
+        all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
+        for protocol in all_protocols_found:
+            result = {
+                "IP": ip_list[i],
+                "protocols": {
+                    protocol:
+                        nmap_scan_result['scan'][ip_list[i]][protocol]  # associated service
+                },
+            }
+            global_list.append(result)
+    return global_list
+
+
+def data_creation_services_discovery(target_ip, dev: bool) -> List[dict]:
+    """
+    Service discovery using nmap
+    """
+    return retrieve_services_from_scan(target_ip, dev=dev)
+
+
 if __name__ == "__main__":
     print("TEST")
-    data_creation_fast_ping('192.168.1.0/24')
+    # data_creation_fast_ping('192.168.1.0/24')
+    data_creation_services_discovery('192.168.1.0/24', dev=True)
