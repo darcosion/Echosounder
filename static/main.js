@@ -201,7 +201,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
             group:'nodes',
             data: {
               id : (nodeAdd.IP + '\n' + nodeAdd.mac),
-              label : (nodeAdd.IP + '\n' + nodeAdd.OS + '\n' + nodeAdd.mac),
+              label : (nodeAdd.IP + '\n' + nodeAdd.mac),
               type : 'IP',
               data : nodeAdd,
             },

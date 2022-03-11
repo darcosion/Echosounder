@@ -18,7 +18,7 @@ def TEMPLATE():
 
     routerhop1 = conf.route.route("0.0.0.0")[2]
     routerhop1mac = getmacbyip(routerhop1)
-    return {"local_ip" : iplocale, "local_map" : maclocale, "gateway_ip" : routerhop1, "gateway_mac" : routerhop1mac}
+    return {"local_ip" : iplocale, "local_mac" : maclocale, "gateway_ip" : routerhop1, "gateway_mac" : routerhop1mac}
 
 def ARP_LOCAL_SCAN(target_ip):
     """
