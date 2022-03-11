@@ -128,7 +128,7 @@ header {
   top: 0;
   display: block;
   transition: 0.2s;
-  font-size: 1rem;
+  font-size: 0.6rem;
   color: #9b9b9b;
 }
 
@@ -230,6 +230,13 @@ header {
 
 
 /* CSS général de panel */
+
+.echo_menu_title {
+  text-align: center;
+  border-bottom: var(--widget-blue3);
+  border-bottom-style: solid;
+  margin-bottom: 8px;
+}
 
 .echo_panel_openbutton {
   width: calc(62px/2);
