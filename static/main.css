@@ -179,7 +179,7 @@ header {
   right: 62px;
   width: calc(100% * 12);
 
-  background-color: rgba(5, 12, 18, 0.6);
+  background-color: rgba(5, 12, 18, 0.8);
   border: 1px solid var(--widget-grey2);
   box-shadow: inset 0 0 40px -20px #bac9b0;
 
