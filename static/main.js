@@ -14,14 +14,16 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
 
+  $scope.cible = "192.168.1.0/24";
+
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
-    $rootScope.$broadcast('request_fast_ping', {});
+    $rootScope.$broadcast('request_fast_ping', {'cible' : $scope.cible});
   }
 
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
-    $rootScope.$broadcast('request_arp_scan', {});
+    $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
   }
 });
 
@@ -29,6 +31,21 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
+
+  $scope.nodedata = undefined;
+
+  $scope.$on('updatePanelNodeData', function(event, node, typenode) {
+    if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
+      console.log("Clic sur un noeud");
+      console.log(node);
+      $scope.nodedata = node;
+      $scope.showMenu1 = true;
+      $scope.showMenu2 = false;
+      $scope.showMenu3 = false;
+      // on demande à angularJS d'actualiser sa vue
+      $scope.$apply();
+    }
+  });
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -60,10 +77,12 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée Fast Scan
-  $scope.getFastScan = function() {
+  $scope.getFastScan = function(cible) {
     let req = {
-      method : 'GET',
+      method : 'POST',
       url : '/json/fast_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
     };
     
     $http(req).then(
@@ -84,10 +103,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   // fonctions de récupération de donnée scan ARP
-  $scope.getARPScan = function() {
+  $scope.getARPScan = function(cible) {
     let req = {
-      method : 'GET',
+      method : 'POST',
       url : '/json/arp_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
     };
 
     $http(req).then(
@@ -134,7 +155,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'border-style' : 'none',
         'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
         'text-outline-color': '#080808',
-        'text-outline-width' : 3,
+        'text-outline-width' : 1,
         'text-valign': 'center',
         'text-halign': 'center',
         'opacity' : 1,
@@ -164,7 +185,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       {
         group:'nodes',
         data: {
-          id : "gateway",
+          id : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
           label : ("gateway " + scan_data.local_data.gateway_ip + "\n" + scan_data.local_data.gateway_mac),
           type : 'IP',
           data : scan_data.local_data,
@@ -191,7 +212,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
     // liaison de l'ensemble des entités nmap à la gateway : 
     $scope.nodes.forEach(function(nodeI) {
-      if(nodeI.data.id != "gateway") {
+      if(nodeI.data.id != $scope.nodes[0].data.id) { // on évite de créer un lien entre la gateway et elle-même.
         $scope.edges.push({
               group:'edges',
         data : {
@@ -212,16 +233,22 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
+  // évènement en cas de clic sur un noeud :
+	$scope.cyto.on('tap', 'node', function(evt){
+		// on envoie au parent le noeud à afficher :
+		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data('data'), evt.target.data('type'));
+	});
+
   $scope.$on('request_fast_ping', function(event, args) {
     console.log("lancement d'un scan complet");
     $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
-    $scope.getFastScan();
+    $scope.getFastScan(args.cible);
   });
 
   $scope.$on('request_arp_scan', function(event, args) {
     console.log("lancement d'un scan ARP");
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
-    $scope.getARPScan();
+    $scope.getARPScan(args.cible);
   });
 });
 
