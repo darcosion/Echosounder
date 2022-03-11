@@ -51,6 +51,9 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       $scope.$apply();
     }
   });
+  $scope.exportJSON= function() {
+    console.log("test");
+  };
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -287,6 +290,20 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
     $scope.getProfilingScan(args.cible);
   });
+
+
+  $scope.getCytoJSON = function() {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($scope.cyto.json()));
+    element.setAttribute('download', "resultat.txt");
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  };
 });
 
 angular.element(document).ready(function() {
