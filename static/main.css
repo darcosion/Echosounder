@@ -45,13 +45,13 @@ body {
 header {
   background: linear-gradient(to left, var(--background-gradiance1), var(--widget-blue2), var(--background-gradiance1));
   color: var(--text1);
+  height: 4vh;
 }
-
 
 /* CSS du graph prenant toute la page */
 #placeNetwork {
   position: relative;
-  height: 90vh;
+  height: 96vh;
 }
 
 #mynetwork {
