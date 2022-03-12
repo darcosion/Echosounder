@@ -34,14 +34,9 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   }
 
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
-    console.log("test change machine");
-    console.log(nodedata);
-    console.log(nodetype);
     if(nodetype == 'IP') { // on prend que les IP
-      if('IP' in nodedata) { // on vérifie qu'il y a une IP dans le nodedata
-        $scope.machineCible = nodedata['IP'];
-        $scope.$apply();
-      }
+      $scope.machineCible = nodedata.data_ip;
+      $scope.$apply();
     }
   });
 });
@@ -54,8 +49,9 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.nodedata = undefined;
 
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
+    console.log(node);
     if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
-      $scope.nodedata = node;
+      $scope.nodedata = node.data;
       $scope.showMenu1 = true;
       $scope.showMenu2 = false;
       $scope.showMenu3 = false;
@@ -165,8 +161,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       function(response) {
         $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan");
         console.log(response.data);
-        // on appel la fonction de création de graphs :
-        //$scope.createCytoGraph(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'profiling', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
@@ -237,6 +233,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           label : ("gateway " + scan_data.local_data.gateway_ip + "\n" + scan_data.local_data.gateway_mac),
           type : 'IP',
           data : scan_data.local_data,
+          data_ip : scan_data.local_data.gateway_ip,
         },
       }
     );
@@ -252,6 +249,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               label : (nodeAdd.IP + '\n' + nodeAdd.mac),
               type : 'IP',
               data : nodeAdd,
+              data_ip : nodeAdd.IP,
             },
           }
         );
@@ -281,10 +279,18 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
+  // fonction de mise à jour d'un noeud spécifique
+  $scope.updateNodebyIP = function(ip_node, update_key, update_data) {
+    // on cherche le noeud à updater par IP
+    let node_update = $scope.cyto.elements("node[data_ip = '" + ip_node + "']");
+    // on met la donnée dans la key du node depuis data
+    node_update.data('data')[update_key] = update_data;
+  }
+
   // évènement en cas de clic sur un noeud :
 	$scope.cyto.on('tap', 'node', function(evt){
 		// on envoie au parent le noeud à afficher :
-		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data('data'), evt.target.data('type'));
+		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data(), evt.target.data('type'));
 	});
 
   $scope.$on('request_fast_ping', function(event, args) {

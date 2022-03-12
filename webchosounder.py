@@ -37,6 +37,13 @@ def scan_rapide():
         return jsonify(local_data=local_ip_mac_and_gateway, scan=ip_mac_os)
 
 
+@app.route('/json/profiling_scan', methods=['POST'])
+def scan_profiling():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.creation_data_nmap(request.json['cible']))
+
 def if_contain_cible(test_target) -> bool:
     return 'cible' in test_target
 

@@ -289,4 +289,4 @@ def data_creation_services_discovery(target_ip, dev: bool) -> List[dict]:
 if __name__ == "__main__":
     print("TEST")
     # data_creation_fast_ping('192.168.1.0/24')
-    data_creation_services_discovery('192.168.1.0/24', dev=True)
+    data_creation_services_discovery('192.168.1.0/24', dev=False)
