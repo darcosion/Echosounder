@@ -78,6 +78,10 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     r.readAsBinaryString(f);
   };
 
+  $scope.actualiseGraph = function() {
+    // on fait une demande d'actualisation du graph : 
+    $rootScope.$broadcast('request_actualise_graph', {});
+  }
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -328,12 +332,18 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_export_json', function(event, args) {
     console.log("lancement d'un export JSON");
     $scope.getCytoJSON();
-  })
+  });
 
   $scope.$on('request_import_json', function(event, args) {
     console.log("lancement d'un import JSON");
     console.log(args)
     $scope.setCytoJSON(JSON.parse(args.file));
+  });
+
+  $scope.$on('request_actualise_graph', function(event, args) {
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
   })
 
   $scope.getCytoJSON = function() {
