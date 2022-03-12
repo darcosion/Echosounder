@@ -51,8 +51,14 @@ header {
   height: var(--height-header);
 }
 
+header > center {
+  height: var(--height-header);
+}
+
 header > center > div {
+  height: var(--height-header);
   font-size: calc(var(--height-header) / 1.2);
+  display: ruby-text;
 }
 
 /* CSS du graph prenant toute la page */
