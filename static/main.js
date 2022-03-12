@@ -33,6 +33,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_profiling_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanServices = function() {
+    console.log("emit services scan request");
+    $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -190,6 +195,32 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
+  // fonctions de listage des services machine (par port)
+  $scope.getServicesScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/services_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Services Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'services', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Services Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
   // partie gestion du graph
   $scope.cyto = cytoscape({
 		container: document.getElementById('mynetwork')
@@ -302,7 +333,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on cherche le noeud à updater par IP
     let node_update = $scope.cyto.elements("node[data_ip = '" + ip_node + "']");
     // on met la donnée dans la key du node depuis data
-    node_update.data('data')[update_key] = update_data;
+    if(node_update.length != 0) {
+      node_update.data('data')[update_key] = update_data;
+    }
   }
 
   // évènement en cas de clic sur un noeud :
@@ -312,21 +345,23 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 	});
 
   $scope.$on('request_fast_ping', function(event, args) {
-    console.log("lancement d'un scan complet");
     $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
     $scope.getFastScan(args.cible);
   });
 
   $scope.$on('request_arp_scan', function(event, args) {
-    console.log("lancement d'un scan ARP");
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     $scope.getARPScan(args.cible);
   });
 
   $scope.$on('request_profiling_scan', function(event, args) {
-    console.log("lancement d'un scan complet");
     $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
     $scope.getProfilingScan(args.cible);
+  });
+
+  $scope.$on('request_services_scan', function(event, args) {
+    $scope.$parent.sendToastData('Services', "lancement d'un scan");
+    $scope.getServicesScan(args.cible);
   });
 
   $scope.$on('request_export_json', function(event, args) {
