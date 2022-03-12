@@ -253,6 +253,10 @@ header {
   filter: opacity(80%);
 }
 
+.echo_to_hide {
+  display: none;
+}
+
 /* CYTOSCAPE CLASS */
 
 

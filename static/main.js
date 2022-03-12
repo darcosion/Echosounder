@@ -64,6 +64,20 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_export_json', {});
   };
 
+  $scope.importJSON= function() {
+    document.getElementById('echo_json_upload').click();
+    let f = document.getElementById('echo_json_upload').files[0],
+        r = new FileReader();
+
+    r.onloadend = function(e) {
+      let data = e.target.result;
+      // On envoie le fichier
+      $rootScope.$broadcast('request_import_json', {'file' : data});
+    }
+
+    r.readAsBinaryString(f);
+  };
+
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -316,6 +330,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.getCytoJSON();
   })
 
+  $scope.$on('request_import_json', function(event, args) {
+    console.log("lancement d'un import JSON");
+    console.log(args)
+    $scope.setCytoJSON(JSON.parse(args.file));
+  })
+
   $scope.getCytoJSON = function() {
     let element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify($scope.cyto.json())));
@@ -328,6 +348,10 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   
     document.body.removeChild(element);
   };
+
+  $scope.setCytoJSON = function(param_json) {
+    $scope.cyto.json(param_json);
+  }
 });
 
 angular.element(document).ready(function() {
