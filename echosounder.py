@@ -214,7 +214,7 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
     return global_list
 
 
-def retrieve_services_from_scan(target_ip, dev: bool) -> List[dict]:
+def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     """
     If dev, then many ports are skipped to test faster the program
 
@@ -242,30 +242,20 @@ def retrieve_services_from_scan(target_ip, dev: bool) -> List[dict]:
         }
     }]
     """
-    try:
-        nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
-    except nmap.PortScannerError:
-        print('Nmap not found', sys.exc_info()[0])
-        sys.exit(1)
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        sys.exit(1)
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
-    ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
-    global_list: List[dict] = retrieve_services(ip_list, nm, dev)
+    #ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
+    global_list: List[dict] = retrieve_services([target_ip], nm, port_start=port_start, port_end=port_end)
     return global_list
 
 
-def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, dev: bool) -> List[dict]:
+def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int, port_end: int) -> List[dict]:
     """
     Extract the service data after performing an nmap scan
     """
     global_list: List[dict] = []
     for i in range(len(ip_list)):
-        if dev:  # faster for dev (no time to lose!)
-            nmap_scan_result: dict = nm.scan(ip_list[i], '22-3007', arguments="-sV")
-        else:
-            nmap_scan_result: dict = nm.scan(ip_list[i], arguments="-sV -p-")
+        nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start)+'-'+str(port_end), arguments="-sV")
         all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
         for protocol in all_protocols_found:
             result = {
@@ -279,14 +269,14 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, dev: bool) -> Li
     return global_list
 
 
-def data_creation_services_discovery(target_ip, dev: bool) -> List[dict]:
+def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: int = 400) -> List[dict]:
     """
     Service discovery using nmap
     """
-    return retrieve_services_from_scan(target_ip, dev=dev)
+    return retrieve_services_from_scan(target_ip, port_start=port_start, port_end=port_end)
 
 
 if __name__ == "__main__":
     print("TEST")
     # data_creation_fast_ping('192.168.1.0/24')
-    data_creation_services_discovery('192.168.1.0/24', dev=False)
+    print(data_creation_services_discovery('192.168.1.55'))
