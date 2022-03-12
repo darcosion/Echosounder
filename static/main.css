@@ -16,6 +16,8 @@
   --text1 : #a5b0a9; /* var(--text1) */
   --text2 : #abd6db; /* var(--text2) */
   --micro-text : #11998e; /* var(--micro-text) */
+  /* définition de taille */
+  --height-header: 4vh; /* var(--height-header) */
 };
 
 /* configuration spécifique */
@@ -45,7 +47,11 @@ body {
 header {
   background: linear-gradient(to left, var(--background-gradiance1), var(--widget-blue2), var(--background-gradiance1));
   color: var(--text1);
-  height: 4vh;
+  height: var(--height-header);
+}
+
+header > center > div {
+  font-size: calc(var(--height-header) / 1.2);
 }
 
 /* CSS du graph prenant toute la page */
