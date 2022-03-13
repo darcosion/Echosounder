@@ -148,7 +148,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         $scope.$parent.sendToastData('FastPing', "réception d'un scan");
         console.log(response.data);
         // on appel la fonction de création de graphs :
-        $scope.createCytoGraph(response.data);
+        $scope.createCytoVlanGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
@@ -174,7 +174,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         $scope.$parent.sendToastData('ARP Scan', "réception d'un scan");
         console.log(response.data);
         // on appel la fonction de création de graphs :
-        $scope.createCytoGraph(response.data);
+        $scope.createCytoVlanGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
@@ -225,8 +225,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       function(response) {
         $scope.$parent.sendToastData('Services Scan', "réception d'un scan");
         console.log(response.data);
-        // on met à jour le node concerné via une fonction de sélection de node
-        $scope.updateNodebyIP(cible, 'services', response.data['scan']);
+        // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
       // si la requête échoue :
@@ -308,13 +307,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
   ];
+
   $scope.cyto.style($scope.styles);
 
   $scope.nodes = [];
   $scope.edges = [];
 
   // fonction de création du graph à partir d'un scan CIDR
-  $scope.createCytoGraph = function(scan_data) {
+  $scope.createCytoVlanGraph = function(scan_data) {
     // ajout de la gateway
     $scope.nodes.push(
       {
@@ -372,6 +372,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
+  // fonction de création du graph à partir d'un scan d'une IP ressortant les services
   $scope.createCytoServiceGraph = function(scan_data) {
     scan_data.forEach(function(ip_scanned) {
         // on cherche le noeud auquel rattacher les services

@@ -71,7 +71,6 @@ def arp_local_scan(target_ip) -> tuple:
     # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
 
-
 def device_ip_local_scan(target_ip) -> tuple:
     """
     ARP SCAN for local machines
@@ -95,7 +94,6 @@ def device_ip_local_scan(target_ip) -> tuple:
         ip_list.append((client['ip']))
     return tuple(ip_list)
 
-
 def out_in_json(machine) -> tuple:
     nm: nmap.PortScanner = nmap.PortScanner()
     nmap_scan_result: dict = nm.scan(hosts=machine, arguments='-O')
@@ -114,13 +112,11 @@ def out_in_json(machine) -> tuple:
         accuracy = "unknown"
     return name, vendor, osfamily, accuracy
 
-
 def device_profiling(ip_addresses) -> List[dict]:
     machine_specs: List[dict] = []
     for current_ip in ip_addresses:
         machine_specs.append(creation_data_nmap(current_ip))
     return machine_specs
-
 
 def recon_fast_ping(target_ip) -> tuple:
     os_ttl_list: List[str] = [platform.system()]
@@ -141,13 +137,11 @@ def recon_fast_ping(target_ip) -> tuple:
     append_os_ttl(os_ttl_list, ttl_list)
     return ip_list, mac, os_ttl_list
 
-
 def ip_mac_from_arp_local_scan(target_ip) -> Tuple[List[str], List[str]]:
     scan_result: tuple = arp_local_scan(target_ip)
     ip_list: List[str] = scan_result[0]
     mac: List[str] = scan_result[1]
     return ip_list, mac
-
 
 def append_os_ttl(os_ttl_list, ttl_list) -> None:
     for z in range(len(ttl_list)):
@@ -160,7 +154,6 @@ def append_os_ttl(os_ttl_list, ttl_list) -> None:
         else:
             os_ttl_list.append("Unknow")
 
-
 def creation_data_nmap(ip_address) -> dict:
     machine_specs: tuple = out_in_json(ip_address)
     return {
@@ -170,7 +163,6 @@ def creation_data_nmap(ip_address) -> dict:
         "osfamily": machine_specs[2],
         "accuracy": machine_specs[3],
     }
-
 
 def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
     """
@@ -195,7 +187,6 @@ def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
     global_list: List[dict] = []
     return ip_list, mac_list, os_list, global_list
 
-
 def data_creation_arp_scan(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="ARP")
 
@@ -208,7 +199,6 @@ def data_creation_arp_scan(target_ip) -> List[dict]:
         }
         global_list.append(ip_and_mac_to_dict)
     return global_list
-
 
 def data_creation_fast_ping(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")
@@ -225,14 +215,12 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
-
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
     #ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
     global_list: List[dict] = retrieve_services([target_ip], nm, port_start=port_start, port_end=port_end)
     return global_list
-
 
 def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int, port_end: int) -> List[dict]:
     """
@@ -252,7 +240,6 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
             }
             global_list.append(result)
     return global_list
-
 
 def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: int = 400) -> List[dict]:
     """
