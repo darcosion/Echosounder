@@ -38,6 +38,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanReversePTR = function() {
+    console.log("emit reverse PTR scan request");
+    $rootScope.$broadcast('request_reverse_ptr_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -221,6 +226,32 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
+  // fonction d'obtention du hostname par requête DNS reverse PTR sur cible
+  $scope.getReversePTRScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/reverse_ptr_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Reverse PTR Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'hostname PTR', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Reverse PTR Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
   // partie gestion du graph
   $scope.cyto = cytoscape({
 		container: document.getElementById('mynetwork')
@@ -364,6 +395,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.getServicesScan(args.cible);
   });
 
+  $scope.$on('request_reverse_ptr_scan', function(event, args) {
+    $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
+    $scope.getReversePTRScan(args.cible);
+  })
+
   $scope.$on('request_export_json', function(event, args) {
     console.log("lancement d'un export JSON");
     $scope.getCytoJSON();
@@ -379,7 +415,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on actualise la vue
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
-  })
+  });
 
   $scope.getCytoJSON = function() {
     let element = document.createElement('a');

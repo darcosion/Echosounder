@@ -4,6 +4,7 @@ import sys
 from typing import Optional, List, Tuple
 import json
 import platform
+import dns.resolver, dns.reversename
 import nmap
 import scapy
 from scapy.arch import get_if_addr, get_if_hwaddr
@@ -27,6 +28,17 @@ def template() -> dict:
     router_hop_1_mac: Optional[str] = getmacbyip(router_hop_1)
     return {"local_ip": local_ip, "local_mac": local_mac, "gateway_ip": router_hop_1, "gateway_mac": router_hop_1_mac}
 
+def reverse_ptr_local_scan(target_ip) -> list:
+    list_ptr = []
+    try :
+        no = dns.reversename.from_address(target_ip)
+        answers = dns.resolver.resolve(no, 'PTR')
+        for rdata in answers:
+            list_ptr.append(str(rdata))
+    except Exception as e:
+        print(e)
+        list_ptr.append('no ptr')
+    return list_ptr
 
 def arp_local_scan(target_ip) -> tuple:
     """
@@ -215,33 +227,6 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
 
 
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
-    """
-    If dev, then many ports are skipped to test faster the program
-
-    Retrieve all the services available using an nmap scan.
-    Exemple of value returned (only 1 service : SSH on port 22 TCP)
-    Services found:
-    [{
-        'IP': '10.289.69.11',
-        'protocols': {
-            'tcp': {
-                22: {
-                    'state': 'open',
-                    'reason':
-                    'syn-ack',
-                    'name': 'ssh',
-                    'product':
-                    'OpenSSH',
-                    'version': '8.6',
-                    'extrainfo': 'protocol 2.0',
-                    'conf': '10',
-                    'cpe':
-                    'cpe:/a:openbsd:openssh:8.6'
-                }
-            }
-        }
-    }]
-    """
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
     #ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
