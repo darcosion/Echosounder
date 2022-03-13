@@ -47,6 +47,9 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
       $scope.$apply();
+    }else if (nodetype == 'VLAN') {
+      $scope.cible = nodedata.id;
+      $scope.$apply();
     }
   });
 });
@@ -290,10 +293,18 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
         'text-outline-color': '#080808',
         'text-outline-width' : 1,
-        'text-valign': 'center',
+        'text-valign': 'top',
         'text-halign': 'center',
         'opacity' : 1,
         'text-wrap': 'wrap',
+      },
+    },
+    {
+      selector: ':parent',
+      css: {
+        'text-valign': 'top',
+        'text-halign': 'center',
+        'background-opacity': '0',
       },
     },
     {
@@ -315,7 +326,19 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction de création du graph à partir d'un scan CIDR
   $scope.createCytoVlanGraph = function(scan_data) {
-    // ajout de la gateway
+    //ajout de la représentation du VLAN
+    $scope.nodes.push(
+      {
+        group:'nodes',
+        data: {
+          id : scan_data.vlan,
+          label : scan_data.vlan,
+          type : 'VLAN',
+        },
+      }
+    );
+
+    // ajout du routeur gateway
     $scope.nodes.push(
       {
         group:'nodes',
@@ -325,6 +348,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           type : 'IP',
           data : scan_data.local_data,
           data_ip : scan_data.local_data.gateway_ip,
+          parent : scan_data.vlan,
         },
       }
     );
@@ -341,6 +365,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               type : 'IP',
               data : nodeAdd,
               data_ip : nodeAdd.IP,
+              parent : scan_data.vlan,
             },
           }
         );
@@ -348,15 +373,17 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     });
 
     // liaison de l'ensemble des entités nmap à la gateway : 
+    let gateway_id = (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac);
     $scope.nodes.forEach(function(nodeI) {
-      if(nodeI.data.id != $scope.nodes[0].data.id) { // on évite de créer un lien entre la gateway et elle-même.
+      if((nodeI.data.type == 'IP') && (nodeI.data.id != gateway_id)) { // on évite de créer un lien entre autre chose qu'une IP et la gateway
         $scope.edges.push(
           {
             group:'edges',
             data : {
               id : ('link ' + $scope.nodes[0].data.id + " " + nodeI.data.id + " "),
               source : nodeI.data.id,
-              target : $scope.nodes[0].data.id,
+              target : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
+              parent : scan_data.vlan,
             }
           }
         );
@@ -395,6 +422,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
                   type : 'Service',
                   data : portObjects,
                   data_ip : ip_scanned.IP,
+                  parent : node_update.data('parent'),
                 },
               }
             );
@@ -405,6 +433,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
                   id : ('link ' + node_update.data('id') + " " + portObjects.cpe + " "),
                   source : node_update.data('id'),
                   target : portObjects.cpe,
+                  parent : node_update.data('parent'),
                 }
               }
             );
