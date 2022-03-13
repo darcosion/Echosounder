@@ -321,13 +321,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.cyto.style($scope.styles);
 
-  $scope.nodes = [];
-  $scope.edges = [];
-
   // fonction de création du graph à partir d'un scan CIDR
   $scope.createCytoVlanGraph = function(scan_data) {
+    let nodes = [];
+    let edges = [];
     //ajout de la représentation du VLAN
-    $scope.nodes.push(
+    nodes.push(
       {
         group:'nodes',
         data: {
@@ -339,7 +338,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
 
     // ajout du routeur gateway
-    $scope.nodes.push(
+    nodes.push(
       {
         group:'nodes',
         data: {
@@ -356,7 +355,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // ajout des entités nmap :
     scan_data.scan.forEach(function(nodeAdd) {
       if(nodeAdd.IP != scan_data.local_data[2]) {
-        $scope.nodes.push(
+        nodes.push(
           {
             group:'nodes',
             data: {
@@ -374,13 +373,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
     // liaison de l'ensemble des entités nmap à la gateway : 
     let gateway_id = (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac);
-    $scope.nodes.forEach(function(nodeI) {
+    nodes.forEach(function(nodeI) {
       if((nodeI.data.type == 'IP') && (nodeI.data.id != gateway_id)) { // on évite de créer un lien entre autre chose qu'une IP et la gateway
-        $scope.edges.push(
+        edges.push(
           {
             group:'edges',
             data : {
-              id : ('link ' + $scope.nodes[0].data.id + " " + nodeI.data.id + " "),
+              id : ('link ' + gateway_id + " " + nodeI.data.id + " "),
               source : nodeI.data.id,
               target : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
               parent : scan_data.vlan,
@@ -391,9 +390,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     });
 
     // on ajoute l'ensemble des ip au graph
-    $scope.cyto.add($scope.nodes);
+    $scope.cyto.add(nodes);
     // on ajoute l'ensemble des lien au graph
-    $scope.cyto.add($scope.edges);
+    $scope.cyto.add(edges);
     // on actualise la vue
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
