@@ -217,6 +217,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'services', response.data['scan']);
+        $scope.createCytoServiceGraph(response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
@@ -302,7 +303,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.nodes = [];
   $scope.edges = [];
 
-  // fonction de création du graph
+  // fonction de création du graph à partir d'un scan CIDR
   $scope.createCytoGraph = function(scan_data) {
     // ajout de la gateway
     $scope.nodes.push(
@@ -339,14 +340,16 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // liaison de l'ensemble des entités nmap à la gateway : 
     $scope.nodes.forEach(function(nodeI) {
       if(nodeI.data.id != $scope.nodes[0].data.id) { // on évite de créer un lien entre la gateway et elle-même.
-        $scope.edges.push({
-              group:'edges',
-        data : {
-          id : ('link ' + $scope.nodes[0].data.id + " " + nodeI.data.id + " "),
-          source : nodeI.data.id,
-          target : $scope.nodes[0].data.id,
-        }
-          });
+        $scope.edges.push(
+          {
+            group:'edges',
+            data : {
+              id : ('link ' + $scope.nodes[0].data.id + " " + nodeI.data.id + " "),
+              source : nodeI.data.id,
+              target : $scope.nodes[0].data.id,
+            }
+          }
+        );
       }
     });
 
@@ -358,6 +361,54 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
   };
+
+  $scope.createCytoServiceGraph = function(scan_data) {
+    scan_data.forEach(function(ip_scanned) {
+        // on cherche le noeud auquel rattacher les services
+      let node_update = $scope.cyto.elements("node[data_ip = '" + ip_scanned.IP + "']");
+      // on crée les noeuds de type services associés au noeud IP
+      if(node_update.length != 0) { // on vérifie qu'on a trouvé l'IP (on sais jamais)
+        // on crée les listes de noeuds/liens qu'on va pousser dans le graph
+        let nodes_services = [];
+        let edges_services = [];
+        // on accède aux données listés par protocol
+        for (const [protocol, protocolObjects] of Object.entries(ip_scanned.protocols)) {
+          // on accède aux données listés par port
+          for (const [port, portObjects] of Object.entries(protocolObjects)) {
+            nodes_services.push(
+              {
+                group:'nodes',
+                data: {
+                  id : portObjects.cpe,
+                  label : portObjects.product,
+                  type : 'Service',
+                  data : portObjects,
+                  data_ip : ip_scanned.IP,
+                },
+              }
+            );
+            edges_services.push(
+              {
+                group:'edges',
+                data : {
+                  id : ('link ' + node_update.data('id') + " " + portObjects.cpe + " "),
+                  source : node_update.data('id'),
+                  target : portObjects.cpe,
+                }
+              }
+            );
+          };
+        };
+        // on ajoute l'ensemble des services au graph
+        $scope.cyto.add(nodes_services);
+        // on ajoute l'ensemble des lien au graph
+        $scope.cyto.add(edges_services);
+        // on actualise la vue
+        $scope.layout = $scope.cyto.layout($scope.options);
+        $scope.layout.run();
+      }
+    });
+  }
 
   // fonction de mise à jour d'un noeud spécifique
   $scope.updateNodebyIP = function(ip_node, update_key, update_data) {
