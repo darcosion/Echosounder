@@ -51,6 +51,12 @@ def scan_services():
     else:
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible']))
 
+@app.route('/json/reverse_ptr_scan', methods=['POST'])
+def scan_reverse_ptr():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.reverse_ptr_local_scan(request.json['cible']))
 
 def if_contain_cible(test_target) -> bool:
     return 'cible' in test_target
