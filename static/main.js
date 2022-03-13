@@ -57,6 +57,7 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu3 = false;
 
   $scope.nodedata = undefined;
+  $scope.servicedata = undefined;
 
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
     console.log(node);
@@ -67,6 +68,15 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       $scope.showMenu3 = false;
       // on demande à angularJS d'actualiser sa vue
       $scope.$apply();
+    }else if(typenode == 'Service') {
+      $scope.servicedata = node.data;
+      $scope.showMenu1 = false;
+      $scope.showMenu2 = true;
+      $scope.showMenu3 = false;
+      // on demande à angularJS d'actualiser sa vue
+      $scope.$apply();
+    }else {
+      // on fais rien si on reconnais pas le type de noeud
     }
   });
 
