@@ -16,11 +16,16 @@
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='normalize.css')}}"></link>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
+    <!-- <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}" type="image/x-icon"> -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png')}}"/>
+
   </head>
   <body id="backgroundquadrillage" ng-controller="ParentCtrl">
     <!-- barre de menu affichant juste le titre du logiciel -->
     <header>
-      <center><div>Echosounder analyser</div></center>
+      <center><div>
+        <img src="{{ url_for('static', filename='white_icon.png')}}"/>
+        Echosounder analyser</div></center>
     </header>
 
     <!-- panels de manipulation de gauche (bobo) -->

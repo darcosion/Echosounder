@@ -27,7 +27,10 @@
   /* overriding pour cacher les mécanismes d'animations ngAnimate de base qui sont foireux */
   display: initial!important;
 }
-
+/* Import de police */
+@import url(//db.onlinewebfonts.com/c/1643050d4a7adff379cf56addef0cbff?family=GuessSansW00-Medium);
+@font-face {font-family: "GuessSansW00-Medium"; src: url("title-font.ttf");  } 
+  
 /* règles CSS de base */
 html {
   height: 100%;
@@ -51,7 +54,7 @@ header {
   height: var(--height-header);
 }
 
-header > center {
+header > center{
   height: var(--height-header);
 }
 
@@ -59,6 +62,11 @@ header > center > div {
   height: var(--height-header);
   font-size: calc(var(--height-header) / 1.2);
   display: ruby-text;
+  font-family:'GuessSansW00-Medium';
+}
+header img{
+  height: calc(var(--height-header) / 1.2);
+  margin-top: calc((var(--height-header) - var(--height-header) / 1.2) / 2);
 }
 
 /* CSS du graph prenant toute la page */
