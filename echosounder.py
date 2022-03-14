@@ -16,7 +16,7 @@ from scapy.sendrecv import srp
 
 
 def check_nmap_exist():
-    # vérifie que nmap est installé, renvoie True si oui, sinon False
+    # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
 
 
