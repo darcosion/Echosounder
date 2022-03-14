@@ -474,7 +474,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               type : 'IP',
               data : {'ip' : ip},
               data_ip : ip,
-              parent : scan_data.vlan, // a retravailler : on doit préalablement voir si le noeud rentre dans le CIDR...
+              parent : $scope.getVLANByIP(ip), // a retravailler : on doit préalablement voir si le noeud rentre dans le CIDR...
             },
           }
         );
@@ -487,19 +487,20 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.cyto.add(nodes);
 
     // on ajoute les liens si possible
-    scan_data.scan.reduce(
+    scan_data.scan.reduce( // cette sorcellerie vise à sortir les noeuds 2 à 2
       function(accumulator, currentValue, currentIndex, array) {
         if (currentIndex % 2 === 0)
           accumulator.push(array.slice(currentIndex, currentIndex + 2));
         return accumulator;
-      }, []).map(p => (edges.push({
-        group:'edges',
-        data : {
-          id : ('link ' + p[0] + " " + p[1] + " "),
-          source : $scope.getNodeIdByIP(p[0]),
-          target : $scope.getNodeIdByIP(p[1]),
-        }
-      })));
+      }, []
+    ).map(p => (edges.push({
+      group:'edges',
+      data : {
+        id : ('link ' + p[0] + " " + p[1] + " "),
+        source : $scope.getNodeIdByIP(p[0]),
+        target : $scope.getNodeIdByIP(p[1]),
+      }
+    })));
 
     // on ajoute l'ensemble des lien au graph
     $scope.cyto.add(edges);
@@ -571,6 +572,23 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.getNodeIdByIP = function(ip) {
     return $scope.cyto.elements('node[data_ip = "' + ip + '"]').data('id');
+  };
+
+  $scope.getVLANByIP = function(ip) {
+    let listVLAN = [];
+    $scope.cyto.elements('node[type = "VLAN"]').forEach(function(node) {
+      listVLAN.push(node.data('id').split('/'));
+    });
+
+    // on trie les subnet par ordre de taille 
+    listVLAN.sort(function(a, b){return b[1] - a[1]});
+    
+    // maintenant, on doit comparer IP / range d'IP et le premier match renvoie son ID
+    for (const element of listVLAN) {
+      if(ipaddr.parse(ip).match(ipaddr.parse(element[0]), element[1])) {
+        return element[0] + "/" + element[1];
+      }
+    }
   }
 
   // évènement en cas de clic sur un noeud :
