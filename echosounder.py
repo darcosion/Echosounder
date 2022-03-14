@@ -28,9 +28,10 @@ def template() -> dict:
     router_hop_1_mac: Optional[str] = getmacbyip(router_hop_1)
     return {"local_ip": local_ip, "local_mac": local_mac, "gateway_ip": router_hop_1, "gateway_mac": router_hop_1_mac}
 
+
 def reverse_ptr_local_scan(target_ip) -> list:
     list_ptr = []
-    try :
+    try:
         no = dns.reversename.from_address(target_ip)
         answers = dns.resolver.resolve(no, 'PTR')
         for rdata in answers:
@@ -39,6 +40,7 @@ def reverse_ptr_local_scan(target_ip) -> list:
         print(e)
         list_ptr.append('no ptr')
     return list_ptr
+
 
 def arp_local_scan(target_ip) -> tuple:
     """
@@ -71,6 +73,7 @@ def arp_local_scan(target_ip) -> tuple:
     # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
 
+
 def device_ip_local_scan(target_ip) -> tuple:
     """
     ARP SCAN for local machines
@@ -94,6 +97,7 @@ def device_ip_local_scan(target_ip) -> tuple:
         ip_list.append((client['ip']))
     return tuple(ip_list)
 
+
 def out_in_json(machine) -> tuple:
     nm: nmap.PortScanner = nmap.PortScanner()
     nmap_scan_result: dict = nm.scan(hosts=machine, arguments='-O')
@@ -112,11 +116,13 @@ def out_in_json(machine) -> tuple:
         accuracy = "unknown"
     return name, vendor, osfamily, accuracy
 
+
 def device_profiling(ip_addresses) -> List[dict]:
     machine_specs: List[dict] = []
     for current_ip in ip_addresses:
         machine_specs.append(creation_data_nmap(current_ip))
     return machine_specs
+
 
 def recon_fast_ping(target_ip) -> tuple:
     os_ttl_list: List[str] = [platform.system()]
@@ -137,11 +143,13 @@ def recon_fast_ping(target_ip) -> tuple:
     append_os_ttl(os_ttl_list, ttl_list)
     return ip_list, mac, os_ttl_list
 
+
 def ip_mac_from_arp_local_scan(target_ip) -> Tuple[List[str], List[str]]:
     scan_result: tuple = arp_local_scan(target_ip)
     ip_list: List[str] = scan_result[0]
     mac: List[str] = scan_result[1]
     return ip_list, mac
+
 
 def append_os_ttl(os_ttl_list, ttl_list) -> None:
     for z in range(len(ttl_list)):
@@ -154,6 +162,7 @@ def append_os_ttl(os_ttl_list, ttl_list) -> None:
         else:
             os_ttl_list.append("Unknow")
 
+
 def creation_data_nmap(ip_address) -> dict:
     machine_specs: tuple = out_in_json(ip_address)
     return {
@@ -163,6 +172,7 @@ def creation_data_nmap(ip_address) -> dict:
         "osfamily": machine_specs[2],
         "accuracy": machine_specs[3],
     }
+
 
 def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
     """
@@ -187,6 +197,7 @@ def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
     global_list: List[dict] = []
     return ip_list, mac_list, os_list, global_list
 
+
 def data_creation_arp_scan(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="ARP")
 
@@ -199,6 +210,7 @@ def data_creation_arp_scan(target_ip) -> List[dict]:
         }
         global_list.append(ip_and_mac_to_dict)
     return global_list
+
 
 def data_creation_fast_ping(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")
@@ -215,20 +227,26 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
+
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
-    #ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
+    # ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
     global_list: List[dict] = retrieve_services([target_ip], nm, port_start=port_start, port_end=port_end)
     return global_list
+
 
 def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int, port_end: int) -> List[dict]:
     """
     Extract the service data after performing an nmap scan
     """
     global_list: List[dict] = []
+    all_hosts: List[str] = nm.all_hosts()
     for i in range(len(ip_list)):
-        nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start)+'-'+str(port_end), arguments="-sV")
+        nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start) + '-' + str(port_end), arguments="-sV")
+        if str(ip_list[i]) not in all_hosts:
+            global_list.append({"IP": None, "protocols": None})
+            continue
         all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
         for protocol in all_protocols_found:
             result = {
@@ -241,6 +259,7 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
             global_list.append(result)
     return global_list
 
+
 def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: int = 400) -> List[dict]:
     """
     Service discovery using nmap
@@ -251,4 +270,5 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
 if __name__ == "__main__":
     print("TEST")
     # data_creation_fast_ping('192.168.1.0/24')
-    print(data_creation_services_discovery('192.168.1.55'))
+    # print(data_creation_services_discovery('192.168.1.55'))
+    print(data_creation_services_discovery('10.188.219.37'))
