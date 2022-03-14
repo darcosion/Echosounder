@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys
+import sys, shutil
 from typing import Optional, List, Tuple
 import json
 import platform
@@ -14,6 +14,9 @@ from scapy.layers.l2 import getmacbyip
 from scapy.packet import Packet
 from scapy.sendrecv import srp
 
+def check_nmap_exist():
+    # vérifie que nmap est installé, renvoie True si oui, sinon False
+    return shutil.which("nmap") != None
 
 def template() -> dict:
     """
