@@ -30,8 +30,6 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     );
   };
 
-
-
   $scope.getHealth();
 });
 
@@ -108,6 +106,10 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       // on fais rien si on reconnais pas le type de noeud
     }
   });
+
+  $scope.checkAPI = function() {
+    $scope.$parent.getHealth();
+  }
 
   $scope.exportJSON= function() {
     $rootScope.$broadcast('request_export_json', {});
