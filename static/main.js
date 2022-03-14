@@ -1,12 +1,38 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
-EchoApp.controller("ParentCtrl", function($scope) {
+EchoApp.controller("ParentCtrl", function($scope, $http) {
   $scope.sendToastData = function(titre, texte) {
     $scope.$broadcast('ToastMessage', {
       'titre' : titre,
       'texte' : texte,
     })
-  }
+  };
+
+  // vérification d'accessibilité du backend : 
+  $scope.getHealth = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/health',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Echosounder', "API fonctionnelle");
+        console.log(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+
+
+  $scope.getHealth();
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
