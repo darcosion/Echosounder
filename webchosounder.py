@@ -17,6 +17,10 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/json/health')
+def health():
+    return jsonify(nmap=echosounder.check_nmap_exist())
+
 @app.route('/json/arp_scan', methods=['POST'])
 def scan_arp():
     if not if_contain_cible(request.json):
@@ -44,6 +48,7 @@ def scan_profiling():
     else:
         return jsonify(scan=echosounder.creation_data_nmap(request.json['cible']))
 
+
 @app.route('/json/services_scan', methods=['POST'])
 def scan_services():
     if not if_contain_cible(request.json):
@@ -51,12 +56,14 @@ def scan_services():
     else:
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible']))
 
+
 @app.route('/json/reverse_ptr_scan', methods=['POST'])
 def scan_reverse_ptr():
     if not if_contain_cible(request.json):
         return {'error': "malformed request"}
     else:
         return jsonify(scan=echosounder.reverse_ptr_local_scan(request.json['cible']))
+
 
 def if_contain_cible(test_target) -> bool:
     return 'cible' in test_target
