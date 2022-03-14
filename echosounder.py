@@ -14,9 +14,11 @@ from scapy.layers.l2 import getmacbyip
 from scapy.packet import Packet
 from scapy.sendrecv import srp
 
+
 def check_nmap_exist():
     # vérifie que nmap est installé, renvoie True si oui, sinon False
-    return shutil.which("nmap") != None
+    return shutil.which("nmap") is not None
+
 
 def template() -> dict:
     """
