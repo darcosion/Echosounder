@@ -17,6 +17,10 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/json/health')
+def health():
+    return jsonify(nmap=echosounder.check_nmap_exist())
+
 @app.route('/json/arp_scan', methods=['POST'])
 def scan_arp():
     if not if_contain_cible(request.json):
