@@ -40,6 +40,12 @@ def scan_rapide():
         ip_mac_os: List[dict] = echosounder.data_creation_fast_ping(request.json['cible'])
         return jsonify(local_data=local_ip_mac_and_gateway, scan=ip_mac_os, vlan=request.json['cible'])
 
+@app.route('/json/trace_scan', methods=['GET'])
+def scan_trace():
+    local_ip_mac_and_gateway: dict = echosounder.template()
+    ip_mac_os: List[dict] = echosounder.traceroute_scan()
+    return jsonify(scan=ip_mac_os)
+
 
 @app.route('/json/profiling_scan', methods=['POST'])
 def scan_profiling():

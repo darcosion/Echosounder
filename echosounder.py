@@ -3,13 +3,14 @@
 import sys, shutil
 from typing import Optional, List, Tuple
 import json
+import ipaddress
 import platform
 import dns.resolver, dns.reversename
 import nmap
 import scapy
 from scapy.arch import get_if_addr, get_if_hwaddr
 from scapy.config import conf
-from scapy.layers.inet import IP, ICMP
+from scapy.layers.inet import IP, ICMP, traceroute
 from scapy.layers.l2 import getmacbyip
 from scapy.packet import Packet
 from scapy.sendrecv import srp
@@ -271,6 +272,18 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
     """
     return retrieve_services_from_scan(target_ip, port_start=port_start, port_end=port_end)
 
+
+def traceroute_scan() -> List[dict]:
+    target = '142.250.75.238' #une ip random de google
+    p, r = traceroute(target)
+    p = p.get_trace()[target]
+    list_return_ip = []
+    for k, i in p.items():
+        if(ipaddress.ip_address(i[0]).is_private):
+            list_return_ip.append(i[0])
+        else:
+            break # on arrête à la première IP publique
+    return list_return_ip
 
 if __name__ == "__main__":
     print("TEST")
