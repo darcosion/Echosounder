@@ -251,6 +251,13 @@ header > center > div {
   margin-bottom: 8px;
 }
 
+.echo_menu_subtitle {
+  text-align: center;
+  border-bottom: var(--widget-grey1);
+  border-bottom-style: double;
+  margin-bottom: 8px;
+}
+
 .echo_panel_openbutton {
   width: calc(62px/2);
   height: calc(61px/2);
@@ -259,7 +266,7 @@ header > center > div {
 }
 
 .echo_button_scan {
-  margin: 2px;
+  margin: 6px;
   padding: 2px;
   border-radius: 1px;
   background-color: var(--widget-blue2);
