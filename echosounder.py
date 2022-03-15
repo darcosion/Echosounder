@@ -15,6 +15,11 @@ from scapy.layers.l2 import getmacbyip
 from scapy.packet import Packet
 from scapy.sendrecv import srp
 
+from impacket import nt_errors
+from impacket.smbconnection import SMBConnection, SessionError
+from impacket.dcerpc.v5.transport import SMBTransport
+from impacket.dcerpc.v5.lsad import hLsarOpenPolicy2, POLICY_LOOKUP_NAMES
+import impacket.dcerpc.v5.srvs as srvs
 
 def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
@@ -233,6 +238,58 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
+"""
+Just testing 
+
+def connect_to_smb(target):
+    rpctransport = transport.SMBTransport(target, 445, r'\srvsvc')
+    dce = rpctransport.get_dce_rpc()
+    dce.connect()
+    dce.bind(srvs.MSRPC_UUID_SRVS)
+"""
+
+def null_session_smb_enumeration(target_ip):    
+    """ 
+    Using srsvc to list some juicy information, this can use blank credentials as well as "Guest" and "" as user and password
+    """
+    
+    username = ""
+    password = ""
+
+    try:
+        conn = SMBConnection(target_ip, target_ip)
+        conn.login(username, password)
+
+        try:
+            tree_id = conn.connectTree("IPC$")
+            try:
+                file_id = conn.openFile(tree_id, "srvsvc")
+                users[""][0] = True
+                conn.closeFile(tree_id, file_id)
+            except SessionError as e:
+                if e.getErrorCode() == nt_errors.STATUS_ACCESS_DENIED:
+                    pass
+                conn.disconnectTree(tree_id)
+        except Exception as e:
+            print("Fuck NULL 1:", e)
+
+        conn.close()
+    except OSError:
+        print(f"{BOLD}Connection error{RESET}")
+        sys.exit(1)
+    except SessionError as e:
+        if e.getErrorCode() == nt_errors.STATUS_ACCESS_DENIED:
+            pass
+        else:
+            print("Fuck NULL 2:", e)
+    finally:
+        host_netbios = conn.getServerName() if conn.getServerName().rstrip('\x00') else "-"
+        domain_netbios = conn.getServerDomain() if conn.getServerDomain().rstrip('\x00') else "-"
+        host_dns = conn.getServerDNSHostName() if conn.getServerDNSHostName().rstrip('\x00') else "-"
+        domain_dns = conn.getServerDNSDomainName() if conn.getServerDomain().rstrip('\x00') else "-"
+        is_signing = conn.isSigningRequired()
+
+    return host_netbios,domain_netbios,host_dns,domain_dns
 
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
