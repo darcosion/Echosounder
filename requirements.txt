@@ -2,3 +2,4 @@ scapy
 python-nmap
 flask
 netifaces
+dnspython

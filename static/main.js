@@ -1,12 +1,35 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
-EchoApp.controller("ParentCtrl", function($scope) {
+EchoApp.controller("ParentCtrl", function($scope, $http) {
   $scope.sendToastData = function(titre, texte) {
     $scope.$broadcast('ToastMessage', {
       'titre' : titre,
       'texte' : texte,
     })
-  }
+  };
+
+  // vérification d'accessibilité du backend : 
+  $scope.getHealth = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/health',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Echosounder', "API fonctionnelle");
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  $scope.getHealth();
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
@@ -31,6 +54,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
     $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
+  }
+
+  $scope.clickTraceroute = function() {
+    console.log("emit trace scan request");
+    $rootScope.$broadcast('request_traceroute_scan', {});
   }
 
   $scope.clickScanProfiling = function() {
@@ -92,6 +120,10 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       // on fais rien si on reconnais pas le type de noeud
     }
   });
+
+  $scope.checkAPI = function() {
+    $scope.$parent.getHealth();
+  }
 
   $scope.exportJSON= function() {
     $rootScope.$broadcast('request_export_json', {});
@@ -192,6 +224,30 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête échoue :
       function(error) {
         $scope.$parent.sendToastData('ARP Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  // fonction d'obtention d'IP privées via traceroute
+  $scope.getTracerouteScan = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/trace_scan',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan");
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        $scope.createCytoTraceGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Traceroute Scan', "erreur Scan : " + error);
         console.log(error);
       }
     );
@@ -408,6 +464,61 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
+  // fonction de création du graph à partir d'un scan trace
+  $scope.createCytoTraceGraph = function(scan_data) {
+    console.log(scan_data);
+    let nodes = [];
+    let edges = [];
+
+    // on ajoute les noeuds
+    scan_data.scan.forEach(function(ip) {
+      // on récupère le node déjà créé avec l'ip associé : 
+      let node_exist = $scope.cyto.elements('node[data_ip = "' + ip + '"]');
+      if(node_exist.length == 0) { // cas où le noeud est à créer
+        nodes.push(
+          {
+            group:'nodes',
+            data: {
+              id : (ip),
+              label : (ip),
+              type : 'IP',
+              data : {'ip' : ip},
+              data_ip : ip,
+              parent : $scope.getVLANByIP(ip), // a retravailler : on doit préalablement voir si le noeud rentre dans le CIDR...
+            },
+          }
+        );
+      }else { // cas où le noeud existe déjà
+
+      }
+    });
+
+    // on ajoute l'ensemble des ip au graph
+    $scope.cyto.add(nodes);
+
+    // on ajoute les liens si possible
+    scan_data.scan.reduce( // cette sorcellerie vise à sortir les noeuds 2 à 2
+      function(accumulator, currentValue, currentIndex, array) {
+        if (currentIndex % 2 === 0)
+          accumulator.push(array.slice(currentIndex, currentIndex + 2));
+        return accumulator;
+      }, []
+    ).map(p => (edges.push({
+      group:'edges',
+      data : {
+        id : ('link ' + p[0] + " " + p[1] + " "),
+        source : $scope.getNodeIdByIP(p[0]),
+        target : $scope.getNodeIdByIP(p[1]),
+      }
+    })));
+
+    // on ajoute l'ensemble des lien au graph
+    $scope.cyto.add(edges);
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
+  };
+
   // fonction de création du graph à partir d'un scan d'une IP ressortant les services
   $scope.createCytoServiceGraph = function(scan_data) {
     scan_data.forEach(function(ip_scanned) {
@@ -467,6 +578,27 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     if(node_update.length != 0) {
       node_update.data('data')[update_key] = update_data;
     }
+  };
+
+  $scope.getNodeIdByIP = function(ip) {
+    return $scope.cyto.elements('node[data_ip = "' + ip + '"]').data('id');
+  };
+
+  $scope.getVLANByIP = function(ip) {
+    let listVLAN = [];
+    $scope.cyto.elements('node[type = "VLAN"]').forEach(function(node) {
+      listVLAN.push(node.data('id').split('/'));
+    });
+
+    // on trie les subnet par ordre de taille 
+    listVLAN.sort(function(a, b){return b[1] - a[1]});
+    
+    // maintenant, on doit comparer IP / range d'IP et le premier match renvoie son ID
+    for (const element of listVLAN) {
+      if(ipaddr.parse(ip).match(ipaddr.parse(element[0]), element[1])) {
+        return element[0] + "/" + element[1];
+      }
+    }
   }
 
   // évènement en cas de clic sur un noeud :
@@ -483,6 +615,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_arp_scan', function(event, args) {
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     $scope.getARPScan(args.cible);
+  });
+
+  $scope.$on('request_traceroute_scan', function(event, args) {
+    $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan");
+    $scope.getTracerouteScan();
   });
 
   $scope.$on('request_profiling_scan', function(event, args) {
@@ -532,7 +669,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.setCytoJSON = function(param_json) {
     $scope.cyto.json(param_json);
-  }
+  };
+
+  console.log($scope.cyto)
 });
 
 angular.element(document).ready(function() {
