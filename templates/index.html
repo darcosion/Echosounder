@@ -45,7 +45,6 @@
         <div class="container echo_scan_panel">
           <div class="echo_button_scan hvr-hollow" ng-click="clickFastPing()">Scan Ping</div>
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanARP()">Scan ARP</div>
-          <div class="echo_button_scan hvr-hollow" ng-click="clickTraceroute()">Scan traceroute</div>
           <div class="echo_button_scan">Scan SNMP</div>
           <div class="echo_button_scan">Scan TCP/UDP general</div>
           <div class="echo_button_scan">Scan DNS</div>
@@ -65,21 +64,22 @@
         </div>
         <div class="container echo_scan_panel"> 
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanProfiling()">Scan profiling</div>
+          <div class="echo_button_scan hvr-hollow" ng-click="clickScanReversePTR()">Scan Reverse PTR</div>
           <div class="container echo_menu_subtitle"></div>
           <div class="container echo_scan_cible ng-hide" ng-show="port1" ><input class="echo_input_effect" type="text" name="cible_port_1" placeholder="ip" ng-model="portStart" required>
             <label for="name" class="echo_input_effect_label">PORT MIN</label>
           </div>
           <div class="echo_button_scan hvr-hollow"  ng-click="clickScanServices()">Scan services</div>
-          <div class="container echo_menu_subtitle"></div>
-          <div class="echo_button_scan hvr-hollow" ng-click="clickScanReversePTR()">Scan Reverse PTR</div>
         </div>
       </div>
       <!-- menu de scan spécifique -->
       <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right menu_btn_left_3" ng-click="showMenu3 = !showMenu3; showMenu2 = false; showMenu1 = false;">
       </div>
-      <div class="echo_menu_left ng-hide" ng-show="showMenu3">
+      <div class="d-flex flex-wrap echo_menu_left ng-hide" ng-show="showMenu3">
         <div class="container echo_menu_title">Scan spécifiques</div>
-        <div>test5</div>
+        <div class="container echo_scan_panel">
+          <div class="echo_button_scan hvr-hollow" ng-click="clickTraceroute()">Scan traceroute vers internet</div>
+        </div>
       </div>
     </div>
 
