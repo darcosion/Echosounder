@@ -43,7 +43,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.machineCible = "0.0.0.0"
   $scope.portStart = "0"
-  $scope.portEnd = "0"
+  $scope.portEnd = "400"
 
 
   $scope.clickFastPing = function() {
@@ -280,12 +280,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   // fonctions de listage des services machine (par port)
-  $scope.getServicesScan = function(cible) {
+  $scope.getServicesScan = function(cible, pstart, pend) {
     let req = {
       method : 'POST',
       url : '/json/services_scan',
       headers: {'Content-Type': 'application/json'},
-      data : {'cible' : cible},
+      data : {'cible' : cible, 'port_start' : pstart, 'port_end' : pend},
     };
 
     $http(req).then(
@@ -628,7 +628,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.$on('request_services_scan', function(event, args) {
     $scope.$parent.sendToastData('Services', "lancement d'un scan");
-    $scope.getServicesScan(args.cible);
+    $scope.getServicesScan(args.cible, args.port_start, args.port_end);
   });
 
   $scope.$on('request_reverse_ptr_scan', function(event, args) {

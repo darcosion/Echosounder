@@ -62,7 +62,7 @@ def scan_services():
     elif("port_start" not in request.json):
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible']))
     else:
-        return jsonify([])
+        return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible'], port_start=request.json['port_start'], port_end=request.json['port_end']))
 
 
 @app.route('/json/reverse_ptr_scan', methods=['POST'])
