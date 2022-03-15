@@ -271,7 +271,7 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
 
 
 def traceroute_scan() -> List[dict]:
-    target = '142.250.75.238' #une ip random de google
+    target = '172.67.210.32' #une ip random de google
     p, r = traceroute(target)
     p = p.get_trace()[target]
     list_return_ip = []
@@ -279,6 +279,7 @@ def traceroute_scan() -> List[dict]:
         if(ipaddress.ip_address(i[0]).is_private):
             list_return_ip.append(i[0])
         else:
+            list_return_ip.append(i[0])
             break # on arrête à la première IP publique
     return list_return_ip
 
