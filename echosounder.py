@@ -238,15 +238,17 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
+"""
+Just testing 
 
 def connect_to_smb(target):
     rpctransport = transport.SMBTransport(target, 445, r'\srvsvc')
     dce = rpctransport.get_dce_rpc()
     dce.connect()
     dce.bind(srvs.MSRPC_UUID_SRVS)
+"""
 
-
-def null_session_smb_enumeration(target_ip): 
+def null_session_smb_enumeration(target_ip):    
     """ 
     Using srsvc to list some juicy information, this can use blank credentials as well as "Guest" and "" as user and password
     """
