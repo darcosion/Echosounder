@@ -13,10 +13,15 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
+  $scope.port1 = false;
+  $scope.port2 = false;
 
   $scope.cible = "192.168.1.0/24";
 
   $scope.machineCible = "0.0.0.0"
+  $scope.portStart = "0"
+  $scope.portEnd = "0"
+
 
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
@@ -34,8 +39,13 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   }
 
   $scope.clickScanServices = function() {
-    console.log("emit services scan request");
-    $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible});
+    if ($scope.port1){
+      console.log("emit services scan request");
+      $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd});
+    }else{
+      $scope.port1 = true;
+      $scope.port2 = true;
+    }
   }
 
   $scope.clickScanReversePTR = function() {

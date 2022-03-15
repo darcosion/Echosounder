@@ -48,8 +48,10 @@ def scan_profiling():
 def scan_services():
     if not if_contain_cible(request.json):
         return {'error': "malformed request"}
-    else:
+    elif("port_start" not in request.json):
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible']))
+    else:
+        return jsonify([])
 
 @app.route('/json/reverse_ptr_scan', methods=['POST'])
 def scan_reverse_ptr():
