@@ -531,7 +531,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         for (const [protocol, protocolObjects] of Object.entries(ip_scanned.protocols)) {
           // on accède aux données listés par port
           for (const [port, portObjects] of Object.entries(protocolObjects)) {
-            let id_node = (ip_scanned + ':' + port + ' ' + portObjects.cpe);
+            let id_node = (ip_scanned.IP + ':' + port + ' ' + portObjects.cpe);
             let label_node = port + ' ' + portObjects.product;
             if(portObjects.product == "") {
               label_node = port + ' ' + portObjects.name;
