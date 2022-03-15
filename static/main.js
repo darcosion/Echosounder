@@ -36,8 +36,8 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
-  $scope.port1 = false;
-  $scope.port2 = false;
+  $scope.portShow = false;
+
 
   $scope.cible = "192.168.1.0/24";
 
@@ -67,12 +67,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   }
 
   $scope.clickScanServices = function() {
-    if ($scope.port1){
+    if ($scope.portShow){
       console.log("emit services scan request");
       $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd});
     }else{
-      $scope.port1 = true;
-      $scope.port2 = true;
+      $scope.portShow = true;
     }
   }
 
