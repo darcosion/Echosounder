@@ -531,12 +531,17 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         for (const [protocol, protocolObjects] of Object.entries(ip_scanned.protocols)) {
           // on accède aux données listés par port
           for (const [port, portObjects] of Object.entries(protocolObjects)) {
+            let id_node = (ip_scanned + ':' + port + ' ' + portObjects.cpe);
+            let label_node = port + ' ' + portObjects.product;
+            if(portObjects.product == "") {
+              label_node = port + ' ' + portObjects.name;
+            }
             nodes_services.push(
               {
                 group:'nodes',
                 data: {
-                  id : portObjects.cpe,
-                  label : portObjects.product,
+                  id : id_node,
+                  label : label_node,
                   type : 'Service',
                   data : portObjects,
                   data_ip : ip_scanned.IP,
@@ -548,9 +553,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               {
                 group:'edges',
                 data : {
-                  id : ('link ' + node_update.data('id') + " " + portObjects.cpe + " "),
+                  id : ('link ' + node_update.data('id') + " " + id_node + " "),
                   source : node_update.data('id'),
-                  target : portObjects.cpe,
+                  target : id_node,
                   parent : node_update.data('parent'),
                 }
               }
