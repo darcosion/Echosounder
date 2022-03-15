@@ -252,7 +252,10 @@ def null_session_smb_enumeration(target_ip):
     """ 
     Using srsvc to list some juicy information, this can use blank credentials as well as "Guest" and "" as user and password
     """
-    
+    users = {
+    "": [False, 0],
+    "Guest": [False, 0]
+    }
     username = ""
     password = ""
 
@@ -275,7 +278,7 @@ def null_session_smb_enumeration(target_ip):
 
         conn.close()
     except OSError:
-        print(f"{BOLD}Connection error{RESET}")
+        print(f"Connection error")
         sys.exit(1)
     except SessionError as e:
         if e.getErrorCode() == nt_errors.STATUS_ACCESS_DENIED:
