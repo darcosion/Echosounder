@@ -374,7 +374,6 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
   ];
-
   $scope.cyto.style($scope.styles);
 
   // fonction de création du graph à partir d'un scan CIDR
