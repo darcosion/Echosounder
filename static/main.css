@@ -28,7 +28,6 @@
   display: initial!important;
 }
 /* Import de police */
-@import url(//db.onlinewebfonts.com/c/1643050d4a7adff379cf56addef0cbff?family=GuessSansW00-Medium);
 @font-face {font-family: "GuessSansW00-Medium"; src: url("title-font.ttf");  } 
   
 /* règles CSS de base */
@@ -64,7 +63,7 @@ header > center > div {
   display: ruby-text;
   font-family:'GuessSansW00-Medium';
 }
-header img{
+header > center > div > img{
   height: calc(var(--height-header) / 1.2);
   margin-top: calc((var(--height-header) - var(--height-header) / 1.2) / 2);
 }
@@ -169,6 +168,36 @@ header img{
   color: var(--micro-text);
 }
 
+.menu_btn_left_1{
+  background-image: url('menu_left_icon_1.png') !important;
+  background-size: cover;
+}
+
+.menu_btn_left_2{
+  background-image: url('menu_left_icon_2.png') !important;
+  background-size: cover;
+}
+
+.menu_btn_left_3{
+  background-image: url('menu_left_icon_3.png') !important;
+  background-size: cover;
+}
+
+.menu_btn_right_1{
+  background-image: url('menu_right_icon_1.png') !important;
+  background-size: cover;
+}
+
+.menu_btn_right_2{
+  background-image: url('menu_right_icon_2.png') !important;
+  background-size: cover;
+}
+
+.menu_btn_right_3{
+  background-image: url('menu_right_icon_3.png') !important;
+  background-size: cover;
+}
+
 /* reset input */
 .echo_input_effect:required, .echo_input_effect:invalid {
   box-shadow: none;
@@ -190,7 +219,6 @@ header img{
 }
 
 .echo_panel_openbutton_right {
-  background: linear-gradient(to left, rgba(5, 12, 18, 0.25), rgba(186, 201, 176, 0.3) );
   border-left: 2px solid var(--widget-blue3);
 }
 
