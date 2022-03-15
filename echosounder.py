@@ -250,9 +250,6 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
     all_hosts: List[str] = nm.all_hosts()
     for i in range(len(ip_list)):
         nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start) + '-' + str(port_end), arguments="-sV")
-        if str(ip_list[i]) not in all_hosts:
-            global_list.append({"IP": None, "protocols": None})
-            continue
         all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
         for protocol in all_protocols_found:
             result = {
