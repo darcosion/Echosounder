@@ -365,7 +365,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
     {
-      selector: ':parent',
+      selector: 'node[type = "VLAN"]',
       css: {
         'text-valign': 'top',
         'text-halign': 'center',
