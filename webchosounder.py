@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 from typing import List
+import ipaddress, json
 import echosounder
 from flask import Flask, jsonify, render_template, request
 from scapy.arch import get_if_addr
@@ -72,6 +73,17 @@ def scan_reverse_ptr():
     else:
         return jsonify(scan=echosounder.reverse_ptr_local_scan(request.json['cible']))
 
+@app.route('/json/ip_to_as/<ip>', methods=['GET'])
+def ip_to_as(ip):
+    ip = ipaddress.IPv4Address(ip)
+    with app.open_resource('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
+        listipcidr = [ [ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
+        listcidr.close()
+        for i in listipcidr:
+            if(ip in i[0]):
+                return jsonify(as_number=i[1], as_cidr=str(i[0]))
+    return {'error': "no AS match"}
+        
 
 def if_contain_cible(test_target) -> bool:
     return 'cible' in test_target
