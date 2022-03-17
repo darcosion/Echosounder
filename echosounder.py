@@ -21,6 +21,7 @@ from impacket.dcerpc.v5.transport import SMBTransport
 from impacket.dcerpc.v5.lsad import hLsarOpenPolicy2, POLICY_LOOKUP_NAMES
 import impacket.dcerpc.v5.srvs as srvs
 
+
 def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
@@ -238,6 +239,7 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
+
 """
 Just testing 
 
@@ -248,13 +250,14 @@ def connect_to_smb(target):
     dce.bind(srvs.MSRPC_UUID_SRVS)
 """
 
-def null_session_smb_enumeration(target_ip):    
+
+def null_session_smb_enumeration(target_ip):
     """ 
     Using srsvc to list some juicy information, this can use blank credentials as well as "Guest" and "" as user and password
     """
     users = {
-    "": [False, 0],
-    "Guest": [False, 0]
+        "": [False, 0],
+        "Guest": [False, 0]
     }
     username = ""
     password = ""
@@ -292,7 +295,8 @@ def null_session_smb_enumeration(target_ip):
         domain_dns = conn.getServerDNSDomainName() if conn.getServerDomain().rstrip('\x00') else "-"
         is_signing = conn.isSigningRequired()
 
-    return host_netbios,domain_netbios,host_dns,domain_dns
+    return host_netbios, domain_netbios, host_dns, domain_dns
+
 
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
@@ -307,19 +311,21 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
     Extract the service data after performing an nmap scan
     """
     global_list: List[dict] = []
-    all_hosts: List[str] = nm.all_hosts()
-    for i in range(len(ip_list)):
-        nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start) + '-' + str(port_end), arguments="-sV")
-        all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
-        for protocol in all_protocols_found:
-            result = {
-                "IP": ip_list[i],
-                "protocols": {
-                    protocol:
-                        nmap_scan_result['scan'][ip_list[i]][protocol]  # associated service
-                },
-            }
-            global_list.append(result)
+    try:
+        for i in range(len(ip_list)):
+            nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start) + '-' + str(port_end), arguments="-sV")
+            all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
+            for protocol in all_protocols_found:
+                result = {
+                    "IP": ip_list[i],
+                    "protocols": {
+                        protocol:
+                            nmap_scan_result['scan'][ip_list[i]][protocol]  # associated service
+                    },
+                }
+                global_list.append(result)
+    except KeyError:
+        global_list.append({})
     return global_list
 
 
@@ -331,17 +337,18 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
 
 
 def traceroute_scan() -> List[dict]:
-    target = '172.67.210.32' #une ip random de google
+    target = '142.250.75.238'  # une ip random de google
     p, r = traceroute(target)
     p = p.get_trace()[target]
     list_return_ip = []
     for k, i in p.items():
-        if(ipaddress.ip_address(i[0]).is_private):
+        if ipaddress.ip_address(i[0]).is_private:
             list_return_ip.append(i[0])
         else:
             list_return_ip.append(i[0])
             break # on arrête à la première IP publique
     return list_return_ip
+
 
 if __name__ == "__main__":
     print("TEST")
