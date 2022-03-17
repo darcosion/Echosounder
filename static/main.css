@@ -242,6 +242,8 @@ header > center > div > img{
 
 .echo_node_data {
   word-wrap: anywhere; /* sans ça il y a un overflow bizarre du texte... */
+  overflow-y: auto;
+  max-height: 75vh;
 
 }
 
@@ -285,6 +287,10 @@ header > center > div > img{
   border-bottom: var(--widget-blue3);
   border-bottom-style: solid;
   margin-bottom: 8px;
+}
+
+.echo_menu_right > pre {
+  overflow: unset !important;
 }
 
 .echo_menu_subtitle {
