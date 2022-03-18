@@ -90,6 +90,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_smb_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanTracerouteCible = function() {
+    console.log("emit traceroutecible scan request");
+    $rootScope.$broadcast('request_trace_cible_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -391,6 +396,31 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   }
 
+  $scope.getTraceCibleScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/trace_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('TraceCible Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.createCytoTraceGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('TraceCible Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  }
+
   // partie gestion du graph
   $scope.cyto = cytoscape({
 		container: document.getElementById('mynetwork')
@@ -538,7 +568,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     let edges = [];
 
     // on ajoute les noeuds
-    scan_data.scan.forEach(function(ip) {
+    scan_data.scan.forEach(function(ipdata){
+      let ip = ipdata[0];
       // on récupère le node déjà créé avec l'ip associé : 
       let node_exist = $scope.cyto.elements('node[data_ip = "' + ip + '"]');
       if(node_exist.length == 0) { // cas où le noeud est à créer
@@ -566,14 +597,15 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on ajoute les liens si possible
     for(let key in scan_data.scan){
       if(key == 0) {
-
       }else {
+        let id_last_node = $scope.getNodeIdByIP(scan_data.scan[key-1][0]);
+        let id_node = $scope.getNodeIdByIP(scan_data.scan[key][0]);
         edges.push({
           group:'edges',
           data : {
-            id : ('link ' + scan_data.scan[key-1] + " " + scan_data.scan[key] + " "),
-            source : $scope.getNodeIdByIP(scan_data.scan[key-1]),
-            target : $scope.getNodeIdByIP(scan_data.scan[key]),
+            id : ('link ' + id_last_node + " " + id_node + " "),
+            source : id_last_node,
+            target : id_node,
           }
         });
       }
@@ -588,50 +620,47 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on va maintenant lier les données aux AS 
     // NOTE : c'est une opération longue, si on parviens à la réduire à un temps raisonnable,
     // le code sera à fusionner avec le code d'au dessus...
-    nodes.forEach(function(node) {
-      let typeip = ipaddr.parse(node.data.data_ip).range();
+    scan_data.scan.forEach(function(ipdata) {
+      let nodeAS = [];
+      let nodeVlan = [];
+      let ip = ipdata[0];
+      let cidr = ipdata[1][0];
+      let as_number = ipdata[1][1];
+      let typeip = ipaddr.parse(ip).range();
       if((typeip != 'private') && (typeip != 'multicast')) {
-        $scope.getASByIP(node.data.data_ip).then(function(response) {
-          if(response.data.hasOwnProperty('error')) {
-            console.log(response.data.error);
-          }else {
-            let nodeVlan = [];
-            let nodeAS = [];
-            // on crée un AS
-            nodeAS.push(
-              {
-                group:'nodes',
-                data: {
-                  id : response.data.as_number,
-                  label : response.data.as_number,
-                  type : 'AS',
-                },
-              }
-            );
-            // on crée un VLAN
-            nodeVlan.push(
-              {
-                group:'nodes',
-                data: {
-                  id : response.data.as_cidr,
-                  label : response.data.as_cidr,
-                  type : 'VLAN',
-                  parent: response.data.as_number,
-                },
-              }
-            );
-            // on ajoute l'ensemble des VLAN + AS au graph
-            $scope.cyto.add(nodeAS);
-            $scope.cyto.add(nodeVlan);
-            // on ajoute l'ID du node audit VLAN
-            $scope.cyto.$('#' + node.data.id).move({parent : response.data.as_cidr});
-            // on actualise la vue
-            $scope.layout = $scope.cyto.layout($scope.options);
-            $scope.layout.run();
+        // on crée un AS
+        nodeAS.push(
+          {
+            group:'nodes',
+            data: {
+              id : as_number,
+              label : as_number,
+              type : 'AS',
+            },
           }
-        });
+        );
+        // on crée un VLAN
+        nodeVlan.push(
+          {
+            group:'nodes',
+            data: {
+              id : cidr,
+              label : cidr,
+              type : 'VLAN',
+              parent: as_number,
+            },
+          }
+        );
       }
+      // on ajoute l'ensemble des VLAN + AS au graph
+      $scope.cyto.add(nodeAS);
+      $scope.cyto.add(nodeVlan);
+      // on ajoute l'ID du node audit VLAN
+      $scope.cyto.$('#' + $scope.getNodeIdByIP(ip)).move({parent : $scope.getVLANByIP(ip)});
     });
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
   };
 
   // fonction de création du graph à partir d'un scan d'une IP ressortant les services
@@ -768,6 +797,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_smb_scan', function(event, args) {
     $scope.$parent.sendToastData('SMB', "lancement d'un scan");
     $scope.getSMBScan(args.cible);
+  });
+
+  $scope.$on('request_trace_cible_scan', function(event, args) {
+    $scope.$parent.sendToastData('trace cible', "lancement d'un scan");
+    $scope.getTraceCibleScan(args.cible);
   });
 
   $scope.$on('request_export_json', function(event, args) {
