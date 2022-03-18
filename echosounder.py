@@ -314,20 +314,35 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
     try:
         for i in range(len(ip_list)):
             nmap_scan_result: dict = nm.scan(ip_list[i], str(port_start) + '-' + str(port_end), arguments="-sV")
-            all_protocols_found: List[str] = nm[ip_list[i]].all_protocols()
-            for protocol in all_protocols_found:
-                result = {
-                    "IP": ip_list[i],
-                    "protocols": {
-                        protocol:
-                            nmap_scan_result['scan'][ip_list[i]][protocol]  # associated service
-                    },
-                }
-                global_list.append(result)
+            for i in nm.all_hosts():
+                for protocol in nm[i].all_protocols():
+                    for kport, content in nm[i][protocol].items():
+                        global_list.append({
+                            "IP": i,
+                            "protocol" : protocol,
+                            "port" : str(kport),
+                            "result" : nm[i][protocol][kport],
+                        })
+            return global_list
     except KeyError:
         global_list.append({})
     return global_list
 
+def fingerprint_ssh(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    nmap_scan_result = nm.scan(target_ip, arguments="-p 22 --script ssh-hostkey --script-args ssh_hostkey=full")
+    global_list: List[dict] = []
+    for i in nm.all_hosts():
+        for protocol in nm[i].all_protocols():
+            for kport, content in nm[i][protocol].items():
+                global_list.append({
+                    "IP": i,
+                    "protocol" : protocol,
+                    "port" : str(kport),
+                    "result" : nm[i][protocol][kport],
+                })
+    return global_list
 
 def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: int = 400) -> List[dict]:
     """
