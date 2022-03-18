@@ -96,6 +96,7 @@ def scan_info_smb():
 @app.route('/json/ip_to_as/<ip>', methods=['GET'])
 def ip_to_as(ip):
     ip = ipaddress.IPv4Address(ip)
+    as_retrieved = None
     with app.open_resource('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
         listipcidr = [ [ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
         listcidr.close()
