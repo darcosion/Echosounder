@@ -637,10 +637,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     }
   };
 
+  // fonction de récupération d'un ID de node via une recherche par IP
   $scope.getNodeIdByIP = function(ip) {
     return $scope.cyto.elements('node[data_ip = "' + ip + '"]').data('id');
   };
-
+  // Fonction de récupération d'un VLAN via une recherche par IP
   $scope.getVLANByIP = function(ip) {
     let listVLAN = [];
     $scope.cyto.elements('node[type = "VLAN"]').forEach(function(node) {

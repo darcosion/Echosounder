@@ -336,8 +336,7 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
     return retrieve_services_from_scan(target_ip, port_start=port_start, port_end=port_end)
 
 
-def traceroute_scan() -> List[dict]:
-    target = '142.250.75.238'  # une ip random de google
+def traceroute_scan(target='142.250.75.238') -> List[dict]:
     p, r = traceroute(target)
     p = p.get_trace()[target]
     list_return_ip = []
