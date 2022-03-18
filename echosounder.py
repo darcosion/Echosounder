@@ -337,6 +337,55 @@ def fingerprint_ssh(target_ip):
                 })
     return global_list
 
+def scan_snmp_info(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    nmap_scan_result = nm.scan(target_ip, arguments="-sU -p 161 --script snmp-info")
+    global_list: List[dict] = []
+    for i in nm.all_hosts():
+        for protocol in nm[i].all_protocols():
+            for kport, content in nm[i][protocol].items():
+                global_list.append({
+                    "IP": i,
+                    "protocol" : protocol,
+                    "port" : str(kport),
+                    "result" : nm[i][protocol][kport],
+                })
+    return global_list
+
+def scan_snmp_netstat(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    nmap_scan_result = nm.scan(target_ip, arguments="-sU -p 161 --script snmp-netstat")
+    global_list: List[dict] = []
+    for i in nm.all_hosts():
+        for protocol in nm[i].all_protocols():
+            for kport, content in nm[i][protocol].items():
+                global_list.append({
+                    "IP": i,
+                    "protocol" : protocol,
+                    "port" : str(kport),
+                    "result" : nm[i][protocol][kport],
+                })
+    return global_list
+
+def scan_snmp_processes(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    nmap_scan_result = nm.scan(target_ip, arguments="-sU -p 161 --script snmp-processes")
+    global_list: List[dict] = []
+    for i in nm.all_hosts():
+        for protocol in nm[i].all_protocols():
+            for kport, content in nm[i][protocol].items():
+                global_list.append({
+                    "IP": i,
+                    "protocol" : protocol,
+                    "port" : str(kport),
+                    "result" : nm[i][protocol][kport],
+                })
+    return global_list
+
+
 def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: int = 400) -> List[dict]:
     """
     Service discovery using nmap
