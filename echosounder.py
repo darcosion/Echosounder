@@ -347,13 +347,29 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
 def traceroute_scan(target='142.250.75.238') -> List[dict]:
     p, r = traceroute(target)
     p = p.get_trace()[target]
+    as_retrieved = None
     list_return_ip = []
-    for k, i in p.items():
-        if ipaddress.ip_address(i[0]).is_private:
-            list_return_ip.append(i[0])
-        else:
-            list_return_ip.append(i[0])
-            break # on arrête à la première IP publique
+    print(p)
+    with open('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
+        listipcidr = [[ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
+        listcidr.close()
+        # cette sorcellerie permet de sortir toute les IP d'un même AS sur la route et de s'arrêter dès qu'on a un AS différent.
+        for k, v in p.items():
+            ip = ipaddress.IPv4Address(v[0])
+            if(ip.is_private):
+                list_return_ip.append([v[0], [None, None]])
+                continue
+            for i in listipcidr:
+                if(ip in i[0]):
+                    if(as_retrieved == None):
+                        as_retrieved = i[1]
+                    elif(as_retrieved == i[1]):
+                        None
+                    else:
+                        print(list_return_ip)
+                        return list_return_ip
+                    list_return_ip.append([v[0], [str(i[0]), i[1]]])
+                    break
     return list_return_ip
 
 
