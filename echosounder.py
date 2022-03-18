@@ -398,7 +398,6 @@ def traceroute_scan(target='142.250.75.238') -> List[dict]:
     p = p.get_trace()[target]
     as_retrieved = None
     list_return_ip = []
-    print(p)
     with open('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
         listipcidr = [[ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
         listcidr.close()
