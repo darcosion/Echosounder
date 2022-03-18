@@ -90,6 +90,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_smb_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanSNMP = function() {
+    console.log("emit SNMP scan request");
+    $rootScope.$broadcast('request_snmp_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.clickScanTracerouteCible = function() {
     console.log("emit traceroutecible scan request");
     $rootScope.$broadcast('request_trace_cible_scan', {'cible' : $scope.machineCible});
@@ -391,6 +396,31 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête échoue :
       function(error) {
         $scope.$parent.sendToastData('SMB Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  }
+
+  $scope.getSNMPScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/scan_snmp_info',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('SNMP Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'snmp_info', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('SNMP Scan', "erreur Scan : " + error);
         console.log(error);
       }
     );
@@ -797,6 +827,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_smb_scan', function(event, args) {
     $scope.$parent.sendToastData('SMB', "lancement d'un scan");
     $scope.getSMBScan(args.cible);
+  });
+
+  $scope.$on('request_snmp_scan', function(event, args) {
+    $scope.$parent.sendToastData('SNMP', "lancement d'un scan");
+    $scope.getSNMPScan(args.cible);
   });
 
   $scope.$on('request_trace_cible_scan', function(event, args) {
