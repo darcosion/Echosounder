@@ -85,6 +85,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_fingerprint_ssh_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanSMB = function() {
+    console.log("emit SMB scan request");
+    $rootScope.$broadcast('request_smb_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -361,6 +366,31 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
+  $scope.getSMBScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/scan_info_smb',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('SMB Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'smb', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('SMB Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  }
+
   // partie gestion du graph
   $scope.cyto = cytoscape({
 		container: document.getElementById('mynetwork')
@@ -534,20 +564,20 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.cyto.add(nodes);
 
     // on ajoute les liens si possible
-    scan_data.scan.reduce( // cette sorcellerie vise à sortir les noeuds 2 à 2
-      function(accumulator, currentValue, currentIndex, array) {
-        if (currentIndex % 2 === 0)
-          accumulator.push(array.slice(currentIndex, currentIndex + 2));
-        return accumulator;
-      }, []
-    ).map(p => (edges.push({
-      group:'edges',
-      data : {
-        id : ('link ' + p[0] + " " + p[1] + " "),
-        source : $scope.getNodeIdByIP(p[0]),
-        target : $scope.getNodeIdByIP(p[1]),
+    for(let key in scan_data.scan){
+      if(key == 0) {
+
+      }else {
+        edges.push({
+          group:'edges',
+          data : {
+            id : ('link ' + scan_data.scan[key-1] + " " + scan_data.scan[key] + " "),
+            source : $scope.getNodeIdByIP(scan_data.scan[key-1]),
+            target : $scope.getNodeIdByIP(scan_data.scan[key]),
+          }
+        });
       }
-    })));
+    }
 
     // on ajoute l'ensemble des lien au graph
     $scope.cyto.add(edges);
@@ -559,46 +589,48 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // NOTE : c'est une opération longue, si on parviens à la réduire à un temps raisonnable,
     // le code sera à fusionner avec le code d'au dessus...
     nodes.forEach(function(node) {
-      $scope.getASByIP(node.data.data_ip).then(function(response) {
-        console.log(response.data);
-        if(response.data.hasOwnProperty('error')) {
-          console.log(response.data.error);
-        }else {
-          let nodeVlan = [];
-          let nodeAS = [];
-          // on crée un AS
-          nodeAS.push(
-            {
-              group:'nodes',
-              data: {
-                id : response.data.as_number,
-                label : response.data.as_number,
-                type : 'AS',
-              },
-            }
-          );
-          // on crée un VLAN
-          nodeVlan.push(
-            {
-              group:'nodes',
-              data: {
-                id : response.data.as_cidr,
-                label : response.data.as_cidr,
-                type : 'VLAN',
-                parent: response.data.as_number,
-              },
-            }
-          );
-          // on ajoute l'ensemble des VLAN + AS au graph
-          $scope.cyto.add(nodeAS);
-          $scope.cyto.add(nodeVlan);
-          // on ajoute l'ID du node audit VLAN
-          $scope.cyto.$('#' + node.data.id).move({parent : response.data.as_cidr});
-          // on actualise la vue
-          $scope.layout = $scope.cyto.layout($scope.options);
-          $scope.layout.run();
-        }
-      });
+      let typeip = ipaddr.parse(node.data.data_ip).range();
+      if((typeip != 'private') && (typeip != 'multicast')) {
+        $scope.getASByIP(node.data.data_ip).then(function(response) {
+          if(response.data.hasOwnProperty('error')) {
+            console.log(response.data.error);
+          }else {
+            let nodeVlan = [];
+            let nodeAS = [];
+            // on crée un AS
+            nodeAS.push(
+              {
+                group:'nodes',
+                data: {
+                  id : response.data.as_number,
+                  label : response.data.as_number,
+                  type : 'AS',
+                },
+              }
+            );
+            // on crée un VLAN
+            nodeVlan.push(
+              {
+                group:'nodes',
+                data: {
+                  id : response.data.as_cidr,
+                  label : response.data.as_cidr,
+                  type : 'VLAN',
+                  parent: response.data.as_number,
+                },
+              }
+            );
+            // on ajoute l'ensemble des VLAN + AS au graph
+            $scope.cyto.add(nodeAS);
+            $scope.cyto.add(nodeVlan);
+            // on ajoute l'ID du node audit VLAN
+            $scope.cyto.$('#' + node.data.id).move({parent : response.data.as_cidr});
+            // on actualise la vue
+            $scope.layout = $scope.cyto.layout($scope.options);
+            $scope.layout.run();
+          }
+        });
+      }
     });
   };
 
@@ -731,6 +763,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_fingerprint_ssh_scan', function(event, args) {
     $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan");
     $scope.getFingerprintSSHScan(args.cible);
+  });
+
+  $scope.$on('request_smb_scan', function(event, args) {
+    $scope.$parent.sendToastData('SMB', "lancement d'un scan");
+    $scope.getSMBScan(args.cible);
   });
 
   $scope.$on('request_export_json', function(event, args) {
