@@ -239,26 +239,10 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
         global_list.append(result)
     return global_list
 
-
-"""
-Just testing 
-
-def connect_to_smb(target):
-    rpctransport = transport.SMBTransport(target, 445, r'\srvsvc')
-    dce = rpctransport.get_dce_rpc()
-    dce.connect()
-    dce.bind(srvs.MSRPC_UUID_SRVS)
-"""
-
-
 def null_session_smb_enumeration(target_ip):
     """ 
     Using srsvc to list some juicy information, this can use blank credentials as well as "Guest" and "" as user and password
     """
-    users = {
-        "": [False, 0],
-        "Guest": [False, 0]
-    }
     username = ""
     password = ""
 
@@ -270,7 +254,6 @@ def null_session_smb_enumeration(target_ip):
             tree_id = conn.connectTree("IPC$")
             try:
                 file_id = conn.openFile(tree_id, "srvsvc")
-                users[""][0] = True
                 conn.closeFile(tree_id, file_id)
             except SessionError as e:
                 if e.getErrorCode() == nt_errors.STATUS_ACCESS_DENIED:
@@ -294,8 +277,18 @@ def null_session_smb_enumeration(target_ip):
         host_dns = conn.getServerDNSHostName() if conn.getServerDNSHostName().rstrip('\x00') else "-"
         domain_dns = conn.getServerDNSDomainName() if conn.getServerDomain().rstrip('\x00') else "-"
         is_signing = conn.isSigningRequired()
+        server_os = conn.getServerOS() 
 
-    return host_netbios, domain_netbios, host_dns, domain_dns
+    smb_info = {}
+
+    smb_info['host_dns'] = host_dns
+    smb_info['domain_dns'] = domain_dns
+    smb_info['domain_netbios'] = domain_netbios
+    smb_info['host_netbios'] = host_netbios
+    smb_info['server_os'] = server_os
+    smb_info['is_signing'] = is_signing
+
+    return smb_info
 
 
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:

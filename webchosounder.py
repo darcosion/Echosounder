@@ -85,6 +85,14 @@ def scan_fingerprint_ssh():
     else:
         return jsonify(scan=echosounder.fingerprint_ssh(request.json['cible']))
 
+@app.route('/json/scan_info_smb', methods=['POST'])
+def scan_info_smb():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.null_session_smb_enumeration(request.json['cible']))
+
+
 @app.route('/json/ip_to_as/<ip>', methods=['GET'])
 def ip_to_as(ip):
     ip = ipaddress.IPv4Address(ip)
