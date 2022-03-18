@@ -565,7 +565,6 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
     // on ajoute les liens si possible
     for(let key in scan_data.scan){
-      console.log(key);
       if(key == 0) {
 
       }else {
@@ -590,46 +589,48 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // NOTE : c'est une opération longue, si on parviens à la réduire à un temps raisonnable,
     // le code sera à fusionner avec le code d'au dessus...
     nodes.forEach(function(node) {
-      $scope.getASByIP(node.data.data_ip).then(function(response) {
-        console.log(response.data);
-        if(response.data.hasOwnProperty('error')) {
-          console.log(response.data.error);
-        }else {
-          let nodeVlan = [];
-          let nodeAS = [];
-          // on crée un AS
-          nodeAS.push(
-            {
-              group:'nodes',
-              data: {
-                id : response.data.as_number,
-                label : response.data.as_number,
-                type : 'AS',
-              },
-            }
-          );
-          // on crée un VLAN
-          nodeVlan.push(
-            {
-              group:'nodes',
-              data: {
-                id : response.data.as_cidr,
-                label : response.data.as_cidr,
-                type : 'VLAN',
-                parent: response.data.as_number,
-              },
-            }
-          );
-          // on ajoute l'ensemble des VLAN + AS au graph
-          $scope.cyto.add(nodeAS);
-          $scope.cyto.add(nodeVlan);
-          // on ajoute l'ID du node audit VLAN
-          $scope.cyto.$('#' + node.data.id).move({parent : response.data.as_cidr});
-          // on actualise la vue
-          $scope.layout = $scope.cyto.layout($scope.options);
-          $scope.layout.run();
-        }
-      });
+      let typeip = ipaddr.parse(node.data.data_ip).range();
+      if((typeip != 'private') && (typeip != 'multicast')) {
+        $scope.getASByIP(node.data.data_ip).then(function(response) {
+          if(response.data.hasOwnProperty('error')) {
+            console.log(response.data.error);
+          }else {
+            let nodeVlan = [];
+            let nodeAS = [];
+            // on crée un AS
+            nodeAS.push(
+              {
+                group:'nodes',
+                data: {
+                  id : response.data.as_number,
+                  label : response.data.as_number,
+                  type : 'AS',
+                },
+              }
+            );
+            // on crée un VLAN
+            nodeVlan.push(
+              {
+                group:'nodes',
+                data: {
+                  id : response.data.as_cidr,
+                  label : response.data.as_cidr,
+                  type : 'VLAN',
+                  parent: response.data.as_number,
+                },
+              }
+            );
+            // on ajoute l'ensemble des VLAN + AS au graph
+            $scope.cyto.add(nodeAS);
+            $scope.cyto.add(nodeVlan);
+            // on ajoute l'ID du node audit VLAN
+            $scope.cyto.$('#' + node.data.id).move({parent : response.data.as_cidr});
+            // on actualise la vue
+            $scope.layout = $scope.cyto.layout($scope.options);
+            $scope.layout.run();
+          }
+        });
+      }
     });
   };
 
