@@ -31,7 +31,6 @@ def scan_arp():
         local_ip_mac: List[dict] = echosounder.data_creation_arp_scan(request.json['cible'])
         return jsonify(local_data=local_ip_mac_and_gateway, scan=local_ip_mac, vlan=request.json['cible'])
 
-
 @app.route('/json/fast_scan', methods=['POST'])
 def scan_rapide():
     if not if_contain_cible(request.json):
@@ -63,7 +62,6 @@ def scan_profiling():
     else:
         return jsonify(scan=echosounder.creation_data_nmap(request.json['cible']))
 
-
 @app.route('/json/services_scan', methods=['POST'])
 def scan_services():
     if not if_contain_cible(request.json):
@@ -73,13 +71,19 @@ def scan_services():
     else:
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible'], port_start=request.json['port_start'], port_end=request.json['port_end']))
 
-
 @app.route('/json/reverse_ptr_scan', methods=['POST'])
 def scan_reverse_ptr():
     if not if_contain_cible(request.json):
         return {'error': "malformed request"}
     else:
         return jsonify(scan=echosounder.reverse_ptr_local_scan(request.json['cible']))
+
+@app.route('/json/fingerpting_ssh_scan', methods=['POST'])
+def scan_fingerprint_ssh():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.fingerprint_ssh(request.json['cible']))
 
 @app.route('/json/ip_to_as/<ip>', methods=['GET'])
 def ip_to_as(ip):

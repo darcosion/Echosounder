@@ -80,6 +80,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_reverse_ptr_scan', {'cible' : $scope.machineCible});
   }
 
+  $scope.clickScanSSHFingerprint = function() {
+    console.log("emit fingerprint SSH scan request");
+    $rootScope.$broadcast('request_fingerprint_ssh_scan', {'cible' : $scope.machineCible});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -325,6 +330,32 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête échoue :
       function(error) {
         $scope.$parent.sendToastData('Reverse PTR Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  // fonction d'obtention de fingerprint SSH par requête SSH sur cible
+  $scope.getFingerprintSSHScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/fingerpting_ssh_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Fingerprint SSH Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'fingerprint ssh', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Fingerprint SSH Scan', "erreur Scan : " + error);
         console.log(error);
       }
     );
@@ -699,7 +730,12 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_reverse_ptr_scan', function(event, args) {
     $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
     $scope.getReversePTRScan(args.cible);
-  })
+  });
+
+  $scope.$on('request_fingerprint_ssh_scan', function(event, args) {
+    $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan");
+    $scope.getFingerprintSSHScan(args.cible);
+  });
 
   $scope.$on('request_export_json', function(event, args) {
     console.log("lancement d'un export JSON");
