@@ -92,6 +92,26 @@ def scan_info_smb():
     else:
         return jsonify(scan=echosounder.null_session_smb_enumeration(request.json['cible']))
 
+@app.route('/json/scan_snmp_info', methods=['POST'])
+def scan_snmp_info():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.scan_snmp_info(request.json['cible']))
+
+@app.route('/json/scan_snmp_netstat', methods=['POST'])
+def scan_snmp_netstat():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.scan_snmp_netstat(request.json['cible']))
+
+@app.route('/json/scan_snmp_processes', methods=['POST'])
+def scan_snmp_processes():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.scan_snmp_processes(request.json['cible']))
 
 @app.route('/json/ip_to_as/<ip>', methods=['GET'])
 def ip_to_as(ip):
