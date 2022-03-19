@@ -459,13 +459,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.options = {
 		name: 'fcose', // cose est quand même pas mal...
 		fit: true,  // Whether to fit the network view after when done
-		padding: 10,
+		padding: 30,
 		animate: true, // TODO : l'animation est constante, mais la force n'est pas recalculé, trouvé un moyen pour que ça soit le cas
 		animationDuration: 1000,
 		animationEasing: 'ease-out',
 		//infinite: 'end', // OW SHI__
 		nodeDimensionsIncludeLabels: true, // OUUUIIIIII
-		randomize: false, // ça semble mettre les noeud dans leur ordre d'arrivée, ça me plait.
+		randomize: true, // ça semble mettre les noeud dans leur ordre d'arrivée, ça me plait.
+    packComponents: true,
 	};
 
   $scope.styles = [
