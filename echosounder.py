@@ -396,35 +396,38 @@ def traceroute_cidr_scan(targetcidr) -> List[List[dict]]:
     targetcidr = list(ipaddress.IPv4Network(targetcidr).hosts())
     result = []
     slicer = len(targetcidr) // 4 # sert de "pas" pour ne prendre que 5 IP
+    if(slicer < 1):
+        slicer = 1
     for i in targetcidr[::slicer]: # parcours la range 5 fois via le slicer
-        result.append(traceroute_scan(i))
+        result.append(traceroute_scan(str(i)))
     return result
 
 def traceroute_scan(target='142.250.75.238') -> List[dict]:
-    p, r = traceroute(target)
-    p = p.get_trace()[target]
     as_retrieved = None
     list_return_ip = []
-    with open('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
-        listipcidr = [[ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
-        listcidr.close()
-        # cette sorcellerie permet de sortir toute les IP d'un même AS sur la route et de s'arrêter dès qu'on a un AS différent.
-        for k, v in p.items():
-            ip = ipaddress.IPv4Address(v[0])
-            if(ip.is_private):
-                list_return_ip.append([v[0], [None, None]])
-                continue
-            for i in listipcidr:
-                if(ip in i[0]):
-                    if(as_retrieved == None):
-                        as_retrieved = i[1]
-                    elif(as_retrieved == i[1]):
-                        None
-                    else:
-                        print(list_return_ip)
-                        return list_return_ip
-                    list_return_ip.append([v[0], [str(i[0]), i[1]]])
-                    break
+    p, r = traceroute(target)
+    if(target in p.get_trace().keys()):
+        p = p.get_trace()[target]
+        with open('asinfo/routeviews-prefix2as-latest.json', 'r') as listcidr:
+            listipcidr = [[ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
+            listcidr.close()
+            # cette sorcellerie permet de sortir toute les IP d'un même AS sur la route et de s'arrêter dès qu'on a un AS différent.
+            for k, v in p.items():
+                ip = ipaddress.IPv4Address(v[0])
+                if(ip.is_private):
+                    list_return_ip.append([v[0], [None, None]])
+                    continue
+                for i in listipcidr:
+                    if(ip in i[0]):
+                        if(as_retrieved == None):
+                            as_retrieved = i[1]
+                        elif(as_retrieved == i[1]):
+                            None
+                        else:
+                            print(list_return_ip)
+                            return list_return_ip
+                        list_return_ip.append([v[0], [str(i[0]), i[1]]])
+                        break
     return list_return_ip
 
 
