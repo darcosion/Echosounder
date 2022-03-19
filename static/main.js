@@ -365,6 +365,48 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
     {
+      selector: 'node[label*="gateway"]',
+      css: {
+        'background-image' : 'http://192.168.1.90:5042/static/gateway_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    // {
+    //   selector: 'node[type="IP"]',
+    //   css: {
+    //     'background-image' : 'http://192.168.1.90:5042/static/ip_bg.png',
+    //     'background-fit' : 'contain',
+    //   },
+    // },
+    {
+      selector: 'node[type="Service"]',
+      css: {
+        'background-image' : 'http://192.168.1.90:5042/static/service_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
+      selector: 'node[data.OS="Windows"]',
+      css: {
+        'background-image' : 'http://192.168.1.90:5042/static/windows_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
+      selector: 'node[data.OS="Linux/UNIX"]',
+      css: {
+        'background-image' : 'http://192.168.1.90:5042/static/linux_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
+      selector: 'node[data.OS="Unknow"]',
+      css: {
+        'background-image' : 'http://192.168.1.90:5042/static/unknown_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
       selector: ':parent',
       css: {
         'text-valign': 'top',
