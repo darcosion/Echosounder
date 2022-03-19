@@ -582,6 +582,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               id : ('link ' + gateway_id + " " + nodeI.data.id + " "),
               source : nodeI.data.id,
               target : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
+              type: 'IPtoVLAN',
               parent : scan_data.vlan,
             }
           }
@@ -643,6 +644,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
             id : ('link ' + id_last_node + " " + id_node + " "),
             source : id_last_node,
             target : id_node,
+            type : 'traceroute',
           }
         });
       }
@@ -737,6 +739,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
               id : ('link ' + node_update.data('id') + " " + id_node + " "),
               source : node_update.data('id'),
               target : id_node,
+              type: 'ServicetoIP',
               parent : node_update.data('parent'),
             }
           }
