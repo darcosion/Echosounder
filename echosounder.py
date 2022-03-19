@@ -392,6 +392,13 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
     """
     return retrieve_services_from_scan(target_ip, port_start=port_start, port_end=port_end)
 
+def traceroute_cidr_scan(targetcidr) -> List[List[dict]]:
+    targetcidr = list(ipaddress.IPv4Network(targetcidr).hosts())
+    result = []
+    slicer = len(targetcidr) // 4 # sert de "pas" pour ne prendre que 5 IP
+    for i in targetcidr[::slicer]: # parcours la range 5 fois via le slicer
+        result.append(traceroute_scan(i))
+    return result
 
 def traceroute_scan(target='142.250.75.238') -> List[dict]:
     p, r = traceroute(target)
