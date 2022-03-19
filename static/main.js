@@ -522,35 +522,42 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       css: {
         'width': '20px',
         'height': '20px',
-        'background-image' : 'http://192.168.1.90:5042/static/service_bg.png',
+        'background-image' : '/static/service_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
       selector: 'node[label*="gateway"]',
       css: {
-        'background-image' : 'http://192.168.1.90:5042/static/gateway_bg.png',
+        'background-image' : '/static/gateway_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
       selector: 'node[data.OS="Windows"]',
       css: {
-        'background-image' : 'http://192.168.1.90:5042/static/windows_bg.png',
+        'background-image' : '/static/windows_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
       selector: 'node[data.OS="Linux/UNIX"]',
       css: {
-        'background-image' : 'http://192.168.1.90:5042/static/linux_bg.png',
+        'background-image' : '/static/linux_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
+      selector: 'node[data.OS="Linux"]',
+      css: {
+        'background-image' : '/static/linux_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
       selector: 'node[data.OS="Unknow"]',
       css: {
-        'background-image' : 'http://192.168.1.90:5042/static/unknown_bg.png',
+        'background-image' : '/static/unknown_bg.png',
         'background-fit' : 'contain',
       },
     },
