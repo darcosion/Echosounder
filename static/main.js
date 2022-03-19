@@ -518,6 +518,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
     {
+      selector: 'node[type="IP"]',
+      css: {
+        'background-image' : '/static/ip_bg.png',
+        'background-fit' : 'contain',
+      },
+    },
+    {
       selector: 'node[type = "Service"]',
       css: {
         'width': '20px',
