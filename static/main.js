@@ -56,6 +56,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
   }
 
+  $scope.clickScanCIDRTraceroute = function() {
+    console.log("emit trace cidr scan request");
+    $rootScope.$broadcast('request_traceroute_cidr_scan', {'cible' : $scope.cible});
+  }
+
   $scope.clickTraceroute = function() {
     console.log("emit trace scan request");
     $rootScope.$broadcast('request_traceroute_scan', {});
@@ -248,7 +253,33 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
-  // fonction d'obtention d'IP privées via traceroute
+  // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute CIDR
+  $scope.getTracerouteCIDRScan = function(cible) {
+    let req = {
+      method : 'POST',
+      url : '/json/trace_cidr_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Traceroute CIDR Scan', "réception d'un scan");
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        $scope.createCytoTraceCIDRGraph(response.data);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Traceroute CIDR Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  }
+
+  // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute
   $scope.getTracerouteScan = function() {
     let req = {
       method : 'GET',
@@ -703,6 +734,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   };
 
+  // fonction de création du graph à partir d'un scan trace CIDR
+  $scope.createCytoTraceCIDRGraph = function(scan_data) {
+    scan_data.scan.forEach(function(trace) { // l'arnaque se situe ici (vous avez cru quoi ? que j'allais tout recoder ?)
+      $scope.createCytoTraceGraph({'scan': trace});
+    })
+  }
+
   // fonction de création du graph à partir d'un scan d'une IP ressortant les services
   $scope.createCytoServiceGraph = function(scan_data) {
     // on crée les listes de noeuds/liens qu'on va pousser dans le graph
@@ -808,6 +846,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('request_arp_scan', function(event, args) {
     $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     $scope.getARPScan(args.cible);
+  });
+
+  $scope.$on('request_traceroute_cidr_scan', function(event, args) {
+    $scope.$parent.sendToastData('Traceroute CIDR Scan', "lancement d'un scan");
+    $scope.getTracerouteCIDRScan(args.cible);
   });
 
   $scope.$on('request_traceroute_scan', function(event, args) {
