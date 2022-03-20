@@ -408,7 +408,7 @@ def scan_snmp_processes(target_ip):
 def scan_rdp_info(target_ip):
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
     nmap_scan_result: dict = {}
-    nmap_scan_result = nm.scan(target_ip, arguments="-p 3389 --script rdp_ntlm_info")
+    nmap_scan_result = nm.scan(target_ip, arguments="-p 3389 --script rdp-ntlm-info")
     global_list: List[dict] = []
     for i in nm.all_hosts():
         for protocol in nm[i].all_protocols():
