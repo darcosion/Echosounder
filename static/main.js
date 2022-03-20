@@ -537,6 +537,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_fingerprint_ssh_scan' : $scope.getFingerprintSSHScan ,
     'request_smb_scan' : $scope.getSMBScan ,
     'request_snmp_scan' : $scope.getSNMPScan ,
+    'request_rdp_scan' : $scope.getRDPScan,
     'request_trace_cible_scan' : $scope.getTraceCibleScan ,
   }
 
@@ -962,7 +963,6 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     let element = document.createElement('a');
     element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify($scope.cyto.json())));
     element.setAttribute('download', "graph.json");
-  
     element.style.display = 'none';
     document.body.appendChild(element);
   
