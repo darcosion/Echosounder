@@ -113,6 +113,12 @@
         <div class="echo_button_scan hvr-hollow" ng-click="exportJSON()">export JSON</div>
         <div class="echo_button_scan hvr-hollow" ng-click="importJSON()">import JSON</div>
         <div class="echo_button_scan hvr-hollow" ng-click="actualiseGraph()">refresh Graph</div>
+        <div class="container echo_menu_subtitle"></div>
+        <!-- case de suppression de noeud du graph -->
+        <div ng-if="nodeToDelete">
+          <div>{{"{{nodeToDelete.label}}"}}</div>
+          <center><div class="echo_button_scan hvr-hollow" ng-click="deleteNode()">Supprimer</div></center>
+        </div>
       </div>
     </div>
 

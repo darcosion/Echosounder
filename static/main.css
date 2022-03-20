@@ -296,7 +296,7 @@ header > center > div > img{
 .echo_menu_subtitle {
   text-align: center;
   border-bottom: var(--widget-grey1);
-  border-bottom-style: double;
+  border-bottom-style: solid;
   margin-bottom: 8px;
 }
 
