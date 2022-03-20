@@ -80,6 +80,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     }
   }
 
+  $scope.clickScanFastServices = function() {
+    console.log("emit services fast scan request");
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_services_fast_scan'});
+  }
+
   $scope.clickScanReversePTR = function() {
     console.log("emit reverse PTR scan request");
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_reverse_ptr_scan'});
@@ -375,6 +380,33 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
+  // fonctions de listage des services machine (par port)
+  $scope.getServicesFastScan = function(cible) {
+    $scope.$parent.sendToastData('Services', "lancement d'un fast scan");
+    let req = {
+      method : 'POST',
+      url : '/json/services_fast_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('Services Fast Scan', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le graph en ajoutant des noeuds type service lié à la cible
+        $scope.createCytoServiceGraph(response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('Services Fast Scan', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
   // fonction d'obtention du hostname par requête DNS reverse PTR sur cible
   $scope.getReversePTRScan = function(cible) {
     $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
@@ -541,12 +573,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_traceroute_scan' : $scope.getTracerouteScan ,
     'request_profiling_scan' : $scope.getProfilingScan ,
     'request_services_scan' : $scope.getServicesScan ,
+    'request_services_fast_scan' : $scope.getServicesFastScan ,
     'request_reverse_ptr_scan' : $scope.getReversePTRScan ,
     'request_fingerprint_ssh_scan' : $scope.getFingerprintSSHScan ,
     'request_smb_scan' : $scope.getSMBScan ,
     'request_snmp_scan' : $scope.getSNMPScan ,
     'request_rdp_scan' : $scope.getRDPScan,
-    'request_trace_cible_scan' : $scope.getTraceCibleScan ,
+    'request_trace_cible_scan' : $scope.getTraceCibleScan,
   }
 
   // partie gestion du graph
