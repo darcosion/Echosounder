@@ -48,33 +48,33 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
-    $rootScope.$broadcast('request_fast_ping', {'cible' : $scope.cible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_fast_ping'});
   }
 
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
-    $rootScope.$broadcast('request_arp_scan', {'cible' : $scope.cible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_arp_scan'});
   }
 
   $scope.clickScanCIDRTraceroute = function() {
     console.log("emit trace cidr scan request");
-    $rootScope.$broadcast('request_traceroute_cidr_scan', {'cible' : $scope.cible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_traceroute_cidr_scan'});
   }
 
   $scope.clickTraceroute = function() {
     console.log("emit trace scan request");
-    $rootScope.$broadcast('request_traceroute_scan', {});
+    $rootScope.$broadcast('request_scan', {'callScan' : 'request_traceroute_scan'});
   }
 
   $scope.clickScanProfiling = function() {
     console.log("emit profiling scan request");
-    $rootScope.$broadcast('request_profiling_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_profiling_scan'});
   }
 
   $scope.clickScanServices = function() {
     if ($scope.portShow){
       console.log("emit services scan request");
-      $rootScope.$broadcast('request_services_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd});
+      $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd, 'callScan' : 'request_services_scan'});
     }else{
       $scope.portShow = true;
     }
@@ -82,27 +82,27 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.clickScanReversePTR = function() {
     console.log("emit reverse PTR scan request");
-    $rootScope.$broadcast('request_reverse_ptr_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_reverse_ptr_scan'});
   }
 
   $scope.clickScanSSHFingerprint = function() {
     console.log("emit fingerprint SSH scan request");
-    $rootScope.$broadcast('request_fingerprint_ssh_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_fingerprint_ssh_scan'});
   }
 
   $scope.clickScanSMB = function() {
     console.log("emit SMB scan request");
-    $rootScope.$broadcast('request_smb_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_smb_scan'});
   }
 
   $scope.clickScanSNMP = function() {
     console.log("emit SNMP scan request");
-    $rootScope.$broadcast('request_snmp_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_scan'});
   }
 
   $scope.clickScanTracerouteCible = function() {
     console.log("emit traceroutecible scan request");
-    $rootScope.$broadcast('request_trace_cible_scan', {'cible' : $scope.machineCible});
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_trace_cible_scan'});
   }
 
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
@@ -203,6 +203,7 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée Fast Scan
   $scope.getFastScan = function(cible) {
+    $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/fast_scan',
@@ -229,6 +230,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de récupération de donnée scan ARP
   $scope.getARPScan = function(cible) {
+    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/arp_scan',
@@ -255,6 +257,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute CIDR
   $scope.getTracerouteCIDRScan = function(cible) {
+    $scope.$parent.sendToastData('Traceroute CIDR Scan', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/trace_cidr_scan',
@@ -281,6 +284,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute
   $scope.getTracerouteScan = function() {
+    $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan");
     let req = {
       method : 'GET',
       url : '/json/trace_scan',
@@ -305,6 +309,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de profiling machine (OS, device, ...)
   $scope.getProfilingScan = function(cible) {
+    $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/profiling_scan',
@@ -332,6 +337,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de listage des services machine (par port)
   $scope.getServicesScan = function(cible, pstart, pend) {
+    $scope.$parent.sendToastData('Services', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/services_scan',
@@ -358,6 +364,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention du hostname par requête DNS reverse PTR sur cible
   $scope.getReversePTRScan = function(cible) {
+    $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/reverse_ptr_scan',
@@ -384,6 +391,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention de fingerprint SSH par requête SSH sur cible
   $scope.getFingerprintSSHScan = function(cible) {
+    $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/fingerpting_ssh_scan',
@@ -409,6 +417,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   $scope.getSMBScan = function(cible) {
+    $scope.$parent.sendToastData('SMB', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/scan_info_smb',
@@ -434,6 +443,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   }
 
   $scope.getSNMPScan = function(cible) {
+    $scope.$parent.sendToastData('SNMP', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/scan_snmp_info',
@@ -459,6 +469,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   }
 
   $scope.getTraceCibleScan = function(cible) {
+    $scope.$parent.sendToastData('trace cible', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/trace_scan',
@@ -481,6 +492,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(error);
       }
     );
+  }
+
+  // association requête vers nom de fonction
+  $scope.listScanFunc = {
+    'request_fast_ping' : $scope.getFastScan,
+    'request_arp_scan' : $scope.getARPScan ,
+    'request_traceroute_cidr_scan' : $scope.getTracerouteCIDRScan ,
+    'request_traceroute_scan' : $scope.getTracerouteScan ,
+    'request_profiling_scan' : $scope.getProfilingScan ,
+    'request_services_scan' : $scope.getServicesScan ,
+    'request_reverse_ptr_scan' : $scope.getReversePTRScan ,
+    'request_fingerprint_ssh_scan' : $scope.getFingerprintSSHScan ,
+    'request_smb_scan' : $scope.getSMBScan ,
+    'request_snmp_scan' : $scope.getSNMPScan ,
+    'request_trace_cible_scan' : $scope.getTraceCibleScan ,
   }
 
   // partie gestion du graph
@@ -877,59 +903,16 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data(), evt.target.data('type'));
 	});
 
-  $scope.$on('request_fast_ping', function(event, args) {
-    $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
-    $scope.getFastScan(args.cible);
-  });
-
-  $scope.$on('request_arp_scan', function(event, args) {
-    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
-    $scope.getARPScan(args.cible);
-  });
-
-  $scope.$on('request_traceroute_cidr_scan', function(event, args) {
-    $scope.$parent.sendToastData('Traceroute CIDR Scan', "lancement d'un scan");
-    $scope.getTracerouteCIDRScan(args.cible);
-  });
-
-  $scope.$on('request_traceroute_scan', function(event, args) {
-    $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan");
-    $scope.getTracerouteScan();
-  });
-
-  $scope.$on('request_profiling_scan', function(event, args) {
-    $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
-    $scope.getProfilingScan(args.cible);
-  });
-
-  $scope.$on('request_services_scan', function(event, args) {
-    $scope.$parent.sendToastData('Services', "lancement d'un scan");
-    $scope.getServicesScan(args.cible, args.port_start, args.port_end);
-  });
-
-  $scope.$on('request_reverse_ptr_scan', function(event, args) {
-    $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
-    $scope.getReversePTRScan(args.cible);
-  });
-
-  $scope.$on('request_fingerprint_ssh_scan', function(event, args) {
-    $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan");
-    $scope.getFingerprintSSHScan(args.cible);
-  });
-
-  $scope.$on('request_smb_scan', function(event, args) {
-    $scope.$parent.sendToastData('SMB', "lancement d'un scan");
-    $scope.getSMBScan(args.cible);
-  });
-
-  $scope.$on('request_snmp_scan', function(event, args) {
-    $scope.$parent.sendToastData('SNMP', "lancement d'un scan");
-    $scope.getSNMPScan(args.cible);
-  });
-
-  $scope.$on('request_trace_cible_scan', function(event, args) {
-    $scope.$parent.sendToastData('trace cible', "lancement d'un scan");
-    $scope.getTraceCibleScan(args.cible);
+  $scope.$on('request_scan', function(event, args) {
+    if($scope.listScanFunc.hasOwnProperty(args.callScan)) {
+      if(args.hasOwnProperty('port_end')) {
+        $scope.listScanFunc[args.callScan](args.cible, args.port_start, args.port_end);
+      }else if (args.hasOwnProperty('cible')) {
+        $scope.listScanFunc[args.callScan](args.cible);
+      }else {
+        $scope.listScanFunc[args.callScan]();
+      }
+    }
   });
 
   $scope.$on('request_export_json', function(event, args) {
