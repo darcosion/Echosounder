@@ -100,7 +100,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_scan'});
   }
   
-  $scope.clickScanSNMP = function() {
+  $scope.clickScanRDP = function() {
     console.log("emit RDP scan request");
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_rdp_scan'});
   }
