@@ -320,6 +320,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'profiling', response.data['scan']);
+        $scope.updateNodeOS(cible, response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
@@ -541,28 +542,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
     },
     {
-      selector: 'node[data.OS="Windows"]',
+      selector: 'node[data.OS@="Windows"]',
       css: {
         'background-image' : '/static/windows_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
-      selector: 'node[data.OS="Linux/UNIX"]',
+      selector: 'node[data.OS @*= "Linux"]',
       css: {
         'background-image' : '/static/linux_bg.png',
         'background-fit' : 'contain',
       },
     },
     {
-      selector: 'node[data.OS="Linux"]',
-      css: {
-        'background-image' : '/static/linux_bg.png',
-        'background-fit' : 'contain',
-      },
-    },
-    {
-      selector: 'node[data.OS="Unknow"]',
+      selector: 'node[data.OS @= "Unknown"]',
       css: {
         'background-image' : '/static/unknown_bg.png',
         'background-fit' : 'contain',
@@ -839,6 +833,15 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       node_update.data('data')[update_key] = update_data;
     }
   };
+
+  //fonction d'ajout du profiling à l'OS
+  $scope.updateNodeOS = function(ip_node, profiling_data) {
+    let node_update = $scope.cyto.elements("node[data_ip = '" + ip_node + "']");
+    // on vérifie que le noeud existe avant d'y ajouter des choses
+    if(node_update.length != 0) {
+      node_update.data('data')['OS'] = profiling_data.osfamily;
+    }
+  }
 
   // fonction de récupération d'un ID de node via une recherche par IP
   $scope.getNodeIdByIP = function(ip) {
