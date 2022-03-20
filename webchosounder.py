@@ -77,6 +77,14 @@ def scan_services():
     else:
         return jsonify(scan=echosounder.data_creation_services_discovery(request.json['cible'], port_start=request.json['port_start'], port_end=request.json['port_end']))
 
+@app.route('/json/services_fast_scan', methods=['POST'])
+def scan_fast_services():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.retrieve_top_services(request.json['cible']))
+
+
 @app.route('/json/reverse_ptr_scan', methods=['POST'])
 def scan_reverse_ptr():
     if not if_contain_cible(request.json):

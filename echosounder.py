@@ -321,6 +321,26 @@ def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int,
         global_list.append({})
     return global_list
 
+def retrieve_top_services(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    global_list: List[dict] = []
+    try:
+        nmap_scan_result = nm.scan(target_ip, arguments="-F")
+        for i in nm.all_hosts():
+            for protocol in nm[i].all_protocols():
+                for kport, content in nm[i][protocol].items():
+                    global_list.append({
+                        "IP": i,
+                        "protocol" : protocol,
+                        "port" : str(kport),
+                        "result" : nm[i][protocol][kport],
+                    })
+        return global_list
+    except KeyError:
+        global_list.append({})
+    return global_list
+
 def fingerprint_ssh(target_ip):
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
     nmap_scan_result: dict = {}
