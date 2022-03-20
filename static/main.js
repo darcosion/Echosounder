@@ -124,6 +124,8 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.nodedata = undefined;
   $scope.servicedata = undefined;
 
+  $scope.nodeToDelete = false;
+
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
     console.log(node);
     if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
@@ -131,18 +133,18 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
       $scope.showMenu1 = true;
       $scope.showMenu2 = false;
       $scope.showMenu3 = false;
-      // on demande à angularJS d'actualiser sa vue
-      $scope.$apply();
     }else if(typenode == 'Service') {
       $scope.servicedata = node.data;
       $scope.showMenu1 = false;
       $scope.showMenu2 = true;
       $scope.showMenu3 = false;
-      // on demande à angularJS d'actualiser sa vue
-      $scope.$apply();
     }else {
       // on fais rien si on reconnais pas le type de noeud
     }
+    // partie où on traite la suppression du noeud dans le panel de gestion du graph
+    $scope.nodeToDelete = node;
+    // on demande à angularJS d'actualiser sa vue
+    $scope.$apply();
   });
 
   $scope.checkAPI = function() {
@@ -170,7 +172,13 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.actualiseGraph = function() {
     // on fait une demande d'actualisation du graph : 
     $rootScope.$broadcast('request_actualise_graph', {});
-  }
+  };
+
+  $scope.deleteNode = function() {
+    if($scope.nodeToDelete != false) {
+      $rootScope.$broadcast('request_delete_node', {'node' : $scope.nodeToDelete});
+    }
+  };
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -925,6 +933,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on actualise la vue
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
+  });
+
+  $scope.$on('request_delete_node', function(event, args) {
+    // on supprime le noeud
+    $scope.cyto.elements("node[id = '" + args.node.id + "']").remove();
+    // on supprime les liens
+    $scope.cyto.elements("edge[source ='" + args.node.id + "']").remove();
+    $scope.cyto.elements("edge[target ='" + args.node.id + "']").remove();
   });
 
   $scope.getCytoJSON = function() {
