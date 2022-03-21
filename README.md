@@ -45,3 +45,10 @@ Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant u
 
 ### Installation 
 
+```bash
+sudo apt install nmap
+sudo pip3 install -r requirements.txt
+# mise à jour de la base de donnée CIDR -> AS
+python3 asinfo/collectas.py
+```
+
