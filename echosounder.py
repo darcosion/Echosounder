@@ -172,7 +172,7 @@ def append_os_ttl(os_ttl_list, ttl_list) -> None:
         elif ttl_list[z] == 254:
             os_ttl_list.append("Cisco")
         else:
-            os_ttl_list.append("Unknow")
+            os_ttl_list.append("Unknown")
 
 
 def creation_data_nmap(ip_address) -> dict:
