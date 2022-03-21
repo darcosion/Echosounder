@@ -616,6 +616,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         'opacity' : 1,
         'text-wrap': 'wrap',
         'background-fit' : 'contain',
+        'font-family' : 'Hack',
       },
     },
     {
@@ -648,6 +649,30 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       selector: 'node[data.OS @*= "Linux"]',
       css: {
         'background-image' : '/static/linux_bg.png',
+      },
+    },
+    {
+      selector: 'node[data.OS @= "Unknown"]',
+      css: {
+        'background-image' : '/static/unknown_bg.png',
+      },
+    },
+    {
+      selector: 'node[data.OS @= "Android"]',
+      css: {
+        'background-image' : '/static/android_bg.png',
+      },
+    },
+    {
+      selector: 'node[data.OS @= "Mac OS X"]',
+      css: {
+        'background-image' : '/static/mac_bg.png',
+      },
+    },
+    {
+      selector: 'node[data.OS @= "FreeBSD"]',
+      css: {
+        'background-image' : '/static/freebsd_bg.png',
       },
     },
     {
