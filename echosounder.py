@@ -38,7 +38,15 @@ def template() -> dict:
 
     router_hop_1: Optional[str] = conf.route.route("0.0.0.0")[2]
     router_hop_1_mac: Optional[str] = getmacbyip(router_hop_1)
-    return {"local_ip": local_ip, "local_mac": local_mac, "gateway_ip": router_hop_1, "gateway_mac": router_hop_1_mac}
+    gateway_vendor = None
+    with open("ouiinfo/oui.json") as ouijson:
+        OUIJson = json.loads(ouijson.read())
+        ouijson.close()
+        routermacoui = router_hop_1_mac[0:8].replace(':', '').upper()
+        for i in OUIJson:
+            if(routermacoui == i[0]):
+                gateway_vendor = i[1]
+    return {"local_ip": local_ip, "local_mac": local_mac, "gateway_ip": router_hop_1, "gateway_mac": router_hop_1_mac, "gateway_vendor" : gateway_vendor}
 
 
 def reverse_ptr_local_scan(target_ip) -> list:
@@ -213,30 +221,48 @@ def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
 def data_creation_arp_scan(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="ARP")
 
-    for i in range(len(ip_list)):
-        current_ip: str = ip_list[i]
-        current_mac: str = mac_list[i]
-        ip_and_mac_to_dict = {
-            "IP": current_ip,
-            "mac": current_mac,
-        }
-        global_list.append(ip_and_mac_to_dict)
+    with open("ouiinfo/oui.json") as ouijson:
+        OUIJson = json.loads(ouijson.read())
+        ouijson.close()
+        # ici on ajoute le type de OUI par MAC
+        for i in range(len(ip_list)):
+            oui = None
+            ouimac = mac_list[i][0:8].replace(':', '').upper()
+            current_ip: str = ip_list[i]
+            current_mac: str = mac_list[i]
+            ip_and_mac_to_dict = {
+                "IP": current_ip,
+                "mac": current_mac,
+            }
+            for ioui in OUIJson:
+                if(ouimac == ioui[0]):
+                    ip_and_mac_to_dict['vendor'] = ioui[1]
+                    break
+            global_list.append(ip_and_mac_to_dict)
     return global_list
 
 
 def data_creation_fast_ping(target_ip) -> List[dict]:
     ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")
 
-    for i in range(len(ip_list)):
-        current_ip: str = ip_list[i]
-        current_mac: str = mac_list[i]
-        current_os: str = os_list[i]
-        result = {
-            "IP": current_ip,
-            "mac": current_mac,
-            "OS": current_os,
-        }
-        global_list.append(result)
+    with open("ouiinfo/oui.json") as ouijson:
+        OUIJson = json.loads(ouijson.read())
+        ouijson.close()
+        for i in range(len(ip_list)):
+            current_ip: str = ip_list[i]
+            current_mac: str = mac_list[i]
+            ouimac = current_mac[0:8].replace(':', '').upper()
+            current_os: str = os_list[i]
+            result = {
+                "IP": current_ip,
+                "mac": current_mac,
+                "OS": current_os,
+            }
+            for ioui in OUIJson:
+                if(ouimac == ioui[0]):
+                    result['vendor'] = ioui[1]
+                    break
+            global_list.append(result)
     return global_list
 
 def null_session_smb_enumeration(target_ip):

@@ -15,16 +15,16 @@ def get_prefix2as_data():
             break
     data_response = requests.get(url + data_url).content
     data_response = gzip.decompress(data_response)
-    with open('routeviews-prefix2as-latest.pfx2as', 'wb') as filepfx:
+    with open('asinfo/routeviews-prefix2as-latest.pfx2as', 'wb') as filepfx:
         filepfx.write(data_response)
         filepfx.close()
 
 def get_prefix2as_to_json():
-    with open('routeviews-prefix2as-latest.pfx2as', 'r') as filepfx:
+    with open('asinfo/routeviews-prefix2as-latest.pfx2as', 'r') as filepfx:
         list_cidr_as = filepfx.readlines()
         list_cidr_as = [i.rstrip().replace('\t', '/', 1).split('\t') for i in list_cidr_as]
         filepfx.close()
-        with open('routeviews-prefix2as-latest.json', 'w') as filejson:
+        with open('asinfo/routeviews-prefix2as-latest.json', 'w') as filejson:
             filejson.write(json.dumps(list_cidr_as))
             filejson.close()
 
