@@ -104,6 +104,16 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     console.log("emit SNMP scan request");
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_scan'});
   }
+
+  $scope.clickScanSNMPnetstat = function() {
+    console.log("emit SNMP scan request");
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_netstat_scan'});
+  }
+
+  $scope.clickScanSNMPprocess = function() {
+    console.log("emit SNMP scan request");
+    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_process_scan'});
+  }
   
   $scope.clickScanRDP = function() {
     console.log("emit RDP scan request");
@@ -497,7 +507,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   }
 
   $scope.getSNMPScan = function(cible) {
-    $scope.$parent.sendToastData('SNMP', "lancement d'un scan");
+    $scope.$parent.sendToastData('SNMP info', "lancement d'un scan");
     let req = {
       method : 'POST',
       url : '/json/scan_snmp_info',
@@ -521,6 +531,58 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       }
     );
   }
+
+  $scope.getSNMPnetstatScan = function(cible) {
+    $scope.$parent.sendToastData('SNMP netstat', "lancement d'un scan");
+    let req = {
+      method : 'POST',
+      url : '/json/scan_snmp_netstat',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('SNMP netstat', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'snmp_nestat', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('SNMP netstat', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
+  $scope.getSNMPprocessScan = function(cible) {
+    $scope.$parent.sendToastData('SNMP process', "lancement d'un scan");
+    let req = {
+      method : 'POST',
+      url : '/json/scan_snmp_processes',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('SNMP process', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'snmp_process', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('SNMP process', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
 
   $scope.getRDPScan = function(cible) {
     $scope.$parent.sendToastData('RDP', "lancement d'un scan");
@@ -618,6 +680,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_fingerprint_ssh_scan' : $scope.getFingerprintSSHScan ,
     'request_smb_scan' : $scope.getSMBScan ,
     'request_snmp_scan' : $scope.getSNMPScan ,
+    'request_snmp_netstat_scan' : $scope.getSNMPnetstatScan ,
+    'request_snmp_process_scan' : $scope.getSNMPprocessScan ,
     'request_rdp_scan' : $scope.getRDPScan,
     'request_trace_cible_scan' : $scope.getTraceCibleScan,
     'request_resolve_as_scan': $scope.getResolveAS,
