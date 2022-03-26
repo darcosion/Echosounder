@@ -720,8 +720,19 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       selector: ':parent',
       css: {
         'text-valign': 'top',
-        'text-halign': 'center',
+        'text-halign': 'center', 
         'background-opacity': '0',
+      },
+    },
+    {
+      selector: 'node:selected',
+      css: {
+        'border-width' : 2,
+        'border-style' : 'solid',
+        'border-color' : '#3e908e', // --widget-blue1
+        'ghost' : 'yes',
+        "ghost-offset-y": 1,
+        'ghost-opacity': 0.4,
       },
     },
     {
