@@ -166,17 +166,21 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   };
 
   $scope.importJSON= function() {
-    document.getElementById('echo_json_upload').click();
-    let f = document.getElementById('echo_json_upload').files[0],
-        r = new FileReader();
+    if(document.getElementById('echo_json_upload').files.length == 0) {
+      document.getElementById('echo_json_upload').click();
+    }else {
+      let f = document.getElementById('echo_json_upload').files[0],
+          r = new FileReader();
 
-    r.onloadend = function(e) {
-      let data = e.target.result;
-      // On envoie le fichier
-      $rootScope.$broadcast('request_import_json', {'file' : data});
+      r.onloadend = function(e) {
+        let data = e.target.result;
+        // On envoie le fichier
+        $rootScope.$broadcast('request_import_json', {'file' : data});
+      }
+
+      r.readAsBinaryString(f);
+      document.getElementById('echo_json_upload').value = "";
     }
-
-    r.readAsBinaryString(f);
   };
 
   $scope.actualiseGraph = function() {
