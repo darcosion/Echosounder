@@ -115,6 +115,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_trace_cible_scan'});
   }
 
+  $scope.clickResolveAS = function() {
+    console.log("emit resolve AS scan request");
+    $rootScope.$broadcast('request_scan', {'callScan' : 'request_resolve_as_scan'});
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -569,6 +574,37 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   }
 
+  $scope.getResolveAS = function() {
+    $scope.cyto.elements('node[type = "AS"]').forEach(function(node) {
+      if(node.data('as_resolution')){
+        return; // si la résolution à déjà été faite, on s'épargne de la refaire
+      }
+      // on crée une requête
+      let req = {
+        method : 'GET',
+        url : 'https://rdap.arin.net/registry/autnum/' + node.data('label'),
+        headers: {'Content-Type': 'application/rdap+json'},
+      };
+      // on récupère les info d'AS
+      $http(req).then(
+        // si la requête passe :
+        function(response) {
+          $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP");
+          console.log(response.data);
+          // on les fout dans le label du noeud
+          node.data('label', node.data('label') + " " + response.data.name);
+          // on spécifie que la résolution a été effectué
+          node.data('as_resolution', true);
+        },
+        // si la requête échoue :
+        function(error) {
+          $scope.$parent.sendToastData('AS Resolution', "erreur : " + error);
+          console.log(error);
+        }
+      );
+    });
+  }
+
   // association requête vers nom de fonction
   $scope.listScanFunc = {
     'request_fast_ping' : $scope.getFastScan,
@@ -584,6 +620,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_snmp_scan' : $scope.getSNMPScan ,
     'request_rdp_scan' : $scope.getRDPScan,
     'request_trace_cible_scan' : $scope.getTraceCibleScan,
+    'request_resolve_as_scan': $scope.getResolveAS,
   }
 
   // partie gestion du graph

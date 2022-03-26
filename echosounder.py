@@ -26,7 +26,6 @@ def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
 
-
 def template() -> dict:
     """
     grab the
