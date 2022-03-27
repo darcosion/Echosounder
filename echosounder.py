@@ -57,7 +57,6 @@ def reverse_ptr_local_scan(target_ip) -> list:
         for rdata in answers:
             list_ptr.append(str(rdata))
     except Exception as e:
-        print(e)
         list_ptr.append('no ptr')
     return list_ptr
 
@@ -485,7 +484,6 @@ def traceroute_scan(target='142.250.75.238') -> List[dict]:
                         elif(as_retrieved == i[1]):
                             None
                         else:
-                            print(list_return_ip)
                             return list_return_ip
                         list_return_ip.append([v[0], [str(i[0]), i[1]]])
                         break
