@@ -735,7 +735,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     {
       selector: 'node[type="IP"]',
       css: {
-        'background-image' : '/static/ip_bg.png',
+        'background-image' : '/static/img/icone/ip_bg.png',
       },
     },
     {
@@ -743,49 +743,49 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       css: {
         'width': '20px',
         'height': '20px',
-        'background-image' : '/static/service_bg.png',
+        'background-image' : '/static/img/icone/service_bg.png',
       },
     },
     {
       selector: 'node[label*="gateway"]',
       css: {
-        'background-image' : '/static/gateway_bg.png',
+        'background-image' : '/static/img/icone/gateway_bg.png',
       },
     },
     {
       selector: 'node[data.OS@="Windows"]',
       css: {
-        'background-image' : '/static/windows_bg.png',
+        'background-image' : '/static/img/icone/windows_bg.png',
       },
     },
     {
       selector: 'node[data.OS @*= "Linux"]',
       css: {
-        'background-image' : '/static/linux_bg.png',
+        'background-image' : '/static/img/icone/linux_bg.png',
       },
     },
     {
       selector: 'node[data.OS @= "Unknown"]',
       css: {
-        'background-image' : '/static/unknown_bg.png',
+        'background-image' : '/static/img/icone/unknown_bg.png',
       },
     },
     {
       selector: 'node[data.OS @*= "Android"]',
       css: {
-        'background-image' : '/static/android_bg.png',
+        'background-image' : '/static/img/icone/android_bg.png',
       },
     },
     {
       selector: 'node[data.OS @*= "Mac OS X"]',
       css: {
-        'background-image' : '/static/mac_bg.png',
+        'background-image' : '/static/img/icone/mac_bg.png',
       },
     },
     {
       selector: 'node[data.OS @*= "BSD"]',
       css: {
-        'background-image' : '/static/freebsd_bg.png',
+        'background-image' : '/static/img/icone/freebsd_bg.png',
       },
     },
     {

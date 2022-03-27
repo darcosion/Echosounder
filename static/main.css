@@ -172,32 +172,32 @@ header > center > div > img{
 }
 
 .menu_btn_left_1{
-  background-image: url('menu_left_icon_1.png') !important;
+  background-image: url('img/icone/menu_left_icon_1.png') !important;
   background-size: cover;
 }
 
 .menu_btn_left_2{
-  background-image: url('menu_left_icon_2.png') !important;
+  background-image: url('img/icone/menu_left_icon_2.png') !important;
   background-size: cover;
 }
  
 .menu_btn_left_3{
-  background-image: url('menu_left_icon_3.png') !important;
+  background-image: url('img/icone/menu_left_icon_3.png') !important;
   background-size: cover;
 }
 
 .menu_btn_right_1{
-  background-image: url('menu_right_icon_1.png') !important;
+  background-image: url('img/icone/menu_right_icon_1.png') !important;
   background-size: cover;
 }
 
 .menu_btn_right_2{
-  background-image: url('menu_right_icon_2.png') !important;
+  background-image: url('img/icone/menu_right_icon_2.png') !important;
   background-size: cover;
 }
 
 .menu_btn_right_3{
-  background-image: url('menu_right_icon_3.png') !important;
+  background-image: url('img/icone/menu_right_icon_3.png') !important;
   background-size: cover;
 }
 

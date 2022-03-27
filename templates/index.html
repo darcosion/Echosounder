@@ -3,28 +3,28 @@
   <head>
     <meta charset ="UTF-8">
   	<title>Echosounder</title>
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css')}}" />
-    <script type="text/javascript" src="{{ url_for('static', filename='cytoscape.min.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='layout-base.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='cose-base.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='cytoscape-fcose.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='ipaddr.min.js')}}"></script>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}" />
+    <script type="text/javascript" src="{{ url_for('static', filename='js/cytoscape.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/layout-base.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/cose-base.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/cytoscape-fcose.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/ipaddr.min.js')}}"></script>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='angular.min.js')}}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='angular-animate.min.js')}}"></script>
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='angular-csp.min.css')}}"></link>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/angular.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/angular-animate.min.js')}}"></script>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/angular-csp.min.css')}}"></link>
 
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='normalize.css')}}"></link>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css')}}"></link>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png')}}"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icone/favicon.png')}}"/>
 
   </head>
   <body id="backgroundquadrillage" ng-controller="ParentCtrl">
     <!-- barre de menu affichant juste le titre du logiciel -->
     <header>
       <center><div>
-        <img src="{{ url_for('static', filename='white_icon.png')}}"/>
+        <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
         Echosounder analyser</div></center>
     </header>
 
