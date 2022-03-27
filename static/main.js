@@ -149,7 +149,6 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.nodedata = undefined;
   $scope.servicedata = undefined;
 
-  $scope.nodeToDelete = false;
 
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
     console.log(node);
@@ -166,8 +165,6 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     }else {
       // on fais rien si on reconnais pas le type de noeud
     }
-    // partie où on traite la suppression du noeud dans le panel de gestion du graph
-    $scope.nodeToDelete = node;
     // on demande à angularJS d'actualiser sa vue
     $scope.$apply();
   });
@@ -211,10 +208,8 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_actualise_graph', {});
   };
 
-  $scope.deleteNode = function() {
-    if($scope.nodeToDelete != false) {
-      $rootScope.$broadcast('request_delete_node', {'node' : $scope.nodeToDelete});
-    }
+  $scope.deleteSelection = function() {
+    $rootScope.$broadcast('request_delete_selection', {});
   };
 });
 
@@ -1114,11 +1109,6 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data(), evt.target.data('type'));
 	});
 
-  $scope.cyto.on('box', 'node', function(evt) {
-    console.log("boxselect");
-    console.log(evt);
-  })
-
   $scope.$on('request_scan', function(event, args) {
     if($scope.listScanFunc.hasOwnProperty(args.callScan)) {
       if(args.hasOwnProperty('port_end')) {
@@ -1158,12 +1148,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.layout.run();
   });
 
-  $scope.$on('request_delete_node', function(event, args) {
-    // on supprime le noeud
-    $scope.cyto.elements("node[id = '" + args.node.id + "']").remove();
-    // on supprime les liens
-    $scope.cyto.elements("edge[source ='" + args.node.id + "']").remove();
-    $scope.cyto.elements("edge[target ='" + args.node.id + "']").remove();
+  $scope.$on('request_delete_selection', function(event, args) {
+    $scope.cyto.elements('node:selected').remove();
   });
 
   $scope.getCytoPNG = function() {
