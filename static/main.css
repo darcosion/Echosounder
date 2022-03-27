@@ -28,9 +28,9 @@
   display: initial!important;
 }
 /* Import de police */
-@font-face {font-family: "GuessSansW00-Medium"; src: url("title-font.ttf");  }
-@font-face {font-family: "HackerArgot"; src: url("hackerargot.ttf");  } 
-@font-face {font-family: "Hack"; src: url("Hack.ttf");  } 
+@font-face {font-family: "GuessSansW00-Medium"; src: url("fonts/title-font.ttf");  }
+@font-face {font-family: "HackerArgot"; src: url("fonts/hackerargot.ttf");  } 
+@font-face {font-family: "Hack"; src: url("fonts/Hack.ttf");  } 
   
 /* règles CSS de base */
 html {
