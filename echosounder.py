@@ -5,6 +5,7 @@ from typing import Optional, List, Tuple
 import json
 import ipaddress
 import platform
+
 import dns.resolver, dns.reversename
 import nmap
 import scapy
