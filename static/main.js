@@ -1114,6 +1114,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data(), evt.target.data('type'));
 	});
 
+  $scope.cyto.on('box', 'node', function(evt) {
+    console.log("boxselect");
+    console.log(evt);
+  })
+
   $scope.$on('request_scan', function(event, args) {
     if($scope.listScanFunc.hasOwnProperty(args.callScan)) {
       if(args.hasOwnProperty('port_end')) {
