@@ -176,6 +176,14 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     $scope.$parent.getHealth();
   }
 
+  $scope.exportPNG = function() {
+    $rootScope.$broadcast('request_export_png', {});
+  };
+
+  $scope.exportJPG = function() {
+    $rootScope.$broadcast('request_export_jpg', {});
+  };
+
   $scope.exportJSON= function() {
     $rootScope.$broadcast('request_export_json', {});
   };
@@ -1118,6 +1126,16 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     }
   });
 
+  $scope.$on('request_export_png', function(event, args) {
+    console.log("lancement d'un export PNG");
+    $scope.getCytoPNG();
+  });
+
+  $scope.$on('request_export_jpg', function(event, args) {
+    console.log("lancement d'un export JPG");
+    $scope.getCytoJPG();
+  });
+
   $scope.$on('request_export_json', function(event, args) {
     console.log("lancement d'un export JSON");
     $scope.getCytoJSON();
@@ -1142,6 +1160,38 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.cyto.elements("edge[source ='" + args.node.id + "']").remove();
     $scope.cyto.elements("edge[target ='" + args.node.id + "']").remove();
   });
+
+  $scope.getCytoPNG = function() {
+    $scope.cyto.png({output : 'blob-promise'}).then(function(data) {
+      let element = document.createElement('a');
+      element.setAttribute('href', window.URL.createObjectURL(data));
+      element.setAttribute('download', "graph.png");
+      element.style.display = 'none';
+      document.body.appendChild(element);
+    
+      element.click();
+    
+      document.body.removeChild(element);
+    }).catch(function(error ) {
+      console.log(error);
+    });
+  };
+
+  $scope.getCytoJPG = function() {
+    $scope.cyto.jpg({output : 'blob-promise'}).then(function(data) {
+      let element = document.createElement('a');
+      element.setAttribute('href', window.URL.createObjectURL(data));
+      element.setAttribute('download', "graph.jpg");
+      element.style.display = 'none';
+      document.body.appendChild(element);
+    
+      element.click();
+    
+      document.body.removeChild(element);
+    }).catch(function(error ) {
+      console.log(error);
+    });
+  };
 
   $scope.getCytoJSON = function() {
     let element = document.createElement('a');
