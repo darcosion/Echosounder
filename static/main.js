@@ -93,7 +93,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.clickTraceroute = function() {
     console.log("emit trace scan request");
-    $scope.sendBroadcastScan('None', 'request_traceroute_cidr_scan');
+    $scope.sendBroadcastScan('None', 'request_traceroute_scan');
   }
 
   $scope.clickTracerouteLocal = function() {
@@ -195,8 +195,6 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.$parent.$watch('nodesSelected', function(test) {
     console.log(test);
   });
-
-
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
@@ -383,26 +381,48 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute
   $scope.getTracerouteScan = function() {
     $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan");
-    let req = {
-      method : 'GET',
-      url : '/json/trace_scan',
-    };
+    let list_root_server_ip =  [
+      "198.41.0.4",
+      "199.9.14.201",
+      "192.33.4.12",
+      "199.7.91.13",
+      "192.203.230.10",
+      "192.5.5.241",
+      "192.112.36.4",
+      "198.97.190.53",
+      "192.36.148.17",
+      "192.58.128.30",
+      "193.0.14.129",
+      "199.7.83.42",
+      "202.12.27.33",
+    ];
+    list_root_server_ip.forEach(function(cible, index) {
+      let interval = 5000; // 5 secondes entre chaque scan
+      setTimeout(function () {
+        let req = {
+          method : 'POST',
+          url : '/json/trace_scan',
+          headers: {'Content-Type': 'application/json'},
+          data : {'cible' : cible},
+        };
 
-    $http(req).then(
-      // si la requête passe :
-      
-      function(response) {
-        $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan");
-        console.log(response.data);
-        // on appel la fonction de création de graphs :
-        $scope.createCytoTraceGraph(response.data);
-      },
-      // si la requête échoue :
-      function(error) {
-        $scope.$parent.sendToastData('Traceroute Scan', "erreur Scan : " + error);
-        console.log(error);
-      }
-    );
+        $http(req).then(
+          // si la requête passe :
+          
+          function(response) {
+            $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan");
+            console.log(response.data);
+            // on appel la fonction de création de graphs :
+            $scope.createCytoTraceGraph(response.data);
+          },
+          // si la requête échoue :
+          function(error) {
+            $scope.$parent.sendToastData('Traceroute Scan', "erreur Scan : " + error);
+            console.log(error);
+          }
+        );
+      }, index * interval);
+    });
   };
 
   // fonction d'obtention d'IP des réseaux locaux (ou opérateurs) via traceroute
