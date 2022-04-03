@@ -178,6 +178,10 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     }
   };
 
+  $scope.deleteAllIPSelected = function() {
+    $scope.$parent.nodesSelected = [];
+  }
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;

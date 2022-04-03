@@ -171,6 +171,10 @@ header > center > div > img{
   color: var(--micro-text);
 }
 
+.echo_scan_delete_ips {
+  background-color: #010b0d;
+}
+
 .echo_ip_selected {
   border-radius: 3px;
   padding-left: 5px;
@@ -178,7 +182,7 @@ header > center > div > img{
   margin-right: 2px;
   margin-left: 2px;
   margin-bottom: 4px;
-  background-image: linear-gradient(to left, #3e908e, #225757);;
+  background-image: linear-gradient(to left, #3e908e, #225757);
 }
 
 .echo_ip_selected > i {
@@ -190,6 +194,24 @@ header > center > div > img{
 .echo_ip_selected > i:hover {
   background-color: #bac9b0;
   color:#0d1718;
+}
+
+.button_ip_delete_all {
+  margin-top: 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+  text-align: center;
+  border-radius: 3px;
+  background-image: linear-gradient(to left, #3e908e, #225757);
+  transition: all linear 0.5s;
+}
+
+
+.button_ip_delete_all:hover {
+  background-color: #bac9b0;
+  color:#0d1718;
+  background-image: linear-gradient(to left, #225757, #3e908e);
+  box-shadow: rgba(43, 107, 106, 0.4) 0 8px 15px;
 }
 
 .menu_btn_left_1{
