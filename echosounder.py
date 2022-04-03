@@ -489,7 +489,6 @@ def traceroute_scan(target='142.250.75.238') -> List[dict]:
                         break
     return list_return_ip
 
-
 if __name__ == "__main__":
     print("TEST")
     # data_creation_fast_ping('192.168.1.0/24')

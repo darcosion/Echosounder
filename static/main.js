@@ -66,6 +66,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_scan', {'callScan' : 'request_traceroute_scan'});
   }
 
+  $scope.clickTracerouteLocal = function() {
+    console.log("emit trace local scan request");
+    $rootScope.$broadcast('request_scan', {'callScan' : 'request_traceroute_local_scan'});
+  }
+
   $scope.clickScanProfiling = function() {
     console.log("emit profiling scan request");
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_profiling_scan'});
@@ -345,6 +350,51 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(error);
       }
     );
+  };
+
+  // fonction d'obtention d'IP des réseaux locaux (ou opérateurs) via traceroute
+  $scope.getTracerouteLocalScan = function() {
+    $scope.$parent.sendToastData('Traceroute Local Scan', "lancement d'un scan");
+    let list_local_cidr = [
+        "0.0.0.0/8", 
+        "100.64.0.0/10",
+        "127.0.0.0/8", 
+        "169.254.0.0/16", 
+        "192.0.0.0/24", 
+        "192.0.2.0/24", 
+        "192.88.99.0/24",
+        "198.18.0.0/15", 
+        "198.51.100.0/24", 
+        "203.0.113.0/24",
+        "224.0.0.0/4", 
+        "233.252.0.0/24", 
+        "240.0.0.0/4", 
+        "255.255.255.255/32",
+    ];
+    list_local_cidr.forEach(function(cidr) {
+      let req = {
+        method : 'POST',
+        url : '/json/trace_cidr_scan',
+        headers: {'Content-Type': 'application/json'},
+        data : {'cible' : cidr},
+      }
+  
+      $http(req).then(
+        // si la requête passe :
+        
+        function(response) {
+          $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan");
+          console.log(response.data);
+          // on appel la fonction de création de graphs :
+          $scope.createCytoTraceCIDRGraph(response.data);
+        },
+        // si la requête échoue :
+        function(error) {
+          $scope.$parent.sendToastData('Traceroute Local Scan', "erreur Scan : " + error);
+          console.log(error);
+        }
+      );
+    });
   };
 
   // fonctions de profiling machine (OS, device, ...)
@@ -676,6 +726,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_arp_scan' : $scope.getARPScan ,
     'request_traceroute_cidr_scan' : $scope.getTracerouteCIDRScan ,
     'request_traceroute_scan' : $scope.getTracerouteScan ,
+    'request_traceroute_local_scan' : $scope.getTracerouteLocalScan ,
     'request_profiling_scan' : $scope.getProfilingScan ,
     'request_services_scan' : $scope.getServicesScan ,
     'request_services_fast_scan' : $scope.getServicesFastScan ,
