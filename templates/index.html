@@ -61,6 +61,7 @@
         </div>
         <div class="container echo_scan_panel" ng-show="nodesSelected.length > 0">
           <span ng-repeat="i in nodesSelected" class="echo_ip_selected">{{"{{i}}"}} <i class="las la-window-close" ng-click="deleteIPSelected(i)"></i></span>
+          <div class="container button_ip_delete_all" ng-click="deleteAllIPSelected()"><i class="las la-trash-alt"></i> Effacer sélection</div>
           <div class="container echo_menu_subtitle"></div>
         </div>
         <div class="container echo_scan_panel"> 
