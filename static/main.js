@@ -388,33 +388,36 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         "198.51.100.0/24", 
         "203.0.113.0/24",
         "224.0.0.0/4", 
-        "233.252.0.0/24", 
+        "233.252.0.0/24",
         "240.0.0.0/4", 
         "255.255.255.255/32",
     ];
-    list_local_cidr.forEach(function(cidr) {
-      let req = {
-        method : 'POST',
-        url : '/json/trace_cidr_scan',
-        headers: {'Content-Type': 'application/json'},
-        data : {'cible' : cidr},
-      }
-  
-      $http(req).then(
-        // si la requête passe :
-        
-        function(response) {
-          $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan");
-          console.log(response.data);
-          // on appel la fonction de création de graphs :
-          $scope.createCytoTraceCIDRGraph(response.data);
-        },
-        // si la requête échoue :
-        function(error) {
-          $scope.$parent.sendToastData('Traceroute Local Scan', "erreur Scan : " + error);
-          console.log(error);
+    list_local_cidr.forEach(function(cidr, index) {
+      let interval = 5000; // 5 secondes entre chaque scan
+      setTimeout(function () {
+        let req = {
+          method : 'POST',
+          url : '/json/trace_cidr_scan',
+          headers: {'Content-Type': 'application/json'},
+          data : {'cible' : cidr},
         }
-      );
+
+        $http(req).then(
+          // si la requête passe :
+          
+          function(response) {
+            $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan");
+            console.log(response.data);
+            // on appel la fonction de création de graphs :
+            $scope.createCytoTraceCIDRGraph(response.data);
+          },
+          // si la requête échoue :
+          function(error) {
+            $scope.$parent.sendToastData('Traceroute Local Scan', "erreur Scan : " + error);
+            console.log(error);
+          }
+        );
+      }, index * interval);
     });
   };
 

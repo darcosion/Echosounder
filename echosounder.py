@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys, shutil
+import sys, shutil, itertools
 from typing import Optional, List, Tuple
 import json
 import ipaddress
@@ -453,12 +453,13 @@ def data_creation_services_discovery(target_ip, port_start: int = 0, port_end: i
     return retrieve_services_from_scan(target_ip, port_start=port_start, port_end=port_end)
 
 def traceroute_cidr_scan(targetcidr) -> List[List[dict]]:
-    targetcidr = list(ipaddress.IPv4Network(targetcidr).hosts())
+    targetcidr = ipaddress.IPv4Network(targetcidr).hosts()
     result = []
-    slicer = len(targetcidr) // 4 # sert de "pas" pour ne prendre que 5 IP
+    slicer = sum(1 for x in targetcidr) // 4 # sert de "pas" pour ne prendre que 5 IP au max
     if(slicer < 1):
         slicer = 1
-    for i in targetcidr[::slicer]: # parcours la range 5 fois via le slicer
+    for i in itertools.islice(targetcidr, 0, None, slicer): # parcours la range 5 fois via le slicer
+        print(i)
         result.append(traceroute_scan(str(i)))
     return result
 
