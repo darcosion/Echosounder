@@ -48,41 +48,68 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.portStart = "0"
   $scope.portEnd = "400"
 
+  $scope.sendBroadcastScan = function(typeParam, callScanParam) {
+    if(typeParam == 'cidr') {
+      $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : callScanParam});
+    }else if (typeParam.startsWith('IP')) {
+      if($scope.$parent.nodesSelected.length == 0) {
+        $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : callScanParam});
+      }else {
+        $scope.$parent.nodesSelected.forEach(function(machinesCible) {
+          $rootScope.$broadcast('request_scan', {'cible' : machinesCible, 'callScan' : callScanParam});
+        });
+      }
+    }else if(typeParam == 'IP_ports'){
+      if($scope.$parent.nodesSelected.length == 0) {
+        $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd, 'callScan' : callScanParam});
+      }else {
+        $scope.$parent.nodesSelected.forEach(function(machinesCible) {
+          $rootScope.$broadcast('request_scan', {'cible' : machinesCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd, 'callScan' : callScanParam});
+        });
+      }
+    }else if(typeParam == 'None'){
+      $rootScope.$broadcast('request_scan', {'callScan' : callScanParam});
+    }else {
+      console.log("Erreur, type de scan non reconnu");
+      console.log(typeParam);
+      console.log(callScanParam);
+    }
+  };
 
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_fast_ping'});
+    $scope.sendBroadcastScan('cidr', 'request_fast_ping');
   }
 
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_arp_scan'});
+    $scope.sendBroadcastScan('cidr', 'request_arp_scan');
   }
 
   $scope.clickScanCIDRTraceroute = function() {
     console.log("emit trace cidr scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : 'request_traceroute_cidr_scan'});
+    $scope.sendBroadcastScan('cidr', 'request_traceroute_cidr_scan');
   }
 
   $scope.clickTraceroute = function() {
     console.log("emit trace scan request");
-    $rootScope.$broadcast('request_scan', {'callScan' : 'request_traceroute_scan'});
+    $scope.sendBroadcastScan('None', 'request_traceroute_cidr_scan');
   }
 
   $scope.clickTracerouteLocal = function() {
     console.log("emit trace local scan request");
-    $rootScope.$broadcast('request_scan', {'callScan' : 'request_traceroute_local_scan'});
+    $scope.sendBroadcastScan('None', 'request_traceroute_local_scan');
   }
 
   $scope.clickScanProfiling = function() {
     console.log("emit profiling scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_profiling_scan'});
+    $scope.sendBroadcastScan('IP', 'request_profiling_scan');
   }
 
   $scope.clickScanServices = function() {
     if ($scope.portShow){
       console.log("emit services scan request");
-      $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'port_start' : $scope.portStart, 'port_end' : $scope.portEnd, 'callScan' : 'request_services_scan'});
+      $scope.sendBroadcastScan('IP_ports', 'request_services_scan');
     }else{
       $scope.portShow = true;
     }
@@ -90,57 +117,58 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.clickScanFastServices = function() {
     console.log("emit services fast scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_services_fast_scan'});
+    $scope.sendBroadcastScan('IP', 'request_services_fast_scan');
   }
 
   $scope.clickScanReversePTR = function() {
     console.log("emit reverse PTR scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_reverse_ptr_scan'});
+    $scope.sendBroadcastScan('IP', 'request_reverse_ptr_scan');
   }
 
   $scope.clickScanSSHFingerprint = function() {
     console.log("emit fingerprint SSH scan request");
+    $scope.sendBroadcastScan('IP', 'request_fingerprint_ssh_scan');
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_fingerprint_ssh_scan'});
   }
 
   $scope.clickScanSMB = function() {
     console.log("emit SMB scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_smb_scan'});
+    $scope.sendBroadcastScan('IP', 'request_smb_scan');
   }
 
   $scope.clickScanSNMP = function() {
     console.log("emit SNMP scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_scan'});
+    $scope.sendBroadcastScan('IP', 'request_snmp_scan');
   }
 
   $scope.clickScanSNMPnetstat = function() {
     console.log("emit SNMP scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_netstat_scan'});
+    $scope.sendBroadcastScan('IP', 'request_snmp_netstat_scan');
   }
 
   $scope.clickScanSNMPprocess = function() {
     console.log("emit SNMP scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_snmp_process_scan'});
+    $scope.sendBroadcastScan('IP', 'request_snmp_process_scan');
   }
   
   $scope.clickScanRDP = function() {
     console.log("emit RDP scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_rdp_scan'});
+    $scope.sendBroadcastScan('IP', 'request_rdp_scan');
   }
 
   $scope.clickScanTracerouteCible = function() {
     console.log("emit traceroutecible scan request");
-    $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_trace_cible_scan'});
+    $scope.sendBroadcastScan('IP', 'request_trace_cible_scan');
   }
 
   $scope.clickResolveAS = function() {
     console.log("emit resolve AS scan request");
-    $rootScope.$broadcast('request_scan', {'callScan' : 'request_resolve_as_scan'});
+    $scope.sendBroadcastScan('None', 'request_resolve_as_scan');
   }
 
   $scope.getSelectionScan = function() {
     console.log("emit get selection request");
-    $rootScope.$broadcast('request_scan', {'callScan' : 'request_selection_scan'});
+    $scope.sendBroadcastScan('None', 'request_selection_scan');
   }
 
   $scope.deleteIPSelected = function(ip) {
