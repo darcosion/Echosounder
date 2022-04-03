@@ -30,6 +30,9 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   };
 
   $scope.getHealth();
+
+  // variable de sélection multiple de noeuds pour scan
+  $scope.nodesSelected = [];
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
@@ -135,6 +138,18 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_scan', {'callScan' : 'request_resolve_as_scan'});
   }
 
+  $scope.getSelectionScan = function() {
+    console.log("emit get selection request");
+    $rootScope.$broadcast('request_scan', {'callScan' : 'request_selection_scan'});
+  }
+
+  $scope.deleteIPSelected = function(ip) {
+    let index = $scope.$parent.nodesSelected.indexOf(ip);
+    if(index != -1) {
+      $scope.$parent.nodesSelected.splice(index, 1);
+    }
+  };
+
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
       $scope.machineCible = nodedata.data_ip;
@@ -144,6 +159,12 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
       $scope.$apply();
     }
   });
+
+  $scope.$parent.$watch('nodesSelected', function(test) {
+    console.log(test);
+  });
+
+
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
@@ -720,6 +741,15 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     });
   }
 
+  // fonction de récupération des IP à scanner pour le panel de scan d'ip.
+  $scope.getSelectionScan = function() {
+    let list_ip = [];
+    $scope.cyto.elements('node[type="IP"]:selected').forEach(function(node) {
+      list_ip.push(node.data('data_ip'));
+    });
+    $scope.$parent.nodesSelected = list_ip;
+  };
+
   // association requête vers nom de fonction
   $scope.listScanFunc = {
     'request_fast_ping' : $scope.getFastScan,
@@ -739,6 +769,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_rdp_scan' : $scope.getRDPScan,
     'request_trace_cible_scan' : $scope.getTraceCibleScan,
     'request_resolve_as_scan': $scope.getResolveAS,
+    'request_selection_scan': $scope.getSelectionScan,
   }
 
   // partie gestion du graph
@@ -1130,6 +1161,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.getNodeIdByIP = function(ip) {
     return $scope.cyto.elements('node[data_ip = "' + ip + '"]').data('id');
   };
+
   // Fonction de récupération d'un VLAN via une recherche par IP
   $scope.getVLANByIP = function(ip) {
     let listVLAN = [];
@@ -1146,13 +1178,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         return element[0] + "/" + element[1];
       }
     }
-  }
-
-  $scope.getASByIP = function(ip) {
-    let url = '/json/ip_to_as/' + ip;
-    // retourne une promesse, donc on utilise getASByIP(ip).then(function(data) {...})
-    return $http.get(url, {"headers":{'Content-Type': 'application/json'}});
-  }
+  };
 
   // évènement en cas de clic sur un noeud :
 	$scope.cyto.on('tap', 'node', function(evt){

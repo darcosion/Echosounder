@@ -16,6 +16,8 @@
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css')}}"></link>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/line-awesome.min.css')}}">
+
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='main.css')}}"></link>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icone/favicon.png')}}"/>
 
@@ -53,9 +55,13 @@
       <div class="d-flex flex-wrap echo_menu_left ng-hide" ng-show="showMenu2">
         <div class="container echo_menu_title">Scan machine</div>
         <!-- Ensemble des boutons de scan d'une machine spécifique -->
-        <div class="container echo_scan_cible">
+        <div class="container echo_scan_cible" ng-hide="nodesSelected.length > 0">
           <input class="echo_input_effect" type="text" name="cible_machine_cible" placeholder="ip" ng-model="machineCible" required>
           <label for="name" class="echo_input_effect_label">IP CIBLE</label>
+        </div>
+        <div class="container echo_scan_panel" ng-show="nodesSelected.length > 0">
+          <span ng-repeat="i in nodesSelected" class="echo_ip_selected">{{"{{i}}"}} <i class="las la-window-close" ng-click="deleteIPSelected(i)"></i></span>
+          <div class="container echo_menu_subtitle"></div>
         </div>
         <div class="container echo_scan_panel"> 
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanProfiling()">Scan profiling</div>
@@ -76,6 +82,8 @@
           </div>
           <div class="echo_button_scan hvr-hollow"  ng-click="clickScanServices()">Scan services</div>
           <div class="echo_button_scan hvr-hollow"  ng-click="clickScanFastServices()">Scan common services</div>
+          <div class="container echo_menu_subtitle"></div>
+          <div class="echo_button_scan hvr-hollow" ng-click="getSelectionScan()">Récupérer sélection à scanner</div>
         </div>
       </div>
       <!-- menu de scan spécifique -->
@@ -113,15 +121,15 @@
       <div class="d-flex flex-wrap echo_menu_right ng-hide" ng-show="showMenu3">
         <div class="container echo_menu_title">Manipulations du graph</div>
         <input class="echo_to_hide" type="file" id="echo_json_upload" name="file"/>
-        <div class="echo_button_scan hvr-hollow" ng-click="checkAPI()">check API</div>
-        <div class="echo_button_scan hvr-hollow" ng-click="exportPNG()">export PNG</div>
-        <div class="echo_button_scan hvr-hollow" ng-click="exportJPG()">export JPG</div>
-        <div class="echo_button_scan hvr-hollow" ng-click="exportJSON()">export JSON</div>
-        <div class="echo_button_scan hvr-hollow" ng-click="importJSON()">import JSON</div>
-        <div class="echo_button_scan hvr-hollow" ng-click="actualiseGraph()">refresh Graph</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="checkAPI()"><i class="las la-tasks"></i>check API</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="exportPNG()"><i class="las la-download"></i>export PNG</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="exportJPG()"><i class="las la-download"></i>export JPG</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="exportJSON()"><i class="las la-download"></i>export JSON</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="importJSON()"><i class="las la-file-upload"></i>import JSON</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="actualiseGraph()"><i class="las la-sync-alt"></i>refresh Graph</div>
         <div class="container echo_menu_subtitle"></div>
         <!-- case de suppression de noeud du graph -->
-        <div class="echo_button_scan hvr-hollow" ng-click="deleteSelection()">Supprimer Sélection</div>
+        <div class="echo_button_scan hvr-hollow" ng-click="deleteSelection()"><i class="las la-trash-alt"></i>Supprimer Sélection</div>
       </div>
     </div>
 
