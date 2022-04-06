@@ -48,7 +48,6 @@ def get_host_and_gateway() -> dict:
                 gateway_vendor = i[1]
     return {"local_ip": local_ip, "local_mac": local_mac, "gateway_ip": router_hop_1, "gateway_mac": router_hop_1_mac, "gateway_vendor" : gateway_vendor}
 
-
 def reverse_ptr_local_scan(target_ip) -> list:
     list_ptr = []
     try:
@@ -59,7 +58,6 @@ def reverse_ptr_local_scan(target_ip) -> list:
     except Exception as e:
         list_ptr.append('no ptr')
     return list_ptr
-
 
 def arp_local_scan(target_ip) -> tuple:
     """
@@ -92,33 +90,6 @@ def arp_local_scan(target_ip) -> tuple:
     # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
 
-
-def out_in_json(machine) -> tuple:
-    nm: nmap.PortScanner = nmap.PortScanner()
-    nmap_scan_result: dict = nm.scan(hosts=machine, arguments='-O')
-    scan_res_to_str: str = json.dumps(nmap_scan_result)
-    scan_res_to_dict = json.loads(scan_res_to_str)
-
-    try:
-        name: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["name"]
-        vendor: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["vendor"]
-        osfamily: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["osfamily"]
-        accuracy: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["accuracy"]
-    except:
-        name = "unknown"
-        vendor = "unknown"
-        osfamily = "unknown"
-        accuracy = "unknown"
-    return name, vendor, osfamily, accuracy
-
-
-def device_profiling(ip_addresses) -> List[dict]:
-    machine_specs: List[dict] = []
-    for current_ip in ip_addresses:
-        machine_specs.append(creation_data_nmap(current_ip))
-    return machine_specs
-
-
 def recon_fast_ping(target_ip) -> tuple:
     os_ttl_list: List[str] = [platform.system()]
     local_ip: str = scapy.arch.get_if_addr(conf.iface)
@@ -138,13 +109,11 @@ def recon_fast_ping(target_ip) -> tuple:
     append_os_ttl(os_ttl_list, ttl_list)
     return ip_list, mac, os_ttl_list
 
-
 def ip_mac_from_arp_local_scan(target_ip) -> Tuple[List[str], List[str]]:
     scan_result: tuple = arp_local_scan(target_ip)
     ip_list: List[str] = scan_result[0]
     mac: List[str] = scan_result[1]
     return ip_list, mac
-
 
 def append_os_ttl(os_ttl_list, ttl_list) -> None:
     for z in range(len(ttl_list)):
@@ -157,18 +126,30 @@ def append_os_ttl(os_ttl_list, ttl_list) -> None:
         else:
             os_ttl_list.append("Unknown")
 
-
 def creation_data_nmap(ip_address) -> dict:
-    machine_specs: tuple = out_in_json(ip_address)
+    nm: nmap.PortScanner = nmap.PortScanner()
+    nmap_scan_result: dict = nm.scan(hosts=ip_address, arguments='-O')
+    scan_res_to_str: str = json.dumps(nmap_scan_result)
+    scan_res_to_dict = json.loads(scan_res_to_str)
+
+    try:
+        name: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["name"]
+        vendor: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["vendor"]
+        osfamily: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["osfamily"]
+        accuracy: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["accuracy"]
+    except:
+        name = "unknown"
+        vendor = "unknown"
+        osfamily = "unknown"
+        accuracy = "unknown"
+
     return {
         "IP": ip_address,
-        "nom": machine_specs[0],
-        "vendeur": machine_specs[1],
-        "osfamily": machine_specs[2],
-        "accuracy": machine_specs[3],
+        "nom": name,
+        "vendeur": vendor,
+        "osfamily": osfamily,
+        "accuracy": accuracy,
     }
-
-
 
 def data_creation_arp_scan(target_ip) -> List[dict]:
     return_scan = list(arp_local_scan(target_ip))
@@ -195,7 +176,6 @@ def data_creation_arp_scan(target_ip) -> List[dict]:
                     break
             global_list.append(ip_and_mac_to_dict)
     return global_list
-
 
 def data_creation_fast_ping(target_ip) -> List[dict]:
     return_scan = list(recon_fast_ping(target_ip))
@@ -273,13 +253,11 @@ def null_session_smb_enumeration(target_ip):
 
     return smb_info
 
-
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
     global_list: List[dict] = retrieve_services([target_ip], nm, port_start=port_start, port_end=port_end)
     return global_list
-
 
 def retrieve_services(ip_list: List[str], nm: nmap.PortScanner, port_start: int, port_end: int) -> List[dict]:
     """
