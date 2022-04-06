@@ -27,7 +27,7 @@ def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
 
-def template() -> dict:
+def get_host_and_gateway() -> dict:
     """
     grab the
         - IP and mac of local machine
@@ -91,30 +91,6 @@ def arp_local_scan(target_ip) -> tuple:
         mac_list.append((client['mac']))
     # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
-
-
-def device_ip_local_scan(target_ip) -> tuple:
-    """
-    ARP SCAN for local machines
-    """
-    # retrieve local IP address
-    arp = scapy.layers.l2.ARP(pdst=target_ip)
-
-    ether = scapy.layers.l2.Ether(dst="ff:ff:ff:ff:ff:ff")
-
-    # stack the protocols
-    packet = ether / arp
-    result: tuple = srp(packet, timeout=3, verbose=0)[0]
-
-    # initialisation de la liste des clients
-    clients: List[dict] = []
-    ip_list: List[str] = [scapy.arch.get_if_addr(conf.iface)]
-
-    for sent, received in result:  # all the responses are implemented in "clients"
-        clients.append({'ip': received.psrc})
-    for client in clients:  # display the clients
-        ip_list.append((client['ip']))
-    return tuple(ip_list)
 
 
 def out_in_json(machine) -> tuple:
@@ -193,32 +169,12 @@ def creation_data_nmap(ip_address) -> dict:
     }
 
 
-def retrieve_ip_mac_os_from_scan(target_ip, scan_type: str = "ARP") -> tuple:
-    """
-    Function that retrieves the IP, Mac, OS from a scan and return them
-    """
-    if scan_type == "ARP":
-        scan_result: tuple = arp_local_scan(target_ip)
-        os_list: None = None
-        mac_list: List[str] = scan_result[1]
-    elif scan_type == "FAST_PING":  # FAST_PING
-        scan_result: tuple = recon_fast_ping(target_ip)
-        os_list: List[str] = scan_result[2]
-        mac_list: List[str] = scan_result[1]
-    elif scan_type == "NMAP":
-        scan_result: tuple = device_ip_local_scan(target_ip)
-        os_list: None = None
-        mac_list: None = None
-    else:
-        raise NotImplementedError(f"This scan has not been implemented yet, "
-                                  f"or wrong parameter '{scan_type}'")
-    ip_list: List[str] = scan_result[0]
-    global_list: List[dict] = []
-    return ip_list, mac_list, os_list, global_list
-
 
 def data_creation_arp_scan(target_ip) -> List[dict]:
-    ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="ARP")
+    return_scan = list(arp_local_scan(target_ip))
+    ip_list, mac_list = return_scan[0], return_scan[1]
+    os_list = None
+    global_list = []
 
     with open("ouiinfo/oui.json") as ouijson:
         OUIJson = json.loads(ouijson.read())
@@ -242,7 +198,9 @@ def data_creation_arp_scan(target_ip) -> List[dict]:
 
 
 def data_creation_fast_ping(target_ip) -> List[dict]:
-    ip_list, mac_list, os_list, global_list = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")
+    return_scan = list(recon_fast_ping(target_ip))
+    ip_list, mac_list, os_list = return_scan[0], return_scan[1], return_scan[2]
+    global_list = []
 
     with open("ouiinfo/oui.json") as ouijson:
         OUIJson = json.loads(ouijson.read())
@@ -319,7 +277,6 @@ def null_session_smb_enumeration(target_ip):
 def retrieve_services_from_scan(target_ip, port_start: int, port_end: int) -> List[dict]:
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
 
-    # ip_list: List[str] = retrieve_ip_mac_os_from_scan(target_ip, scan_type="FAST_PING")[0]
     global_list: List[dict] = retrieve_services([target_ip], nm, port_start=port_start, port_end=port_end)
     return global_list
 
