@@ -137,9 +137,11 @@
     <!-- panel de notification de bas de fenêtre -->
     <div class="echo_panel_notification" ng-controller="notificationPanelMenu">
       <div class="echo_toast_list">
-        <div class="echo_toast" ng-repeat="toast in listToast">
-          <div>{{"{{toast.titre}}"}}</div>
-          <div>{{"{{toast.texte}}"}}</div>
+        <div class="" ng-repeat="toast in listToast">
+          <div class="echo_toast" ng-class="toast.className">
+            <div>{{"{{toast.titre}}"}}</div>
+            <div>{{"{{toast.texte}}"}}</div>
+          </div>
         </div>
       </div>
     </div>

@@ -310,6 +310,23 @@ header > center > div > img{
   opacity: 1;
 }
 
+/* styles des toast spécifiques (alerte, scan envoyé, scan reçu) */
+
+.echo_toast_scan {
+  border-color: var(--widget-blue2);
+  background-color: rgba(43, 107, 106, 0.4);
+}
+
+.echo_toast_error {
+  border-color: var(--widget-red1);
+  background-color: rgba(92, 32, 42, 0.4);
+}
+
+.echo_toast_info {
+  border-color: rgba(118, 124, 127);
+  background-color: rgba(118, 124, 127, 0.4);
+}
+
 .menu_btn_right_1{
   background-image: url('img/icone/menu_right_icon_1.png') !important;
   background-size: cover;
