@@ -1,10 +1,11 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope, $http) {
-  $scope.sendToastData = function(titre, texte) {
+  $scope.sendToastData = function(titre, texte, className) {
     $scope.$broadcast('ToastMessage', {
       'titre' : titre,
       'texte' : texte,
+      'className': className,
     })
   };
 
@@ -19,11 +20,11 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.sendToastData('Echosounder', "API fonctionnelle");
+        $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
       },
       // si la requête échoue :
       function(error) {
-        $scope.sendToastData('Echosounder', "API erreur : " + error);
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
         console.log(error);
       }
     );
@@ -282,6 +283,7 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
     $scope.listToast.push({
       'titre' : toastData.titre, 
       'texte' : toastData.texte,
+      'className' : toastData.className,
     });
   });
 
@@ -291,7 +293,7 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
       // on ne fait rien
     }else {
       // place un delay de 3 secondes plus on efface le premier élément de la liste
-      $timeout(function() { $scope.listToast = $scope.listToast.slice(1);}, 5000);
+      $timeout(function() { $scope.listToast = $scope.listToast.slice(1);}, 7000);
     }
   })
 });
@@ -299,7 +301,7 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   // fonctions de récupérations de donnée Fast Scan
   $scope.getFastScan = function(cible) {
-    $scope.$parent.sendToastData('FastPing', "lancement d'un scan");
+    $scope.$parent.sendToastData('FastPing', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/fast_scan',
@@ -311,14 +313,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('FastPing', "réception d'un scan");
+        $scope.$parent.sendToastData('FastPing', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoVlanGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('FastPing', "erreur : " + error);
+        $scope.$parent.sendToastData('FastPing', "erreur : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -326,7 +328,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de récupération de donnée scan ARP
   $scope.getARPScan = function(cible) {
-    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan");
+    $scope.$parent.sendToastData('ARP Scan', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/arp_scan',
@@ -338,14 +340,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('ARP Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('ARP Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoVlanGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('ARP Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('ARP Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -353,7 +355,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute CIDR
   $scope.getTracerouteCIDRScan = function(cible) {
-    $scope.$parent.sendToastData('Traceroute CIDR Scan', "lancement d'un scan");
+    $scope.$parent.sendToastData('Traceroute CIDR Scan', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/trace_cidr_scan',
@@ -365,14 +367,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Traceroute CIDR Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Traceroute CIDR Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoTraceCIDRGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Traceroute CIDR Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Traceroute CIDR Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -380,7 +382,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute
   $scope.getTracerouteScan = function() {
-    $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan");
+    $scope.$parent.sendToastData('Traceroute Scan', "lancement d'un scan", 'echo_toast_scan');
     let list_root_server_ip =  [
       "198.41.0.4",
       "199.9.14.201",
@@ -410,14 +412,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           // si la requête passe :
           
           function(response) {
-            $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan");
+            $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan", 'echo_toast_scan');
             console.log(response.data);
             // on appel la fonction de création de graphs :
             $scope.createCytoTraceGraph(response.data);
           },
           // si la requête échoue :
           function(error) {
-            $scope.$parent.sendToastData('Traceroute Scan', "erreur Scan : " + error);
+            $scope.$parent.sendToastData('Traceroute Scan', "erreur Scan : " + error, 'echo_toast_error');
             console.log(error);
           }
         );
@@ -427,7 +429,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention d'IP des réseaux locaux (ou opérateurs) via traceroute
   $scope.getTracerouteLocalScan = function() {
-    $scope.$parent.sendToastData('Traceroute Local Scan', "lancement d'un scan");
+    $scope.$parent.sendToastData('Traceroute Local Scan', "lancement d'un scan", 'echo_toast_scan');
     let list_local_cidr = [
         "0.0.0.0/8", 
         "100.64.0.0/10",
@@ -458,14 +460,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           // si la requête passe :
           
           function(response) {
-            $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan");
+            $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan", 'echo_toast_scan');
             console.log(response.data);
             // on appel la fonction de création de graphs :
             $scope.createCytoTraceCIDRGraph(response.data);
           },
           // si la requête échoue :
           function(error) {
-            $scope.$parent.sendToastData('Traceroute Local Scan', "erreur Scan : " + error);
+            $scope.$parent.sendToastData('Traceroute Local Scan', "erreur Scan : " + error, 'echo_toast_error');
             console.log(error);
           }
         );
@@ -475,7 +477,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de profiling machine (OS, device, ...)
   $scope.getProfilingScan = function(cible) {
-    $scope.$parent.sendToastData('Profiling', "lancement d'un scan");
+    $scope.$parent.sendToastData('Profiling', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/profiling_scan',
@@ -487,7 +489,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'profiling', response.data['scan']);
@@ -495,7 +497,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Profiling Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Profiling Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -503,7 +505,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de listage des services machine (par port)
   $scope.getServicesScan = function(cible, pstart, pend) {
-    $scope.$parent.sendToastData('Services', "lancement d'un scan");
+    $scope.$parent.sendToastData('Services', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/services_scan',
@@ -515,14 +517,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Services Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Services Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Services Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Services Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -530,7 +532,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonctions de listage des services machine (par port)
   $scope.getServicesFastScan = function(cible) {
-    $scope.$parent.sendToastData('Services', "lancement d'un fast scan");
+    $scope.$parent.sendToastData('Services', "lancement d'un fast scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/services_fast_scan',
@@ -542,14 +544,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Services Fast Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Services Fast Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Services Fast Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Services Fast Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -557,7 +559,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention du hostname par requête DNS reverse PTR sur cible
   $scope.getReversePTRScan = function(cible) {
-    $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan");
+    $scope.$parent.sendToastData('Reverse PTR', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/reverse_ptr_scan',
@@ -569,14 +571,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Reverse PTR Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Reverse PTR Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'hostname PTR', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Reverse PTR Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Reverse PTR Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -584,7 +586,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   // fonction d'obtention de fingerprint SSH par requête SSH sur cible
   $scope.getFingerprintSSHScan = function(cible) {
-    $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan");
+    $scope.$parent.sendToastData('Fingerprint SSH', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/fingerpting_ssh_scan',
@@ -596,21 +598,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('Fingerprint SSH Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('Fingerprint SSH Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'fingerprint ssh', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('Fingerprint SSH Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('Fingerprint SSH Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
   };
 
   $scope.getSMBScan = function(cible) {
-    $scope.$parent.sendToastData('SMB', "lancement d'un scan");
+    $scope.$parent.sendToastData('SMB', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_info_smb',
@@ -622,21 +624,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('SMB Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('SMB Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'smb', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('SMB Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('SMB Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
   }
 
   $scope.getSNMPScan = function(cible) {
-    $scope.$parent.sendToastData('SNMP info', "lancement d'un scan");
+    $scope.$parent.sendToastData('SNMP info', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_snmp_info',
@@ -648,21 +650,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('SNMP Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('SNMP Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_info', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('SNMP Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('SNMP Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
   }
 
   $scope.getSNMPnetstatScan = function(cible) {
-    $scope.$parent.sendToastData('SNMP netstat', "lancement d'un scan");
+    $scope.$parent.sendToastData('SNMP netstat', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_snmp_netstat',
@@ -674,14 +676,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('SNMP netstat', "réception d'un scan");
+        $scope.$parent.sendToastData('SNMP netstat', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_nestat', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('SNMP netstat', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('SNMP netstat', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -714,7 +716,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   $scope.getRDPScan = function(cible) {
-    $scope.$parent.sendToastData('RDP', "lancement d'un scan");
+    $scope.$parent.sendToastData('RDP', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_rdp_info',
@@ -726,21 +728,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('RDP Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('RDP Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'rdp_info', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('RDP Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('RDP Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
   }
 
   $scope.getTraceCibleScan = function(cible) {
-    $scope.$parent.sendToastData('trace cible', "lancement d'un scan");
+    $scope.$parent.sendToastData('trace cible', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/trace_scan',
@@ -752,14 +754,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('TraceCible Scan', "réception d'un scan");
+        $scope.$parent.sendToastData('TraceCible Scan', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.createCytoTraceGraph(response.data);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('TraceCible Scan', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('TraceCible Scan', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
@@ -780,7 +782,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       $http(req).then(
         // si la requête passe :
         function(response) {
-          $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP");
+          $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
           console.log(response.data);
           // on les fout dans le label du noeud
           node.data('label', node.data('label') + " " + response.data.name);
@@ -789,7 +791,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         },
         // si la requête échoue :
         function(error) {
-          $scope.$parent.sendToastData('AS Resolution', "erreur : " + error);
+          $scope.$parent.sendToastData('AS Resolution', "erreur : " + error, 'echo_toast_error');
           console.log(error);
         }
       );

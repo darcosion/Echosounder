@@ -87,7 +87,6 @@ def arp_local_scan(target_ip) -> tuple:
     for client in clients:  # display the clients
         ip_list.append((client['ip']))
         mac_list.append((client['mac']))
-    # mac = getmacbyip(ip) get mac adress with IP
     return ip_list, mac_list, router_hop_1
 
 def recon_fast_ping(target_ip) -> tuple:
