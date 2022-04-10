@@ -61,6 +61,14 @@ def scan_trace_cidr():
         trace: List[List[dict]] = echosounder.traceroute_cidr_scan(request.json['cible'])
         return jsonify(scan=trace)
 
+@app.route('/json/dhcp_cidr_scan', methods=['POST'])
+def scan_dhcp_cidr():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        dhcp_ip: List[List[dict]] = echosounder.scan_dhcp_discover(request.json['cible'])
+        return jsonify(scan=dhcp_ip)
+
 @app.route('/json/profiling_scan', methods=['POST'])
 def scan_profiling():
     if not if_contain_cible(request.json):
