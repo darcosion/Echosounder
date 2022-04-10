@@ -59,7 +59,7 @@ def reverse_ptr_local_scan(target_ip) -> list:
         list_ptr.append('no ptr')
     return list_ptr
 
-def arp_local_scan(target_ip) -> tuple:
+def arp_local_scan(target_ip) -> Tuple[List[str], List[str]]:
     """
     ARP SCAN for local machines
     """
@@ -87,13 +87,13 @@ def arp_local_scan(target_ip) -> tuple:
     for client in clients:  # display the clients
         ip_list.append((client['ip']))
         mac_list.append((client['mac']))
-    return ip_list, mac_list, router_hop_1
+    return (ip_list, mac_list)
 
 def recon_fast_ping(target_ip) -> tuple:
     os_ttl_list: List[str] = [platform.system()]
     local_ip: str = scapy.arch.get_if_addr(conf.iface)
     ttl_list: list = []
-    ip_list, mac = ip_mac_from_arp_local_scan(target_ip)
+    ip_list, mac = arp_local_scan(target_ip)
 
     for ip in ip_list:
         if ip == local_ip:
@@ -107,48 +107,6 @@ def recon_fast_ping(target_ip) -> tuple:
 
     append_os_ttl(os_ttl_list, ttl_list)
     return ip_list, mac, os_ttl_list
-
-def ip_mac_from_arp_local_scan(target_ip) -> Tuple[List[str], List[str]]:
-    scan_result: tuple = arp_local_scan(target_ip)
-    ip_list: List[str] = scan_result[0]
-    mac: List[str] = scan_result[1]
-    return ip_list, mac
-
-def append_os_ttl(os_ttl_list, ttl_list) -> None:
-    for z in range(len(ttl_list)):
-        if ttl_list[z] == 64 or ttl_list[z] == 255:
-            os_ttl_list.append("Linux/UNIX")
-        elif ttl_list[z] == 128:
-            os_ttl_list.append("Windows")
-        elif ttl_list[z] == 254:
-            os_ttl_list.append("Cisco")
-        else:
-            os_ttl_list.append("Unknown")
-
-def creation_data_nmap(ip_address) -> dict:
-    nm: nmap.PortScanner = nmap.PortScanner()
-    nmap_scan_result: dict = nm.scan(hosts=ip_address, arguments='-O')
-    scan_res_to_str: str = json.dumps(nmap_scan_result)
-    scan_res_to_dict = json.loads(scan_res_to_str)
-
-    try:
-        name: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["name"]
-        vendor: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["vendor"]
-        osfamily: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["osfamily"]
-        accuracy: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["accuracy"]
-    except:
-        name = "unknown"
-        vendor = "unknown"
-        osfamily = "unknown"
-        accuracy = "unknown"
-
-    return {
-        "IP": ip_address,
-        "nom": name,
-        "vendeur": vendor,
-        "osfamily": osfamily,
-        "accuracy": accuracy,
-    }
 
 def data_creation_arp_scan(target_ip) -> List[dict]:
     return_scan = list(arp_local_scan(target_ip))
@@ -200,6 +158,42 @@ def data_creation_fast_ping(target_ip) -> List[dict]:
                     break
             global_list.append(result)
     return global_list
+
+def append_os_ttl(os_ttl_list, ttl_list) -> None:
+    for z in range(len(ttl_list)):
+        if ttl_list[z] == 64 or ttl_list[z] == 255:
+            os_ttl_list.append("Linux/UNIX")
+        elif ttl_list[z] == 128:
+            os_ttl_list.append("Windows")
+        elif ttl_list[z] == 254:
+            os_ttl_list.append("Cisco")
+        else:
+            os_ttl_list.append("Unknown")
+
+def creation_data_nmap(ip_address) -> dict:
+    nm: nmap.PortScanner = nmap.PortScanner()
+    nmap_scan_result: dict = nm.scan(hosts=ip_address, arguments='-O')
+    scan_res_to_str: str = json.dumps(nmap_scan_result)
+    scan_res_to_dict = json.loads(scan_res_to_str)
+
+    try:
+        name: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["name"]
+        vendor: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["vendor"]
+        osfamily: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["osclass"][0]["osfamily"]
+        accuracy: str = scan_res_to_dict["scan"][machine]["osmatch"][0]["accuracy"]
+    except:
+        name = "unknown"
+        vendor = "unknown"
+        osfamily = "unknown"
+        accuracy = "unknown"
+
+    return {
+        "IP": ip_address,
+        "nom": name,
+        "vendeur": vendor,
+        "osfamily": osfamily,
+        "accuracy": accuracy,
+    }
 
 def null_session_smb_enumeration(target_ip):
     """ 
