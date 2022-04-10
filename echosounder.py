@@ -358,6 +358,22 @@ def scan_snmp_processes(target_ip):
                 })
     return global_list
 
+def scan_ntp_info(target_ip):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    nmap_scan_result: dict = {}
+    nmap_scan_result = nm.scan(target_ip, arguments="-sU -p 123 --script ntp-info")
+    global_list: List[dict] = []
+    for i in nm.all_hosts():
+        for protocol in nm[i].all_protocols():
+            for kport, content in nm[i][protocol].items():
+                global_list.append({
+                    "IP": i,
+                    "protocol" : protocol,
+                    "port" : str(kport),
+                    "result" : nm[i][protocol][kport],
+                })
+    return global_list
+
 def scan_rdp_info(target_ip):
     nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
     nmap_scan_result: dict = {}

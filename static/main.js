@@ -151,6 +151,11 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     console.log("emit SNMP scan request");
     $scope.sendBroadcastScan('IP', 'request_snmp_process_scan');
   }
+
+  $scope.clickScanNTP = function() {
+    console.log("emit NTP scan request");
+    $scope.sendBroadcastScan('IP', 'request_ntp_scan');
+  }
   
   $scope.clickScanRDP = function() {
     console.log("emit RDP scan request");
@@ -715,6 +720,32 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     );
   };
 
+  $scope.getNTPScan = function(cible) {
+    $scope.$parent.sendToastData('NTP', "lancement d'un scan");
+    let req = {
+      method : 'POST',
+      url : '/json/scan_ntp',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('NTP', "réception d'un scan");
+        console.log(response.data);
+        // on met à jour le node concerné via une fonction de sélection de node
+        $scope.updateNodebyIP(cible, 'ntp', response.data['scan']);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('NTP', "erreur Scan : " + error);
+        console.log(error);
+      }
+    );
+  };
+
   $scope.getRDPScan = function(cible) {
     $scope.$parent.sendToastData('RDP', "lancement d'un scan", 'echo_toast_scan');
     let req = {
@@ -739,7 +770,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(error);
       }
     );
-  }
+  };
 
   $scope.getTraceCibleScan = function(cible) {
     $scope.$parent.sendToastData('trace cible', "lancement d'un scan", 'echo_toast_scan');
@@ -765,7 +796,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(error);
       }
     );
-  }
+  };
 
   $scope.getResolveAS = function() {
     $scope.cyto.elements('node[type = "AS"]').forEach(function(node) {
@@ -796,7 +827,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         }
       );
     });
-  }
+  };
 
   // fonction de récupération des IP à scanner pour le panel de scan d'ip.
   $scope.getSelectionScan = function() {
@@ -823,6 +854,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_snmp_scan' : $scope.getSNMPScan ,
     'request_snmp_netstat_scan' : $scope.getSNMPnetstatScan ,
     'request_snmp_process_scan' : $scope.getSNMPprocessScan ,
+    'request_ntp_scan' : $scope.getNTPScan ,
     'request_rdp_scan' : $scope.getRDPScan,
     'request_trace_cible_scan' : $scope.getTraceCibleScan,
     'request_resolve_as_scan': $scope.getResolveAS,
