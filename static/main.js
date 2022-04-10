@@ -695,7 +695,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   };
 
   $scope.getSNMPprocessScan = function(cible) {
-    $scope.$parent.sendToastData('SNMP process', "lancement d'un scan");
+    $scope.$parent.sendToastData('SNMP process', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_snmp_processes',
@@ -707,21 +707,21 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('SNMP process', "réception d'un scan");
+        $scope.$parent.sendToastData('SNMP process', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_process', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('SNMP process', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('SNMP process', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
   };
 
   $scope.getNTPScan = function(cible) {
-    $scope.$parent.sendToastData('NTP', "lancement d'un scan");
+    $scope.$parent.sendToastData('NTP', "lancement d'un scan", 'echo_toast_scan');
     let req = {
       method : 'POST',
       url : '/json/scan_ntp',
@@ -733,14 +733,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       // si la requête passe :
       
       function(response) {
-        $scope.$parent.sendToastData('NTP', "réception d'un scan");
+        $scope.$parent.sendToastData('NTP', "réception d'un scan", 'echo_toast_scan');
         console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'ntp', response.data['scan']);
       },
       // si la requête échoue :
       function(error) {
-        $scope.$parent.sendToastData('NTP', "erreur Scan : " + error);
+        $scope.$parent.sendToastData('NTP', "erreur Scan : " + error, 'echo_toast_error');
         console.log(error);
       }
     );
