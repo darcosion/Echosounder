@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import sys, shutil, itertools
 from typing import Optional, List, Tuple
@@ -434,8 +434,20 @@ def traceroute_scan(target='142.250.75.238') -> List[dict]:
                         break
     return list_return_ip
 
+def scan_dhcp_discover(target_cidr):
+    nm = nmap.PortScanner()  # instantiate nmap.PortScanner object
+    result = []
+    try:
+        nm.scan(target_cidr, arguments="-F --script broadcast-dhcp-discover")
+        for i in nm.all_hosts():
+            if('addresses' in nm[i].keys()):
+                result.append(nm[i]['addresses'])
+
+    except Exception as e:
+        print(e)
+        return []
+    return result
+
 if __name__ == "__main__":
     print("TEST")
-    # data_creation_fast_ping('192.168.1.0/24')
-    # print(data_creation_services_discovery('192.168.1.55'))
-    print(data_creation_services_discovery('10.188.219.37'))
+    #print(scan_dhcp_discover('192.168.1.0/24'))

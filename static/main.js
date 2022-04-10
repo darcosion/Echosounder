@@ -80,32 +80,37 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.clickFastPing = function() {
     console.log("emit fast ping request");
     $scope.sendBroadcastScan('cidr', 'request_fast_ping');
-  }
+  };
 
   $scope.clickScanARP = function() {
     console.log("emit arp scan request");
     $scope.sendBroadcastScan('cidr', 'request_arp_scan');
-  }
+  };
+
+  $scope.clickScanDHCP = function() {
+    console.log("emit dhcp cidr scan request");
+    $scope.sendBroadcastScan('cidr', 'request_dhcp_cidr_scan');
+  };
 
   $scope.clickScanCIDRTraceroute = function() {
     console.log("emit trace cidr scan request");
     $scope.sendBroadcastScan('cidr', 'request_traceroute_cidr_scan');
-  }
+  };
 
   $scope.clickTraceroute = function() {
     console.log("emit trace scan request");
     $scope.sendBroadcastScan('None', 'request_traceroute_scan');
-  }
+  };
 
   $scope.clickTracerouteLocal = function() {
     console.log("emit trace local scan request");
     $scope.sendBroadcastScan('None', 'request_traceroute_local_scan');
-  }
+  };
 
   $scope.clickScanProfiling = function() {
     console.log("emit profiling scan request");
     $scope.sendBroadcastScan('IP', 'request_profiling_scan');
-  }
+  };
 
   $scope.clickScanServices = function() {
     if ($scope.portShow){
@@ -114,68 +119,68 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     }else{
       $scope.portShow = true;
     }
-  }
+  };
 
   $scope.clickScanFastServices = function() {
     console.log("emit services fast scan request");
     $scope.sendBroadcastScan('IP', 'request_services_fast_scan');
-  }
+  };
 
   $scope.clickScanReversePTR = function() {
     console.log("emit reverse PTR scan request");
     $scope.sendBroadcastScan('IP', 'request_reverse_ptr_scan');
-  }
+  };
 
   $scope.clickScanSSHFingerprint = function() {
     console.log("emit fingerprint SSH scan request");
     $scope.sendBroadcastScan('IP', 'request_fingerprint_ssh_scan');
     $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : 'request_fingerprint_ssh_scan'});
-  }
+  };
 
   $scope.clickScanSMB = function() {
     console.log("emit SMB scan request");
     $scope.sendBroadcastScan('IP', 'request_smb_scan');
-  }
+  };
 
   $scope.clickScanSNMP = function() {
     console.log("emit SNMP scan request");
     $scope.sendBroadcastScan('IP', 'request_snmp_scan');
-  }
+  };
 
   $scope.clickScanSNMPnetstat = function() {
     console.log("emit SNMP scan request");
     $scope.sendBroadcastScan('IP', 'request_snmp_netstat_scan');
-  }
+  };
 
   $scope.clickScanSNMPprocess = function() {
     console.log("emit SNMP scan request");
     $scope.sendBroadcastScan('IP', 'request_snmp_process_scan');
-  }
+  };
 
   $scope.clickScanNTP = function() {
     console.log("emit NTP scan request");
     $scope.sendBroadcastScan('IP', 'request_ntp_scan');
-  }
+  };
   
   $scope.clickScanRDP = function() {
     console.log("emit RDP scan request");
     $scope.sendBroadcastScan('IP', 'request_rdp_scan');
-  }
+  };
 
   $scope.clickScanTracerouteCible = function() {
     console.log("emit traceroutecible scan request");
     $scope.sendBroadcastScan('IP', 'request_trace_cible_scan');
-  }
+  };
 
   $scope.clickResolveAS = function() {
     console.log("emit resolve AS scan request");
     $scope.sendBroadcastScan('None', 'request_resolve_as_scan');
-  }
+  };
 
   $scope.getSelectionScan = function() {
     console.log("emit get selection request");
     $scope.sendBroadcastScan('None', 'request_selection_scan');
-  }
+  };
 
   $scope.deleteIPSelected = function(ip) {
     let index = $scope.$parent.nodesSelected.indexOf(ip);
@@ -186,7 +191,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.deleteAllIPSelected = function() {
     $scope.$parent.nodesSelected = [];
-  }
+  };
 
   $scope.$on('updatePanelNodeData',function(event, nodedata, nodetype) {
     if(nodetype == 'IP') { // on prend que les IP
@@ -383,7 +388,34 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
         console.log(error);
       }
     );
-  }
+  };
+
+  // fonction d'obtention d'IP du réseau local via DHCP scan sur CIDR
+  $scope.getDHCP_CIDRScan = function(cible) {
+    $scope.$parent.sendToastData('DHCP CIDR Scan', "lancement d'un scan", 'echo_toast_scan');
+    let req = {
+      method : 'POST',
+      url : '/json/dhcp_cidr_scan',
+      headers: {'Content-Type': 'application/json'},
+      data : {'cible' : cible},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.$parent.sendToastData('DHCP CIDR Scan', "réception d'un scan", 'echo_toast_scan');
+        console.log(response.data);
+        // on appel la fonction de création de graphs :
+        $scope.createCytoCIDRGraph(response.data, cible);
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.$parent.sendToastData('DHCP CIDR Scan', "erreur Scan : " + error, 'echo_toast_error');
+        console.log(error);
+      }
+    );
+  };
 
   // fonction d'obtention d'IP du réseau local (ou opérateur) via traceroute
   $scope.getTracerouteScan = function() {
@@ -843,6 +875,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_fast_ping' : $scope.getFastScan,
     'request_arp_scan' : $scope.getARPScan ,
     'request_traceroute_cidr_scan' : $scope.getTracerouteCIDRScan ,
+    'request_dhcp_cidr_scan' : $scope.getDHCP_CIDRScan,
     'request_traceroute_scan' : $scope.getTracerouteScan ,
     'request_traceroute_local_scan' : $scope.getTracerouteLocalScan ,
     'request_profiling_scan' : $scope.getProfilingScan ,
@@ -1172,7 +1205,55 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     scan_data.scan.forEach(function(trace) { // l'arnaque se situe ici (vous avez cru quoi ? que j'allais tout recoder ?)
       $scope.createCytoTraceGraph({'scan': trace});
     })
-  }
+  };
+
+  // fonction de création du graph à partir d'un scan CIDR normé (par exemple DHCP)
+  $scope.createCytoCIDRGraph = function(scan_data, cidr) {
+    if(scan_data.scan.length == 0) { // on vérifie qu'on a pas juste un scan vide
+      $scope.$parent.sendToastData('Graphe', "Scan reçu vide", 'echo_toast_info');
+      return;
+    }
+    // on commence la création de la vue graphe
+    let nodes = [];
+    let edges = [];
+    //ajout de la représentation du VLAN
+    nodes.push(
+      {
+        group:'nodes',
+        data: {
+          id : cidr,
+          label : cidr,
+          type : 'VLAN',
+        },
+      }
+    );
+
+    // ajout des entités nmap :
+    scan_data.scan.forEach(function(nodeAdd) {
+      if(nodeAdd.mac != undefined) { nodeAdd.mac = nodeAdd.mac.toLowerCase(); };
+      nodes.push(
+        {
+          group:'nodes',
+          data: {
+            id : (nodeAdd.ipv4 + '\n' + nodeAdd.mac),
+            label : (nodeAdd.ipv4 + '\n' + nodeAdd.mac),
+            type : 'IP',
+            data : nodeAdd,
+            data_ip : nodeAdd.ipv4,
+            parent : cidr,
+          },
+        }
+      );
+    });
+
+    // on ajoute l'ensemble des ip au graph
+    $scope.cyto.add(nodes);
+    // on ajoute l'ensemble des lien au graph
+    $scope.cyto.add(edges);
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
+  };
 
   // fonction de création du graph à partir d'un scan d'une IP ressortant les services
   $scope.createCytoServiceGraph = function(scan_data) {
@@ -1225,7 +1306,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     // on actualise la vue
     $scope.layout = $scope.cyto.layout($scope.options);
     $scope.layout.run();
-  }
+  };
 
   // fonction de mise à jour d'un noeud spécifique
   $scope.updateNodebyIP = function(ip_node, update_key, update_data) {
