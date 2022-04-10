@@ -126,6 +126,13 @@ def scan_snmp_processes():
     else:
         return jsonify(scan=echosounder.scan_snmp_processes(request.json['cible']))
 
+@app.route('/json/scan_ntp', methods=['POST'])
+def scan_ntp_info():
+    if not if_contain_cible(request.json):
+        return {'error': "malformed request"}
+    else:
+        return jsonify(scan=echosounder.scan_ntp_info(request.json['cible']))
+
 @app.route('/json/scan_rdp_info', methods=['POST'])
 def scan_rdp_info():
     if not if_contain_cible(request.json):
