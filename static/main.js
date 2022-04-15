@@ -15,27 +15,6 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     })
   };
 
-  // fonction de vérification d'accessibilité du backend : 
-  $scope.getHealth = function() {
-    let req = {
-      method : 'GET',
-      url : '/json/health',
-    };
-
-    $http(req).then(
-      // si la requête passe :
-      
-      function(response) {
-        $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
-      },
-      // si la requête échoue :
-      function(error) {
-        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
-        console.log(error);
-      }
-    );
-  };
-
   // fonction de récupération des interfaces : 
   $scope.getInterfaces = function() {
     let req = {
@@ -58,9 +37,30 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     );
   };
 
-  $scope.getHealth();
+  // fonction de vérification d'accessibilité du backend : 
+  $scope.getHealth = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/health',
+    };
 
-  $scope.getInterfaces();
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
+        // on en profite pour récupérer les interfaces : 
+        $scope.getInterfaces();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
+  $scope.getHealth();
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
