@@ -1,6 +1,12 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope, $http) {
+  // variable de sélection multiple de noeuds pour scan
+  $scope.nodesSelected = [];
+
+  // liste des interfaces
+  $scope.interfaces = [];
+
   $scope.sendToastData = function(titre, texte, className) {
     $scope.$broadcast('ToastMessage', {
       'titre' : titre,
@@ -9,7 +15,7 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     })
   };
 
-  // vérification d'accessibilité du backend : 
+  // fonction de vérification d'accessibilité du backend : 
   $scope.getHealth = function() {
     let req = {
       method : 'GET',
@@ -30,10 +36,31 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     );
   };
 
+  // fonction de récupération des interfaces : 
+  $scope.getInterfaces = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/interfaces',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Interfaces', "récupération list interfaces", "echo_toast_info");
+        $scope.interfaces = response.data;
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Interfaces', "Problème list interfaces : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
   $scope.getHealth();
 
-  // variable de sélection multiple de noeuds pour scan
-  $scope.nodesSelected = [];
+  $scope.getInterfaces();
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
