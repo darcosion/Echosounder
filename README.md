@@ -4,11 +4,11 @@
 
 Echosounder est un explorateur de réseau local proposant une visualisation par graphe.
 
-Le cycle du pentest est composé de 5 phases : 
+Le cycle du pentest est généralement composé de 5 phases : 
  - Reconnaissance.
  - Intrusion.
  - Élévation de privilège.
- - Maintien dans le système d'information (backdooring).
+ - Persistence.
  - Exfiltration de données sensibles.
 
 Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant une fois un accès à un réseau privé obtenu, la possibilité de l'explorer, et de sortir une visualisation dudit réseau.
