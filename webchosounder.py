@@ -22,6 +22,11 @@ def index():
 def health():
     return jsonify(nmap=echosounder.check_nmap_exist())
 
+@app.route('/json/interfaces')
+def get_interfaces():
+    return jsonify(echosounder.get_interfaces())
+
+
 @app.route('/json/arp_scan', methods=['POST'])
 def scan_arp():
     if not if_contain_cible(request.json):

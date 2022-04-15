@@ -6,6 +6,7 @@ import json
 import ipaddress
 import platform
 
+import netifaces
 import dns.resolver, dns.reversename
 import nmap
 import scapy
@@ -26,6 +27,9 @@ import impacket.dcerpc.v5.srvs as srvs
 def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
+
+def get_interfaces():
+    return netifaces.interfaces()
 
 def get_host_and_gateway() -> dict:
     """
@@ -450,4 +454,4 @@ def scan_dhcp_discover(target_cidr):
 
 if __name__ == "__main__":
     print("TEST")
-    #print(scan_dhcp_discover('192.168.1.0/24'))
+    print(scan_dhcp_discover1('192.168.1.0/24'))
