@@ -25,9 +25,13 @@
   <body id="backgroundquadrillage" ng-controller="ParentCtrl">
     <!-- barre de menu affichant juste le titre du logiciel -->
     <header>
-      <center><div>
-        <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
-        Echosounder analyser</div></center>
+      <center>
+        <div>
+          <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
+          Echosounder analyser
+        </div>
+        <div class="rounded-pill header_config_button"><i class="las la-sort-down"></i> Configuration</div>
+      </center>
     </header>
 
     <!-- panels de manipulation de gauche (bobo) -->
