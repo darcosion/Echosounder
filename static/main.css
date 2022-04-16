@@ -119,8 +119,8 @@ header > center > div > img{
 }
 
 .echo_menu_top_onglet_button:hover {
-  background-color: #11998e;
-  color:#010b0d;
+  background-color: var(--widget-blue3);
+  color: var(--background-color-black);
 }
 
 /* CSS du graph prenant toute la page */

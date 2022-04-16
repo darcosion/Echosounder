@@ -47,7 +47,12 @@
           <pre>{{"{{health | json}}"}}</pre>
         </div>
         <div class="d-flex flex-wrap ng-hide" ng-show="menuConfNetwork">
-          paramètres réseau
+          <select class="form-select" ng-model="interface">
+            <option disabled selected value> -- choisissez une interface -- </option>
+            <option ng-repeat="interfaceF in interfaces" value="{{'{{interfaceF}}'}}">{{'{{interfaceF}}'}}</option>
+          </select>
+          <br>
+          <div>interface sélectionné : {{"{{interface}}"}}</div>
         </div>
         <div class="d-flex flex-wrap ng-hide" ng-show="menuConfTheme">
           paramètres de thème

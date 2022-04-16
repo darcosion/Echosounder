@@ -9,6 +9,8 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
 
   // liste des interfaces
   $scope.interfaces = [];
+  // interface sélectionné
+  $scope.interface = undefined;
 
   // visibilité du menu de configuration
   $scope.menuConf = false;
@@ -60,7 +62,7 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       function(response) {
         $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
         $scope.health = response.data;
-        $scope.$apply();
+        //$scope.$apply();
         // on en profite pour récupérer les interfaces : 
         $scope.getInterfaces();
       },
