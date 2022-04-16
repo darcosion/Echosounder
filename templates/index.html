@@ -46,7 +46,7 @@
         <div class="d-flex flex-wrap ng-hide" ng-show="menuConfState">
           <pre>{{"{{health | json}}"}}</pre>
         </div>
-        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfNetwork">
+        <div class="d-flex flex-column ng-hide" ng-show="menuConfNetwork">
           <select class="form-select echo_menu_top_option_interface" ng-model="interface" ng-change="getInterfaceData()">
             <option disabled selected value> -- choisissez une interface -- </option>
             <option ng-repeat="interfaceF in interfaces" value="{{'{{interfaceF}}'}}">{{'{{interfaceF}}'}}</option>
