@@ -1,6 +1,9 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope, $http) {
+  // variable de conservation de l'état du backend
+  $scope.health = undefined;
+
   // variable de sélection multiple de noeuds pour scan
   $scope.nodesSelected = [];
 
@@ -9,6 +12,10 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
 
   // visibilité du menu de configuration
   $scope.menuConf = false;
+  // onglets du menu de configuration
+  $scope.menuConfState = true;
+  $scope.menuConfNetwork = false;
+  $scope.menuConfTheme = false;
 
   $scope.sendToastData = function(titre, texte, className) {
     $scope.$broadcast('ToastMessage', {
@@ -52,6 +59,8 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       
       function(response) {
         $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
+        $scope.health = response.data;
+        $scope.$apply();
         // on en profite pour récupérer les interfaces : 
         $scope.getInterfaces();
       },
