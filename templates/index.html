@@ -36,7 +36,22 @@
       </center>
       <!-- menu de configuration -->
       <div class="d-flex flex-wrap echo_menu_top ng-hide" ng-hide="!menuConf">
-        test
+        <!-- onglets de menu paramètres -->
+        <div class="d-flex justify-content-evenly echo_menu_top_onglets">
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfState = true; menuConfNetwork = false; menuConfTheme = false">Status</div>
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfNetwork = true; menuConfState = false; menuConfTheme = false">Réseau</div>
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfTheme = true; menuConfNetwork = false; menuConfState = false">Thème</div>
+        </div>
+        <!-- menus paramètres-->
+        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfState">
+          <pre>{{"{{health | json}}"}}</pre>
+        </div>
+        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfNetwork">
+          paramètres réseau
+        </div>
+        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfTheme">
+          paramètres de thème
+        </div>
       </div>
     </header>
 
