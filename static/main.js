@@ -7,6 +7,9 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // liste des interfaces
   $scope.interfaces = [];
 
+  // visibilité du menu de configuration
+  $scope.menuConf = false;
+
   $scope.sendToastData = function(titre, texte, className) {
     $scope.$broadcast('ToastMessage', {
       'titre' : titre,

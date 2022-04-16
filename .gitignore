@@ -4,7 +4,5 @@ __pycache__
 venv
 
 #spécifique aux db chargées
-asinfo/*.json
-asinfo/*.pfx2as
-ouiinfo/*.json
-ouiinfo/*.pfx2as
+*.json
+*.pfx2as
