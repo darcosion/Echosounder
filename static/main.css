@@ -71,6 +71,21 @@ header > center > div > img{
   margin-top: calc((var(--height-header) - var(--height-header) / 1.2) / 2);
 }
 
+.header_config_button {
+  font-size: calc(var(--height-header) / 1.8);
+  font-family: "Hack";
+  border-width: 1px;
+  border-style: solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  transition: all linear 0.2s;
+}
+
+.header_config_button:hover {
+  background-color: var(--background-color-black);
+  color: var(--text2);
+}
+
 /* CSS du graph prenant toute la page */
 #placeNetwork {
   position: relative;
