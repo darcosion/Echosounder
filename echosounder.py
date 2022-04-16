@@ -31,6 +31,9 @@ def check_nmap_exist():
 def get_interfaces():
     return netifaces.interfaces()
 
+def get_interface_info(interface):
+    return netifaces.ifaddresses(interface)
+
 def get_host_and_gateway() -> dict:
     """
     grab the

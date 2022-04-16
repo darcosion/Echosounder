@@ -26,6 +26,9 @@ def health():
 def get_interfaces():
     return jsonify(echosounder.get_interfaces())
 
+@app.route('/json/interface/<interface>')
+def get_interface_info(interface):
+    return jsonify(echosounder.get_interface_info(interface))
 
 @app.route('/json/arp_scan', methods=['POST'])
 def scan_arp():
