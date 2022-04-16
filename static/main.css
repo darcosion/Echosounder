@@ -109,6 +109,7 @@ header > center > div > img{
   width: 100%;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  margin-bottom: 10px;
 }
 
 .echo_menu_top_onglet_button {
@@ -119,6 +120,11 @@ header > center > div > img{
 }
 
 .echo_menu_top_onglet_button:hover {
+  background-color: var(--widget-blue3);
+  color: var(--background-color-black);
+}
+
+.echo_menu_top_option_interface {
   background-color: var(--widget-blue3);
   color: var(--background-color-black);
 }

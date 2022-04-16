@@ -11,6 +11,7 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   $scope.interfaces = [];
   // interface sélectionné
   $scope.interface = undefined;
+  $scope.interfaceData = undefined;
 
   // visibilité du menu de configuration
   $scope.menuConf = false;
@@ -48,6 +49,29 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       }
     );
   };
+
+  // fonction de récupération des info de l'interface courante : 
+  $scope.getInterfaceData = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/interface/' + $scope.interface,
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Echosounder', "Interface Info", "echo_toast_info");
+        $scope.interfaceData = response.data;
+        $scope.$apply();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  }
 
   // fonction de vérification d'accessibilité du backend : 
   $scope.getHealth = function() {
