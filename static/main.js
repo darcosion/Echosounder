@@ -7,6 +7,9 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // variable de sélection multiple de noeuds pour scan
   $scope.nodesSelected = [];
 
+  // famille de type d'adressage : 
+  $scope.address_family = {};
+
   // liste des interfaces
   $scope.interfaces = [];
   // interface sélectionné
@@ -26,6 +29,27 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       'texte' : texte,
       'className': className,
     })
+  };
+
+  // fonction de récupération des familles d'adressage : 
+  $scope.getAddressFamily = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/address_family',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.address_family = response.data;
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Interfaces', "Problème address family : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
   };
 
   // fonction de récupération des interfaces : 
@@ -52,6 +76,10 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
 
   // fonction de récupération des info de l'interface courante : 
   $scope.getInterfaceData = function() {
+    if($scope.interface == null) {
+      return; // on évite de requêter une absence d'interface.
+    };
+
     let req = {
       method : 'GET',
       url : '/json/interface/' + $scope.interface,
@@ -71,7 +99,7 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
         console.log(error);
       }
     );
-  }
+  };
 
   // fonction de vérification d'accessibilité du backend : 
   $scope.getHealth = function() {
@@ -87,6 +115,8 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
         $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
         $scope.health = response.data;
         //$scope.$apply();
+        // on en profite pour récupérer les familles d'adresse : 
+        $scope.getAddressFamily();
         // on en profite pour récupérer les interfaces : 
         $scope.getInterfaces();
       },

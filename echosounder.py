@@ -28,6 +28,9 @@ def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
 
+def get_address_family():
+    return {'IPv4' : netifaces.AF_INET,'IPv6' : netifaces.AF_INET6, 'Ethernet' : netifaces.AF_LINK}
+
 def get_interfaces():
     return netifaces.interfaces()
 

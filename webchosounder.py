@@ -22,6 +22,10 @@ def index():
 def health():
     return jsonify(nmap=echosounder.check_nmap_exist())
 
+@app.route('/json/address_family')
+def get_address_family():
+    return jsonify(echosounder.get_address_family())
+
 @app.route('/json/interfaces')
 def get_interfaces():
     return jsonify(echosounder.get_interfaces())
