@@ -56,4 +56,8 @@ python3 asinfo/collectas.py
 # mise à jour de la base de données MAC -> OUI
 python3 ouiinfo/collectoui.py
 ```
+### Lancement 
 
+```bash
+sudo ./webchosounder.py
+```
