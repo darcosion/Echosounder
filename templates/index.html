@@ -30,8 +30,14 @@
           <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
           Echosounder analyser
         </div>
-        <div class="rounded-pill header_config_button"><i class="las la-sort-down"></i> Configuration</div>
+        <div class="rounded-pill header_config_button" ng-click="menuConf = !menuConf">
+          <i class="las la-sort-down"></i> Configuration
+        </div>
       </center>
+      <!-- menu de configuration -->
+      <div class="d-flex flex-wrap echo_menu_top ng-hide" ng-hide="!menuConf">
+        test
+      </div>
     </header>
 
     <!-- panels de manipulation de gauche (bobo) -->

@@ -72,7 +72,7 @@ header > center > div > img{
 }
 
 .header_config_button {
-  font-size: calc(var(--height-header) / 1.8);
+  font-size: calc(var(--height-header) / 2.2);
   font-family: "Hack";
   border-width: 1px;
   border-style: solid;
@@ -84,6 +84,24 @@ header > center > div > img{
 .header_config_button:hover {
   background-color: var(--background-color-black);
   color: var(--text2);
+}
+
+.echo_menu_top {
+  position: absolute;
+  top: var(--height-header);
+  left: 10%;
+
+  width: 80%;
+
+  background-color: rgba(5, 12, 18, 0.6);
+  border: 1px solid var(--widget-grey2);
+  box-shadow: inset 0 0 40px -20px #bac9b0;
+  transition: all linear 0.5s;
+}
+
+.echo_menu_top.ng-hide {
+  top: -400px;
+  opacity: 0;
 }
 
 /* CSS du graph prenant toute la page */
