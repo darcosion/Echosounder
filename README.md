@@ -47,6 +47,8 @@ Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant u
 ### Installation 
 
 ```bash
+git clone https://github.com/darcosion/Echosounder
+cd Echosounder
 sudo apt install nmap
 sudo pip3 install -r requirements.txt
 # mise à jour de la base de données CIDR -> AS
