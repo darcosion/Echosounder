@@ -37,6 +37,9 @@ def get_interfaces():
 def get_interface_info(interface):
     return netifaces.ifaddresses(interface)
 
+def from_ipnetmask_get_ipcidr(ipnetmask):
+    return str(ipaddress.ip_network(ipnetmask, strict=False))
+
 def get_host_and_gateway() -> dict:
     """
     grab the

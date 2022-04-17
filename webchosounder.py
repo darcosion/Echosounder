@@ -26,6 +26,12 @@ def health():
 def get_address_family():
     return jsonify(echosounder.get_address_family())
 
+@app.route('/json/ipcidr', methods=['POST'])
+def get_ip_cidr():
+    data = request.json['ip']+'/'+request.json['cidr']
+    print(data)
+    return jsonify(ipcidr=echosounder.from_ipnetmask_get_ipcidr(data))
+
 @app.route('/json/interfaces')
 def get_interfaces():
     return jsonify(echosounder.get_interfaces())
