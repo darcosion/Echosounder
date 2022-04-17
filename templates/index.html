@@ -56,7 +56,7 @@
           <pre>{{"{{interfaceData | json}}"}}</pre>
           <br>
           <div ng-hide="listInterfaceIP.length == 0">
-            <select class="form-select echo_menu_top_option_interface" ng-model="jsonIP" ng-change="">
+            <select class="form-select echo_menu_top_option_interface" ng-model="jsonIP" ng-change="jsonInterfaceToIPCIDR()">
               <option disabled selected value> -- choisissez une IP -- </option>
               <option ng-repeat="interfaceIP in listInterfaceIP" value="{{'{{interfaceIP}}'}}">{{'{{interfaceIP}}'}}</option>
             </select>

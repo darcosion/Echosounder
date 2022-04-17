@@ -115,7 +115,27 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // fonction de traitement du JSON d'une interface en IP/CIDR
   $scope.jsonInterfaceToIPCIDR = function() {
     if($scope.jsonIP == undefined) { return }
-    
+    let data = JSON.parse($scope.jsonIP);
+    let req = {
+      method : 'POST',
+      url : '/json/ipcidr',
+      headers: {'Content-Type': 'application/json'},
+      data: {'ip' : data.addr, "cidr" : data.netmask},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.cible = response.data.ipcidr;
+        $scope.$apply();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Interface', "conversion IPCIDR : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
   };
 
   // fonction de vérification d'accessibilité du backend : 
