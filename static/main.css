@@ -343,7 +343,7 @@ header > center > div > img{
   bottom: 0px;
   right: 0px;
 
-  z-index: 100;
+  z-index: 99;
 }
 
 .echo_toast_list {
