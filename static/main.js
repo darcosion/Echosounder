@@ -1,11 +1,36 @@
 let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope, $http) {
+  // variable de conservation de l'état du backend
+  $scope.health = undefined;
+
   // variable de sélection multiple de noeuds pour scan
   $scope.nodesSelected = [];
 
+  // famille de type d'adressage : 
+  $scope.address_family = {};
+
   // liste des interfaces
   $scope.interfaces = [];
+  // interface sélectionné
+  $scope.interface = undefined;
+  $scope.interfaceData = undefined;
+
+  // choix d'adresse IP quand nécessaire
+  $scope.listInterfaceIP = [];
+
+  // JSON d'IP à processer
+  $scope.jsonIP = undefined;
+
+  // adresse IP : 
+  $scope.cible = "192.168.1.0/24";
+
+  // visibilité du menu de configuration
+  $scope.menuConf = false;
+  // onglets du menu de configuration
+  $scope.menuConfState = true;
+  $scope.menuConfNetwork = false;
+  $scope.menuConfTheme = false;
 
   $scope.sendToastData = function(titre, texte, className) {
     $scope.$broadcast('ToastMessage', {
@@ -13,6 +38,27 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       'texte' : texte,
       'className': className,
     })
+  };
+
+  // fonction de récupération des familles d'adressage : 
+  $scope.getAddressFamily = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/address_family',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.address_family = response.data;
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Interfaces', "Problème address family : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
   };
 
   // fonction de récupération des interfaces : 
@@ -37,6 +83,61 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     );
   };
 
+  // fonction de récupération des info de l'interface courante : 
+  $scope.getInterfaceData = function() {
+    if($scope.interface == null) {
+      return; // on évite de requêter une absence d'interface.
+    };
+
+    let req = {
+      method : 'GET',
+      url : '/json/interface/' + $scope.interface,
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.sendToastData('Echosounder', "Interface Info", "echo_toast_info");
+        $scope.interfaceData = response.data;
+        console.log($scope.interfaceData);
+        // on place en IPv4 l'ip dans listInterfaceIP
+        $scope.listInterfaceIP = response.data[$scope.address_family['IPv4']];
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
+  // fonction de traitement du JSON d'une interface en IP/CIDR
+  $scope.jsonInterfaceToIPCIDR = function() {
+    if($scope.jsonIP == undefined) { return }
+    let data = JSON.parse($scope.jsonIP);
+    let req = {
+      method : 'POST',
+      url : '/json/ipcidr',
+      headers: {'Content-Type': 'application/json'},
+      data: {'ip' : data.addr, "cidr" : data.netmask},
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.cible = response.data.ipcidr;
+        $scope.$apply();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Interface', "conversion IPCIDR : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
   // fonction de vérification d'accessibilité du backend : 
   $scope.getHealth = function() {
     let req = {
@@ -49,6 +150,10 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       
       function(response) {
         $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
+        $scope.health = response.data;
+        //$scope.$apply();
+        // on en profite pour récupérer les familles d'adresse : 
+        $scope.getAddressFamily();
         // on en profite pour récupérer les interfaces : 
         $scope.getInterfaces();
       },
@@ -69,16 +174,13 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu3 = false;
   $scope.portShow = false;
 
-
-  $scope.cible = "192.168.1.0/24";
-
   $scope.machineCible = "0.0.0.0"
   $scope.portStart = "0"
   $scope.portEnd = "400"
 
   $scope.sendBroadcastScan = function(typeParam, callScanParam) {
     if(typeParam == 'cidr') {
-      $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : callScanParam});
+      $rootScope.$broadcast('request_scan', {'cible' : $scope.$parent.cible, 'callScan' : callScanParam});
     }else if (typeParam.startsWith('IP')) {
       if($scope.$parent.nodesSelected.length == 0) {
         $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : callScanParam});
@@ -225,7 +327,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
       $scope.machineCible = nodedata.data_ip;
       $scope.$apply();
     }else if (nodetype == 'VLAN') {
-      $scope.cible = nodedata.id;
+      $scope.$parent.cible = nodedata.id;
       $scope.$apply();
     }
   });

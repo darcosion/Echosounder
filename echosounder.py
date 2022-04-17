@@ -28,8 +28,17 @@ def check_nmap_exist():
     # check Nmap is installed, return True if installed, False otherwise
     return shutil.which("nmap") is not None
 
+def get_address_family():
+    return {'IPv4' : netifaces.AF_INET,'IPv6' : netifaces.AF_INET6, 'Ethernet' : netifaces.AF_LINK}
+
 def get_interfaces():
     return netifaces.interfaces()
+
+def get_interface_info(interface):
+    return netifaces.ifaddresses(interface)
+
+def from_ipnetmask_get_ipcidr(ipnetmask):
+    return str(ipaddress.ip_network(ipnetmask, strict=False))
 
 def get_host_and_gateway() -> dict:
     """
