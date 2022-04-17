@@ -16,6 +16,15 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   $scope.interface = undefined;
   $scope.interfaceData = undefined;
 
+  // choix d'adresse IP quand nécessaire
+  $scope.listInterfaceIP = [];
+
+  // JSON d'IP à processer
+  $scope.jsonIP = undefined;
+
+  // adresse IP : 
+  $scope.cible = "192.168.1.0/24";
+
   // visibilité du menu de configuration
   $scope.menuConf = false;
   // onglets du menu de configuration
@@ -91,7 +100,9 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       function(response) {
         $scope.sendToastData('Echosounder', "Interface Info", "echo_toast_info");
         $scope.interfaceData = response.data;
-        $scope.$apply();
+        console.log($scope.interfaceData);
+        // on place en IPv4 l'ip dans listInterfaceIP
+        $scope.listInterfaceIP = response.data[$scope.address_family['IPv4']];
       },
       // si la requête échoue :
       function(error) {
@@ -99,6 +110,12 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
         console.log(error);
       }
     );
+  };
+
+  // fonction de traitement du JSON d'une interface en IP/CIDR
+  $scope.jsonInterfaceToIPCIDR = function() {
+    if($scope.jsonIP == undefined) { return }
+    
   };
 
   // fonction de vérification d'accessibilité du backend : 
@@ -137,16 +154,13 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu3 = false;
   $scope.portShow = false;
 
-
-  $scope.cible = "192.168.1.0/24";
-
   $scope.machineCible = "0.0.0.0"
   $scope.portStart = "0"
   $scope.portEnd = "400"
 
   $scope.sendBroadcastScan = function(typeParam, callScanParam) {
     if(typeParam == 'cidr') {
-      $rootScope.$broadcast('request_scan', {'cible' : $scope.cible, 'callScan' : callScanParam});
+      $rootScope.$broadcast('request_scan', {'cible' : $scope.$parent.cible, 'callScan' : callScanParam});
     }else if (typeParam.startsWith('IP')) {
       if($scope.$parent.nodesSelected.length == 0) {
         $rootScope.$broadcast('request_scan', {'cible' : $scope.machineCible, 'callScan' : callScanParam});
@@ -293,7 +307,7 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
       $scope.machineCible = nodedata.data_ip;
       $scope.$apply();
     }else if (nodetype == 'VLAN') {
-      $scope.cible = nodedata.id;
+      $scope.$parent.cible = nodedata.id;
       $scope.$apply();
     }
   });
