@@ -25,9 +25,47 @@
   <body id="backgroundquadrillage" ng-controller="ParentCtrl">
     <!-- barre de menu affichant juste le titre du logiciel -->
     <header>
-      <center><div>
-        <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
-        Echosounder analyser</div></center>
+      <center>
+        <div>
+          <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
+          Echosounder analyser
+        </div>
+        <div class="rounded-pill header_config_button" ng-click="menuConf = !menuConf">
+          <i class="las la-sort-down"></i> Configuration
+        </div>
+      </center>
+      <!-- menu de configuration -->
+      <div class="d-flex flex-wrap echo_menu_top ng-hide" ng-hide="!menuConf">
+        <!-- onglets de menu paramètres -->
+        <div class="d-flex justify-content-evenly echo_menu_top_onglets">
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfState = true; menuConfNetwork = false; menuConfTheme = false">Status</div>
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfNetwork = true; menuConfState = false; menuConfTheme = false">Réseau</div>
+          <div class="echo_menu_top_onglet_button" ng-click="menuConfTheme = true; menuConfNetwork = false; menuConfState = false">Thème</div>
+        </div>
+        <!-- menus paramètres-->
+        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfState">
+          <pre>{{"{{health | json}}"}}</pre>
+        </div>
+        <div class="d-flex flex-column ng-hide" ng-show="menuConfNetwork">
+          <select class="form-select echo_menu_top_option_interface" ng-model="interface" ng-change="getInterfaceData()">
+            <option disabled selected value> -- choisissez une interface -- </option>
+            <option ng-repeat="interfaceF in interfaces" value="{{'{{interfaceF}}'}}">{{'{{interfaceF}}'}}</option>
+          </select>
+          <br>
+          <br>
+          <pre>{{"{{interfaceData | json}}"}}</pre>
+          <br>
+          <div ng-hide="listInterfaceIP.length == 0">
+            <select class="form-select echo_menu_top_option_interface" ng-model="jsonIP" ng-change="jsonInterfaceToIPCIDR()">
+              <option disabled selected value> -- choisissez une IP -- </option>
+              <option ng-repeat="interfaceIP in listInterfaceIP" value="{{'{{interfaceIP}}'}}">{{'{{interfaceIP}}'}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap ng-hide" ng-show="menuConfTheme">
+          paramètres de thème
+        </div>
+      </div>
     </header>
 
     <!-- panels de manipulation de gauche (bobo) -->

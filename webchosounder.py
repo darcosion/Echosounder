@@ -22,10 +22,23 @@ def index():
 def health():
     return jsonify(nmap=echosounder.check_nmap_exist())
 
+@app.route('/json/address_family')
+def get_address_family():
+    return jsonify(echosounder.get_address_family())
+
+@app.route('/json/ipcidr', methods=['POST'])
+def get_ip_cidr():
+    data = request.json['ip']+'/'+request.json['cidr']
+    print(data)
+    return jsonify(ipcidr=echosounder.from_ipnetmask_get_ipcidr(data))
+
 @app.route('/json/interfaces')
 def get_interfaces():
     return jsonify(echosounder.get_interfaces())
 
+@app.route('/json/interface/<interface>')
+def get_interface_info(interface):
+    return jsonify(echosounder.get_interface_info(interface))
 
 @app.route('/json/arp_scan', methods=['POST'])
 def scan_arp():
