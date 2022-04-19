@@ -165,6 +165,12 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
     );
   };
 
+  // event d'effacement du menu de configuration : 
+  $scope.$on('resetPanels', function() {
+    $scope.menuConf = false;
+    $scope.$apply();
+  });
+
   $scope.getHealth();
 });
 
@@ -332,6 +338,14 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     }
   });
 
+  // event d'effacement des menu de gauche : 
+  $scope.$on('resetPanels', function() {
+    $scope.showMenu1 = false;
+    $scope.showMenu2 = false;
+    $scope.showMenu3 = false;
+    $scope.$apply();
+  });
+
   $scope.$parent.$watch('nodesSelected', function(test) {
     console.log(test);
   });
@@ -407,6 +421,14 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.deleteSelection = function() {
     $rootScope.$broadcast('request_delete_selection', {});
   };
+
+  // event d'effacement des menu de droite : 
+  $scope.$on('resetPanels', function() {
+    $scope.showMenu1 = false;
+    $scope.showMenu2 = false;
+    $scope.showMenu3 = false;
+    $scope.$apply();
+  });
 });
 
 EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScope) {
@@ -1483,6 +1505,13 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 	$scope.cyto.on('tap', 'node', function(evt){
 		// on envoie au parent le noeud à afficher :
 		$scope.$parent.$broadcast("updatePanelNodeData", evt.target.data(), evt.target.data('type'));
+	});
+
+  // évènement en cas de double clic sur le fond
+	$scope.cyto.on('dblclick', function(evt){
+    console.log('double clic reset panels')
+		// on envoie au parent le noeud à afficher :
+		$scope.$parent.$broadcast("resetPanels");
 	});
 
   $scope.$on('request_scan', function(event, args) {
