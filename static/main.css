@@ -2,6 +2,7 @@
 
 :root {
   /* palette de couleur sombre */
+  --background-general: #080808; /* var(--background-general) */
   --background-default: #010b0d; /* var(--background-default) */
   --background-gradiance1 : #050c12; /* var(--background-gradiance1) */
   --background-gradiance2 : #0d1718; /* var(--background-gradiance2) */
@@ -16,8 +17,11 @@
   --text1 : #a5b0a9; /* var(--text1) */
   --text2 : #abd6db; /* var(--text2) */
   --micro-text : #11998e; /* var(--micro-text) */
+
+  --fond-noeuds: #102324;
   
   /*palette de couleur sombre RGB */
+  --rgb-background-general: 8, 8, 8; /* var(--rgb-background-general) */
   --rgb-background-default: 1, 11, 13; /* var(--rgb-background-default) */
   --rgb-background-gradiance1 : 5, 12, 18; /* var(--rgb-background-gradiance1) */
   --rgb-background-gradiance2 : 13, 23, 24; /* var(--rgb-background-gradiance2) */
