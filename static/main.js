@@ -460,6 +460,10 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 });
 
 EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
+  // contexte couleurs
+  $scope.rootColor = getComputedStyle(document.documentElement);
+  console.log($scope.rootColor);
+
   // fonctions de récupérations de donnée Fast Scan
   $scope.getFastScan = function(cible) {
     $scope.$parent.sendToastData('FastPing', "lancement d'un scan", 'echo_toast_scan');
@@ -1068,11 +1072,11 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       selector: 'node',
       css: {
         'shape' : 'octagon',
-        'color' : '#abd6db',
-        'background-color' : '#102324', // --fond-color-tres-noir-bleue
+        'color' : $scope.rootColor.getPropertyValue('--text2'),
+        'background-color' : $scope.rootColor.getPropertyValue('--fond-noeuds'),
         'border-style' : 'none',
         'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
-        'text-outline-color': '#080808',
+        'text-outline-color': $scope.rootColor.getPropertyValue('--background-general'), 
         'text-outline-width' : 1,
         'text-valign': 'top',
         'text-halign': 'center',
@@ -1151,7 +1155,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       css: {
         'border-width' : 2,
         'border-style' : 'solid',
-        'border-color' : '#3e908e', // --widget-blue1
+        'border-color' : $scope.rootColor.getPropertyValue('--widget-background1'), 
         'ghost' : 'yes',
         "ghost-offset-y": 1,
         'ghost-opacity': 0.4,
@@ -1160,8 +1164,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     {
       selector: 'edge',
       css: {
-        'line-color' : '#4b948c', // --widget-blue3
-        'target-arrow-color' : '#5c202a', // --widget-red1
+        'line-color' : $scope.rootColor.getPropertyValue('--widget-background3'),
+        'target-arrow-color' : $scope.rootColor.getPropertyValue('--widget-strong-contour1'), 
         'curve-style': 'bezier',
         'target-arrow-shape': 'triangle',
         'opacity' : 0.5,
