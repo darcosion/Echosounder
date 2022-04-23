@@ -1,6 +1,6 @@
-# Echosounder :anchor:
+# ⚓ Echosounder
 
-## Présentation 
+## 📓 Présentation 
 
 Echosounder est un explorateur de réseau local proposant une visualisation par graphe.
 
@@ -13,12 +13,12 @@ Le cycle du pentest est généralement composé de 5 phases :
 
 Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant une fois un accès à un réseau privé obtenu, la possibilité de l'explorer, et de sortir une visualisation dudit réseau.
 
-## Screenshots
+### 🖼️ Screenshots
 
 ![example_scan](https://user-images.githubusercontent.com/16328515/159520183-253055a4-925d-4077-98c0-49b56746299f.png)
 
 
-### Ce que Echosounder permet
+### 🔎 Fonctionnalités
 
  - Effectuer des scans d'un réseau local.
  - Obtenir une vue claire des réseaux locaux & distants liés à ce réseau local.
@@ -35,7 +35,7 @@ Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant u
  - Un logiciel de "management des asset" (Echosounder ne propose que de la visualisation).
  - Un logiciel de "vulnerability assessement" (Echosounder identifie des services via nmap, mais ne vérifie pas les vulnérabilités).
 
-## Installation
+## ⬇️ Installation
 
 ### Dépendances
  
