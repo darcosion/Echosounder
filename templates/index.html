@@ -67,7 +67,13 @@
           </div>
           <!-- règlage graphique -->
           <div class="d-flex flex-wrap ng-hide" ng-show="menuConfTheme">
-            paramètres de thème
+            <div>paramètres de thème : </div>
+            <br>
+            <br>
+            <select class="form-select echo_menu_top_option_interface" ng-model="themeSelected" ng-change="changeTheme(themeSelected)">
+              <option disabled selected value> -- choisissez un thème -- </option>
+              <option ng-repeat="theme in themes" value="{{'{{theme}}'}}">{{'{{theme}}'}}</option>
+            </select>
           </div>
         </div>
       </div>

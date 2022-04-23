@@ -39,6 +39,61 @@
 
   /* définition de taille */
   --height-header: 4vh; /* var(--height-header) */
+}
+
+html[data-theme='darkgreen'] { }
+
+html[data-theme='white'] {
+  --background-general: #9e5252 ; /* var(--background-general) */
+  --background-default: #4190a0 ; /* var(--background-default) */
+  --background-gradiance1 : #3d5f7c; /* var(--background-gradiance1) */
+  --background-gradiance2 : #14a5b3; /* var(--background-gradiance2) */
+  --widget-contour1: #aab1a5; /* var(--widget-contour1) */
+  --widget-contour2: #c6dce7; /* var(--widget-contour2) */
+  --widget-contour3: #2e3837; /* var(--widget-contour3) */
+  --widget-background1 : #40dbd9; /* var(--widget-background1) */
+  --widget-background2 : #083a39; /* var(--widget-background2) */
+  --widget-background3 : #129182; /* var(--widget-background3) */
+  --widget-strong-contour1 : #ff002b; /* var(--widget-strong-contour1) */
+  --widget-strong-contour2 : #57061c; /* var(--widget-strong-contour2) */
+  --text1 : #c0d6c8; /* var(--text1) */
+  --text2 : #88f3ff; /* var(--text2) */
+  --micro-text : #00fff2; /* var(--micro-text) */
+}
+
+html[data-theme='whitehard'] {
+  --background-general: #ffffff ; /* var(--background-general) */
+  --background-default: #ffffff ; /* var(--background-default) */
+  --background-gradiance1 : #ffffff; /* var(--background-gradiance1) */
+  --background-gradiance2 : #ffffff; /* var(--background-gradiance2) */
+  --widget-contour1: #ffffff; /* var(--widget-contour1) */
+  --widget-contour2: #ffffff; /* var(--widget-contour2) */
+  --widget-contour3: #ffffff; /* var(--widget-contour3) */
+  --widget-background1 : #ffffff; /* var(--widget-background1) */
+  --widget-background2 : #ffffff; /* var(--widget-background2) */
+  --widget-background3 : #ffffff; /* var(--widget-background3) */
+  --widget-strong-contour1 : #ffffff; /* var(--widget-strong-contour1) */
+  --widget-strong-contour2 : #ffffff; /* var(--widget-strong-contour2) */
+  --text1 : #ffffff; /* var(--text1) */
+  --text2 : #ffffff; /* var(--text2) */
+  --micro-text : #ffffff; /* var(--micro-text) */
+
+    /* modèle RGB */
+    --rgb-background-general: 255, 255, 255; /* var(--rgb-background-general) */
+    --rgb-background-default: 255, 255, 255; /* var(--rgb-background-default) */
+    --rgb-background-gradiance1 : 255, 255, 255; /* var(--rgb-background-gradiance1) */
+    --rgb-background-gradiance2 : 255, 255, 255; /* var(--rgb-background-gradiance2) */
+    --rgb-widget-contour1: 255, 255, 255; /* var(--rgb-widget-contour1) */
+    --rgb-widget-contour2: 255, 255, 255; /* var(--rgb-widget-contour2) */
+    --rgb-widget-contour3: 255, 255, 255; /* var(--rgb-widget-contour3) */
+    --rgb-widget-background1 : 255, 255, 255; /* var(--rgb-widget-background1) */
+    --rgb-widget-background2 : 255, 255, 255; /* var(--rgb-widget-background2) */
+    --rgb-widget-background3 : 255, 255, 255; /* var(--rgb-widget-background3) */
+    --rgb-widget-strong-contour1 : 255, 255, 255; /* var(--rgb-widget-strong-contour1) */
+    --rgb-widget-strong-contour2 : 255, 255, 255; /* var(--rgb-widget-strong-contour2) */
+    --rgb-text1 : 255, 255, 255; /* var(--rgb-text1) */
+    --rgb-text2 : 255, 255, 255; /* var(--rgb-text2) */
+    --rgb-micro-text : 255, 255, 255; /* var(--rgb-micro-text) */
 };
 
 /* configuration spécifique */
