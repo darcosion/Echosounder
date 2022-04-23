@@ -25,6 +25,14 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // adresse IP : 
   $scope.cible = "192.168.1.0/24";
 
+  // liste de thème :
+  $scope.themes = [
+    'darkgreen',
+    'white',
+    'whitehard',
+  ];
+  $scope.themeSelected = 'darkgreen';
+
   // visibilité du menu de configuration
   $scope.menuConf = false;
   // onglets du menu de configuration
@@ -38,6 +46,14 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       'texte' : texte,
       'className': className,
     })
+  };
+
+  // fonction de changement de thème : 
+  $scope.changeTheme = function(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('theme', themeName);
+    // on envoie au graph l'indication d'un rechargement de style nécessaire
+    $scope.$broadcast('reloadStyle', {'theme' : themeName});
   };
 
   // fonction de récupération des familles d'adressage : 
@@ -1067,112 +1083,115 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     packComponents: true,
 	};
 
-  $scope.styles = [
-    {
-      selector: 'node',
-      css: {
-        'shape' : 'octagon',
-        'color' : $scope.rootColor.getPropertyValue('--text2'),
-        'background-color' : $scope.rootColor.getPropertyValue('--fond-noeuds'),
-        'border-style' : 'none',
-        'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
-        'text-outline-color': $scope.rootColor.getPropertyValue('--background-general'), 
-        'text-outline-width' : 1,
-        'text-valign': 'top',
-        'text-halign': 'center',
-        'opacity' : 1,
-        'text-wrap': 'wrap',
-        'background-fit' : 'contain',
-        'font-family' : 'Hack',
+  $scope.loadStyle = function() {
+    $scope.styles = [
+      {
+        selector: 'node',
+        css: {
+          'shape' : 'octagon',
+          'color' : $scope.rootColor.getPropertyValue('--text2'),
+          'background-color' : $scope.rootColor.getPropertyValue('--fond-noeuds'),
+          'border-style' : 'none',
+          'content': 'data(label)', // méga important, détermine quoi afficher comme donnée dans le label de noeud
+          'text-outline-color': $scope.rootColor.getPropertyValue('--background-general'), 
+          'text-outline-width' : 1,
+          'text-valign': 'top',
+          'text-halign': 'center',
+          'opacity' : 1,
+          'text-wrap': 'wrap',
+          'background-fit' : 'contain',
+          'font-family' : 'Hack',
+        },
       },
-    },
-    {
-      selector: 'node[type="IP"]',
-      css: {
-        'background-image' : '/static/img/icone/ip_bg.png',
+      {
+        selector: 'node[type="IP"]',
+        css: {
+          'background-image' : '/static/img/icone/ip_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[type = "Service"]',
-      css: {
-        'width': '20px',
-        'height': '20px',
-        'background-image' : '/static/img/icone/service_bg.png',
+      {
+        selector: 'node[type = "Service"]',
+        css: {
+          'width': '20px',
+          'height': '20px',
+          'background-image' : '/static/img/icone/service_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[label*="gateway"]',
-      css: {
-        'background-image' : '/static/img/icone/gateway_bg.png',
+      {
+        selector: 'node[label*="gateway"]',
+        css: {
+          'background-image' : '/static/img/icone/gateway_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS@="Windows"]',
-      css: {
-        'background-image' : '/static/img/icone/windows_bg.png',
+      {
+        selector: 'node[data.OS@="Windows"]',
+        css: {
+          'background-image' : '/static/img/icone/windows_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS @*= "Linux"]',
-      css: {
-        'background-image' : '/static/img/icone/linux_bg.png',
+      {
+        selector: 'node[data.OS @*= "Linux"]',
+        css: {
+          'background-image' : '/static/img/icone/linux_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS @= "Unknown"]',
-      css: {
-        'background-image' : '/static/img/icone/unknown_bg.png',
+      {
+        selector: 'node[data.OS @= "Unknown"]',
+        css: {
+          'background-image' : '/static/img/icone/unknown_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS @*= "Android"]',
-      css: {
-        'background-image' : '/static/img/icone/android_bg.png',
+      {
+        selector: 'node[data.OS @*= "Android"]',
+        css: {
+          'background-image' : '/static/img/icone/android_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS @*= "Mac OS X"]',
-      css: {
-        'background-image' : '/static/img/icone/mac_bg.png',
+      {
+        selector: 'node[data.OS @*= "Mac OS X"]',
+        css: {
+          'background-image' : '/static/img/icone/mac_bg.png',
+        },
       },
-    },
-    {
-      selector: 'node[data.OS @*= "BSD"]',
-      css: {
-        'background-image' : '/static/img/icone/freebsd_bg.png',
+      {
+        selector: 'node[data.OS @*= "BSD"]',
+        css: {
+          'background-image' : '/static/img/icone/freebsd_bg.png',
+        },
       },
-    },
-    {
-      selector: ':parent',
-      css: {
-        'text-valign': 'top',
-        'text-halign': 'center', 
-        'background-opacity': '0',
+      {
+        selector: ':parent',
+        css: {
+          'text-valign': 'top',
+          'text-halign': 'center', 
+          'background-opacity': '0',
+        },
       },
-    },
-    {
-      selector: 'node:selected',
-      css: {
-        'border-width' : 2,
-        'border-style' : 'solid',
-        'border-color' : $scope.rootColor.getPropertyValue('--widget-background1'), 
-        'ghost' : 'yes',
-        "ghost-offset-y": 1,
-        'ghost-opacity': 0.4,
+      {
+        selector: 'node:selected',
+        css: {
+          'border-width' : 2,
+          'border-style' : 'solid',
+          'border-color' : $scope.rootColor.getPropertyValue('--widget-background1'), 
+          'ghost' : 'yes',
+          "ghost-offset-y": 1,
+          'ghost-opacity': 0.4,
+        },
       },
-    },
-    {
-      selector: 'edge',
-      css: {
-        'line-color' : $scope.rootColor.getPropertyValue('--widget-background3'),
-        'target-arrow-color' : $scope.rootColor.getPropertyValue('--widget-strong-contour1'), 
-        'curve-style': 'bezier',
-        'target-arrow-shape': 'triangle',
-        'opacity' : 0.5,
+      {
+        selector: 'edge',
+        css: {
+          'line-color' : $scope.rootColor.getPropertyValue('--widget-background3'),
+          'target-arrow-color' : $scope.rootColor.getPropertyValue('--widget-strong-contour1'), 
+          'curve-style': 'bezier',
+          'target-arrow-shape': 'triangle',
+          'opacity' : 0.5,
+        },
       },
-    },
-  ];
-  $scope.cyto.style($scope.styles);
+    ];
+    $scope.cyto.style($scope.styles);
+  };
+  $scope.loadStyle();
 
   // fonction de création du graph à partir d'un scan CIDR
   $scope.createCytoVlanGraph = function(scan_data) {
@@ -1608,6 +1627,10 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.setCytoJSON = function(param_json) {
     $scope.cyto.json(param_json);
   };
+
+  $scope.$on('reloadStyle', function(event, args) {
+    $scope.loadStyle();
+  })
 
   console.log($scope.cyto)
 });
