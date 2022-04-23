@@ -28,8 +28,8 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // liste de thème :
   $scope.themes = [
     'darkgreen',
-    'white',
-    'whitehard',
+    'whiteblue',
+    'whitedebug',
   ];
   $scope.themeSelected = 'darkgreen';
 
