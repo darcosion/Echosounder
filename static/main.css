@@ -2,6 +2,7 @@
 
 :root {
   /* palette de couleur sombre */
+  --background-general: #080808; /* var(--background-general) */
   --background-default: #010b0d; /* var(--background-default) */
   --background-gradiance1 : #050c12; /* var(--background-gradiance1) */
   --background-gradiance2 : #0d1718; /* var(--background-gradiance2) */
@@ -16,8 +17,11 @@
   --text1 : #a5b0a9; /* var(--text1) */
   --text2 : #abd6db; /* var(--text2) */
   --micro-text : #11998e; /* var(--micro-text) */
+
+  --fond-noeuds: #102324;
   
   /*palette de couleur sombre RGB */
+  --rgb-background-general: 8, 8, 8; /* var(--rgb-background-general) */
   --rgb-background-default: 1, 11, 13; /* var(--rgb-background-default) */
   --rgb-background-gradiance1 : 5, 12, 18; /* var(--rgb-background-gradiance1) */
   --rgb-background-gradiance2 : 13, 23, 24; /* var(--rgb-background-gradiance2) */
@@ -35,6 +39,82 @@
 
   /* définition de taille */
   --height-header: 4vh; /* var(--height-header) */
+}
+
+html[data-theme='darkgreen'] { }
+
+html[data-theme='whiteblue'] {
+  --background-general: #f8f8f8; /* var(--background-general) */
+  --background-default: #ebebeb; /* var(--background-default) */
+  --background-gradiance1 : #3994e4; /* var(--background-gradiance1) */
+  --background-gradiance2 : #7ddde6; /* var(--background-gradiance2) */
+  --widget-contour1: #40443d; /* var(--widget-contour1) */
+  --widget-contour2: #2d3133; /* var(--widget-contour2) */
+  --widget-contour3: #2a2e2e; /* var(--widget-contour3) */
+  --widget-background1 : #a8d4d4; /* var(--widget-background1) */
+  --widget-background2 : #a1c8c8; /* var(--widget-background2) */
+  --widget-background3 : #a1cac5; /* var(--widget-background3) */
+  --widget-strong-contour1 : #58494c; /* var(--widget-strong-contour1) */
+  --widget-strong-contour2 : #d85d7e; /* var(--widget-strong-contour2) */
+  --text1 : #272727; /* var(--text1) */
+  --text2 : #4c6062; /* var(--text2) */
+  --micro-text : #11998e; /* var(--micro-text) */
+
+  --fond-noeuds: #58e3eb;
+
+  /*palette de couleur sombre RGB */
+  --rgb-background-general: 248, 248, 248; /* var(--rgb-background-general) */
+  --rgb-background-default: 235, 235, 235; /* var(--rgb-background-default) */
+  --rgb-background-gradiance1 : 57, 148, 228; /* var(--rgb-background-gradiance1) */
+  --rgb-background-gradiance2 : 125, 221, 230; /* var(--rgb-background-gradiance2) */
+  --rgb-widget-contour1: 64, 68, 61; /* var(--rgb-widget-contour1) */
+  --rgb-widget-contour2: 45, 49, 51; /* var(--rgb-widget-contour2) */
+  --rgb-widget-contour3: 42, 46, 46; /* var(--rgb-widget-contour3) */
+  --rgb-widget-background1 : 168, 212, 212; /* var(--rgb-widget-background1) */
+  --rgb-widget-background2 : 161, 200, 200; /* var(--rgb-widget-background2) */
+  --rgb-widget-background3 : 161, 202, 197; /* var(--rgb-widget-background3) */
+  --rgb-widget-strong-contour1 : 88, 73, 76; /* var(--rgb-widget-strong-contour1) */
+  --rgb-widget-strong-contour2 : 216, 93, 126; /* var(--rgb-widget-strong-contour2) */
+  --rgb-text1 : 39, 39, 39; /* var(--rgb-text1) */
+  --rgb-text2 : 76, 96, 98; /* var(--rgb-text2) */
+  --rgb-micro-text : 17, 153, 142; /* var(--rgb-micro-text) */
+}
+
+html[data-theme='whitedebug'] {
+  --background-general: #ffffff ; /* var(--background-general) */
+  --background-default: #ffffff ; /* var(--background-default) */
+  --background-gradiance1 : #ffffff; /* var(--background-gradiance1) */
+  --background-gradiance2 : #ffffff; /* var(--background-gradiance2) */
+  --widget-contour1: #ffffff; /* var(--widget-contour1) */
+  --widget-contour2: #ffffff; /* var(--widget-contour2) */
+  --widget-contour3: #ffffff; /* var(--widget-contour3) */
+  --widget-background1 : #ffffff; /* var(--widget-background1) */
+  --widget-background2 : #ffffff; /* var(--widget-background2) */
+  --widget-background3 : #ffffff; /* var(--widget-background3) */
+  --widget-strong-contour1 : #ffffff; /* var(--widget-strong-contour1) */
+  --widget-strong-contour2 : #ffffff; /* var(--widget-strong-contour2) */
+  --text1 : #ffffff; /* var(--text1) */
+  --text2 : #ffffff; /* var(--text2) */
+  --micro-text : #ffffff; /* var(--micro-text) */
+
+  --fond-noeuds: #ffffff;
+
+  /* modèle RGB */
+  --rgb-background-general: 255, 255, 255; /* var(--rgb-background-general) */
+  --rgb-background-default: 255, 255, 255; /* var(--rgb-background-default) */
+  --rgb-background-gradiance1 : 255, 255, 255; /* var(--rgb-background-gradiance1) */
+  --rgb-background-gradiance2 : 255, 255, 255; /* var(--rgb-background-gradiance2) */
+  --rgb-widget-contour1: 255, 255, 255; /* var(--rgb-widget-contour1) */
+  --rgb-widget-contour2: 255, 255, 255; /* var(--rgb-widget-contour2) */
+  --rgb-widget-contour3: 255, 255, 255; /* var(--rgb-widget-contour3) */
+  --rgb-widget-background1 : 255, 255, 255; /* var(--rgb-widget-background1) */
+  --rgb-widget-background2 : 255, 255, 255; /* var(--rgb-widget-background2) */
+  --rgb-widget-background3 : 255, 255, 255; /* var(--rgb-widget-background3) */
+  --rgb-widget-strong-contour1 : 255, 255, 255; /* var(--rgb-widget-strong-contour1) */
+  --rgb-widget-strong-contour2 : 255, 255, 255; /* var(--rgb-widget-strong-contour2) */
+  --rgb-text1 : 255, 255, 255; /* var(--rgb-text1) */
+  --rgb-text2 : 255, 255, 255; /* var(--rgb-text2) */
+  --rgb-micro-text : 255, 255, 255; /* var(--rgb-micro-text) */
 };
 
 /* configuration spécifique */
