@@ -85,16 +85,24 @@
       <div class="echo_panel_openbutton echo_panel_openbutton_left hvr-sweep-to-right menu_btn_left_1" ng-click="showMenu1 = !showMenu1; showMenu2 = false; showMenu3 = false">
       </div>
       <div class="d-flex flex-wrap echo_menu_left ng-hide" ng-hide="!showMenu1">
+        <!-- titre -->
+        <div class="container echo_menu_title">Scan réseau local</div>
+        <!-- scan sans cible (level 2) -->
+        <div class="container echo_scan_panel">
+          <div class="echo_button_scan hvr-hollow" ng-click="clickScanARP()">Scan ARP</div>
+          <div class="echo_button_scan hvr-hollow" ng-click="clickFastPing()">Scan Ping</div>
+        </div>
+        <br>
+        <div class="container echo_menu_subtitle"></div>
+        <br>
         <!-- cible à scanner -->
-        <div class="container echo_menu_title">Scan réseau</div>
+        <div class="container echo_menu_title">Scan réseau CIDR</div>
         <div class="container echo_scan_cible">
           <input class="echo_input_effect" type="text" name="cible_ip_cidr" placeholder="cidr" ng-model="cible" required>
           <label for="name" class="echo_input_effect_label">IP/CIDR</label>
         </div>
-        <!-- pleins de noms de scan à la con ont été inventés pour tester le placement css -->
+        <!-- Type de scan CIDR sur cible -->
         <div class="container echo_scan_panel">
-          <div class="echo_button_scan hvr-hollow" ng-click="clickFastPing()">Scan Ping</div>
-          <div class="echo_button_scan hvr-hollow" ng-click="clickScanARP()">Scan ARP</div>
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanDHCP()">Scan DHCP</div>
           <div class="echo_button_scan hvr-hollow" ng-click="clickScanCIDRTraceroute()">Scan traceroute</div>
         </div>
