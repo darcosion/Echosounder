@@ -41,8 +41,6 @@
   --height-header: 4vh; /* var(--height-header) */
 }
 
-html[data-theme='darkgreen'] { }
-
 html[data-theme='whiteblue'] {
   --background-general: #f8f8f8; /* var(--background-general) */
   --background-default: #ebebeb; /* var(--background-default) */
