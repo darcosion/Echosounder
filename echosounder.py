@@ -430,7 +430,7 @@ def traceroute_scan(target='142.250.75.238') -> List[dict]:
             listipcidr = [[ipaddress.IPv4Network(i[0]), i[1]] for i in json.loads(listcidr.read())]
             listcidr.close()
             # cette sorcellerie permet de sortir toute les IP d'un même AS sur la route et de s'arrêter dès qu'on a un AS différent.
-            for k, v in p.items():
+            for k, v in sorted(p.items()):
                 ip = ipaddress.IPv4Address(v[0])
                 if(ip.is_private):
                     list_return_ip.append([v[0], [None, None]])
