@@ -427,7 +427,57 @@ header > center > div > img{
   word-wrap: anywhere; /* sans ça il y a un overflow bizarre du texte... */
   overflow-y: auto;
   max-height: 75vh;
+}
 
+/* dialog add note */
+
+.echo_dialog_node {
+  position: fixed;
+  top: 20%;
+  left: 15%;
+  width: 60%;
+  height: 60%;
+  z-index: 101;
+  opacity: 1;
+  overflow: scroll;
+
+  background-color: rgba(var(--rgb-background-gradiance1), 0.8);
+  border: 1px solid var(--widget-contour2);
+  box-shadow: inset 0 0 40px -20px var(--widget-contour1);
+  
+  transition: opacity linear 1s ;
+}
+
+.echo_dialog_node.ng-hide {
+  opacity: 0;
+}
+
+.echo_note_form {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  height: inherit;
+}
+
+.echo_note_textarea {
+  background-color: rgba(var(--rgb-widget-background1), 0.8);
+  color: black;
+  height: inherit;
+}
+
+.echo_note_textarea:focus {
+  background-color: rgba(var(--rgb-widget-strong-contour2), 0.8);
+  color: white;
+}
+
+.echo_note_cross {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+
+  border-radius: 1px;
+  background-color: var(--widget-background2);
+  filter: opacity(80%);
 }
 
 /* CSS de panel de notification */
@@ -438,10 +488,6 @@ header > center > div > img{
   right: 0px;
 
   z-index: 99;
-}
-
-.echo_toast_list {
-
 }
 
 .echo_toast {

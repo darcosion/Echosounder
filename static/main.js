@@ -7,6 +7,8 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   // variable de sélection multiple de noeuds pour scan
   $scope.nodesSelected = [];
 
+  $scope.nodesAllTypeSelected = [];
+
   // famille de type d'adressage : 
   $scope.address_family = {};
 
@@ -362,15 +364,22 @@ EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
     $scope.$apply();
   });
 
+  // debug de sélection de noeuds
+  /*
   $scope.$parent.$watch('nodesSelected', function(test) {
     console.log(test);
   });
+  */
 });
 
 EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
   $scope.showMenu1 = false;
   $scope.showMenu2 = false;
   $scope.showMenu3 = false;
+
+  $scope.showDialogNote = false;
+  $scope.titreNote = "";
+  $scope.texteNote = "";
 
   $scope.nodedata = undefined;
   $scope.servicedata = undefined;
@@ -397,7 +406,39 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
 
   $scope.checkAPI = function() {
     $scope.$parent.getHealth();
-  }
+  };
+
+  $scope.addNote = function() {
+    $scope.showDialogNote = !$scope.showDialogNote;
+  };
+
+  $scope.getSelectionNote = function() {
+    console.log("emit get selection request");
+    $rootScope.$broadcast('request_scan', {'callScan' : 'request_selection_note'});
+  };
+
+  $scope.deleteNodesSelected = function(label) {
+    let index = $scope.$parent.nodesAllTypeSelected.indexOf(label);
+    if(index != -1) {
+      $scope.$parent.nodesAllTypeSelected.splice(index, 1);
+    }
+  };
+
+  $scope.deleteAllNodesSelected = function() {
+    $scope.$parent.nodesAllTypeSelected = [];
+  };
+
+  $scope.addNoteValidate = function() {
+    console.log("emit add note request");
+    $rootScope.$broadcast('request_scan', {"cible" : $scope.$parent.nodesAllTypeSelected, 
+                                            "titre" : $scope.titreNote,
+                                            "texte" : $scope.texteNote, 
+                                            'callScan' : 'request_add_note'});
+    // on reset le dialog
+    $scope.titreNote = "";
+    $scope.texteNote = "";
+
+  };
 
   $scope.exportPNG = function() {
     $rootScope.$broadcast('request_export_png', {});
@@ -444,6 +485,10 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     $scope.showMenu2 = false;
     $scope.showMenu3 = false;
     $scope.$apply();
+  });
+
+  $scope.$parent.$watch('nodesAllTypeSelected', function(test) {
+    console.log(test);
   });
 });
 
@@ -1041,6 +1086,55 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     $scope.$parent.nodesSelected = list_ip;
   };
 
+  // fonction de récupération de noeud pour y adjoindre une note.
+  $scope.getSelectionNote = function() {
+    
+    let list_node = [];
+    $scope.cyto.elements('node:selected').forEach(function(node) {
+      list_node.push(node.data('id'));
+    });
+    $scope.$parent.nodesAllTypeSelected = list_node;
+  };
+
+  // ajout d'un noeud de type note au graph 
+  $scope.addNote = function(targets, titre, texte) {
+    let node = [];
+    let edges = [];
+    // on ajoute le noeud de commentaire
+    node.push(
+      {
+        group:'nodes',
+        data: {
+          id : titre,
+          label : texte,
+          data: texte,
+          type : 'note',
+        },
+      }
+    );
+
+    // on ajoute les liens vers les targets
+    targets.forEach(function(target) {
+      edges.push({
+        group:'edges',
+        data : {
+          id : ('link ' + target + " " + titre + " "),
+          source : titre,
+          target : target,
+          type : 'notelink',
+        }
+      });
+    });
+    
+    // on ajoute l'ensemble des ip au graph
+    $scope.cyto.add(node);
+    // on ajoute l'ensemble des lien au graph
+    $scope.cyto.add(edges);
+    // on actualise la vue
+    $scope.layout = $scope.cyto.layout($scope.options);
+    $scope.layout.run();
+  };
+
   // association requête vers nom de fonction
   $scope.listScanFunc = {
     'request_fast_ping' : $scope.getFastScan,
@@ -1063,6 +1157,8 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
     'request_trace_cible_scan' : $scope.getTraceCibleScan,
     'request_resolve_as_scan': $scope.getResolveAS,
     'request_selection_scan': $scope.getSelectionScan,
+    'request_selection_note' : $scope.getSelectionNote,
+    'request_add_note' : $scope.addNote,
   }
 
   // partie gestion du graph
@@ -1101,6 +1197,24 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           'text-wrap': 'wrap',
           'background-fit' : 'contain',
           'font-family' : 'Hack',
+          'z-index' : 10,
+        },
+      },
+      {
+        selector: 'node[type="note"]',
+        css: {
+          'shape' : 'round-rectangle',
+          'text-valign': 'center',
+          'text-halign': 'center',
+          'text-wrap' : 'wrap',
+          'font-size' : 8,
+          'text-wrap': 'wrap',
+          'text-max-width' : 260,
+          'text-overflow-wrap' : 'whitespace',
+          'text-justification' : 'auto',
+          'width' : (node) => { return Math.min(260, node.data('label').length * 7) },
+          'height' : (node) => { return (Math.floor(node.data('label').length/45) + 1) * 8 },
+          'z-index' : 5,
         },
       },
       {
@@ -1165,6 +1279,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
           'text-valign': 'top',
           'text-halign': 'center', 
           'background-opacity': '0',
+          'z-index' : -5,
         },
       },
       {
@@ -1539,7 +1654,9 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.$on('request_scan', function(event, args) {
     if($scope.listScanFunc.hasOwnProperty(args.callScan)) {
-      if(args.hasOwnProperty('port_end')) {
+      if(args.hasOwnProperty('texte')) {
+        $scope.listScanFunc[args.callScan](args.cible, args.titre, args.texte);
+      }else if(args.hasOwnProperty('port_end')) {
         $scope.listScanFunc[args.callScan](args.cible, args.port_start, args.port_end);
       }else if (args.hasOwnProperty('cible')) {
         $scope.listScanFunc[args.callScan](args.cible);
