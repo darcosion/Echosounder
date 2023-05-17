@@ -1051,29 +1051,89 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
       if(node.data('as_resolution')){
         return; // si la résolution à déjà été faite, on s'épargne de la refaire
       }
-      // on crée une requête
-      let req = {
-        method : 'GET',
-        url : 'https://rdap.arin.net/registry/autnum/' + node.data('label'),
-        headers: {'Content-Type': 'application/rdap+json'},
-      };
-      // on récupère les info d'AS
-      $http(req).then(
-        // si la requête passe :
-        function(response) {
-          $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-          console.log(response.data);
-          // on les fout dans le label du noeud
-          node.data('label', node.data('label') + " " + response.data.name);
-          // on spécifie que la résolution a été effectué
-          node.data('as_resolution', true);
-        },
-        // si la requête échoue :
-        function(error) {
-          $scope.$parent.sendToastData('AS Resolution', "erreur : " + error, 'echo_toast_error');
-          console.log(error);
-        }
-      );
+      // si il s'agit d'un multi-origin AS set, on fait deux requêtes, sinon une seule
+      if(node.data('label').includes('_')){
+        let list_asn = node.data('label').split('_');
+        // on crée deux requêtes
+        let req1 = {
+          method : 'GET',
+          url : 'https://rdap.arin.net/registry/autnum/' + list_asn[0],
+          headers: {'Content-Type': 'application/rdap+json'},
+        };
+        let req2 = {
+          method : 'GET',
+          url : 'https://rdap.arin.net/registry/autnum/' + list_asn[1],
+          headers: {'Content-Type': 'application/rdap+json'},
+        };
+
+        // on récupère les info d'AS
+        $http(req1).then(
+          // si la requête passe :
+          function(response) {
+            $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
+            console.log(response.data);
+            // on les fout dans le label du noeud
+            if(node.data('label').includes(' ')) {
+              node.data('label', node.data('label') + " & " + response.data.name);
+            } else{
+              node.data('label', node.data('label') + " " + response.data.name);
+            }
+            // on spécifie que la résolution a été effectué
+            node.data('as_resolution', true);
+          },
+          // si la requête échoue :
+          function(error) {
+            $scope.$parent.sendToastData('AS Resolution', "erreur : " + error, 'echo_toast_error');
+            console.log(error);
+          }
+        );
+
+        // on récupère les info d'AS
+        $http(req2).then(
+          // si la requête passe :
+          function(response) {
+            $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
+            console.log(response.data);
+            // on les fout dans le label du noeud
+            if(node.data('label').includes(' ')) {
+              node.data('label', node.data('label') + " & " + response.data.name);
+            } else{
+              node.data('label', node.data('label') + " " + response.data.name);
+            }
+            // on spécifie que la résolution a été effectué
+            node.data('as_resolution', true);
+          },
+          // si la requête échoue :
+          function(error) {
+            $scope.$parent.sendToastData('AS Resolution', "erreur : " + error, 'echo_toast_error');
+            console.log(error);
+          }
+        );
+      }else {
+        // on crée une requête
+        let req = {
+          method : 'GET',
+          url : 'https://rdap.arin.net/registry/autnum/' + node.data('label'),
+          headers: {'Content-Type': 'application/rdap+json'},
+        };
+        // on récupère les info d'AS
+        $http(req).then(
+          // si la requête passe :
+          function(response) {
+            $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
+            console.log(response.data);
+            // on les fout dans le label du noeud
+            node.data('label', node.data('label') + " " + response.data.name);
+            // on spécifie que la résolution a été effectué
+            node.data('as_resolution', true);
+          },
+          // si la requête échoue :
+          function(error) {
+            $scope.$parent.sendToastData('AS Resolution', "erreur : " + error, 'echo_toast_error');
+            console.log(error);
+          }
+        );
+      }
     });
   };
 
