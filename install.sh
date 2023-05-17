@@ -7,3 +7,6 @@ fi
 
 apt install nmap
 pip install -r requirements.txt
+
+cd asinfo
+python3 collectas.py
