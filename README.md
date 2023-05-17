@@ -33,7 +33,7 @@ Echosounder se place dans la phase de reconnaissance de ce cycle, en proposant u
 
  - Un remplaçant à nmap (Echosounder utilise nmap comme dépendance).
  - Un logiciel de "management des asset" (Echosounder ne propose que de la visualisation).
- - Un logiciel de "vulnerability assessement" (Echosounder identifie des services via nmap, mais ne vérifie pas des vulnérabilités).
+ - Un logiciel de "vulnerability assessement" (Echosounder identifie des services via nmap, mais ne vérifie pas les vulnérabilités).
 
 ## Installation
 
