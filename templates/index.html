@@ -24,7 +24,7 @@
   </head>
   <body id="backgroundquadrillage" ng-controller="ParentCtrl">
     <!-- barre de menu affichant juste le titre du logiciel -->
-    <header>
+    <header ng-keypress="KeyPressEvents($event)">
       <center>
         <div>
           <img src="{{ url_for('static', filename='img/white_icon.png')}}"/>
@@ -232,7 +232,7 @@
     </div>
 
     <!-- fenêtre de vue du graphe -->
-    <div id="placeNetwork" ng-controller="graphNetwork">
+    <div id="placeNetwork" ng-controller="graphNetwork" ng-keypress="KeyPressEvents($event)">
       <div id="mynetwork"></div>
     </div>
     
