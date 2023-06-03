@@ -448,11 +448,11 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
     $rootScope.$broadcast('request_export_jpg', {});
   };
 
-  $scope.exportJSON= function() {
+  $scope.exportJSON = function() {
     $rootScope.$broadcast('request_export_json', {});
   };
 
-  $scope.importJSON= function() {
+  $scope.importJSON = function() {
     if(document.getElementById('echo_json_upload').files.length == 0) {
       document.getElementById('echo_json_upload').click();
     }else {
@@ -520,7 +520,7 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
   })
 });
 
-EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
+EchoApp.controller("graphNetwork", function($scope, $document, $http) {
   // contexte couleurs
   $scope.rootColor = getComputedStyle(document.documentElement);
   console.log($scope.rootColor);
@@ -1743,7 +1743,7 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
 
   $scope.$on('request_import_json', function(event, args) {
     console.log("lancement d'un import JSON");
-    console.log(args)
+    //console.log(args)
     $scope.setCytoJSON(JSON.parse(args.file));
   });
 
@@ -1808,6 +1808,14 @@ EchoApp.controller("graphNetwork", function($scope, $rootScope, $http) {
   $scope.$on('reloadStyle', function(event, args) {
     $scope.loadStyle();
   })
+
+  // binder de clavier qui va récupérer l'ensemble des touches du clavier pour 
+  // automatiser la gestion d'une partie du graph
+  $document.bind('keyup', function (e) {
+    if(e.keyCode === 46 | e.keyCode === 8) { // touche SUPPR/DEL
+      $scope.cyto.elements('node:selected').remove();
+    }
+  });
 
   console.log($scope.cyto)
 });
