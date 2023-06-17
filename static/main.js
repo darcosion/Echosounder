@@ -2,7 +2,7 @@ let EchoApp = angular.module('EchoApp', ['ngAnimate']);
 
 EchoApp.controller("ParentCtrl", function($scope, $http) {
   // variable de conservation de l'état du backend
-  $scope.health = undefined;
+  $scope.health = {};
 
   // variable de sélection multiple de noeuds pour scan
   $scope.nodesSelected = [];
@@ -170,10 +170,59 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
         $scope.sendToastData('Echosounder', "API fonctionnelle", "echo_toast_info");
         $scope.health = response.data;
         //$scope.$apply();
+
+        // on appelle l'ensemble des fonctionnalités de vérification de dependances
+        $scope.getHealthNmap();
+        $scope.getHealthModules();
+
         // on en profite pour récupérer les familles d'adresse : 
         $scope.getAddressFamily();
         // on en profite pour récupérer les interfaces : 
         $scope.getInterfaces();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
+  // fonction de vérification d'accessibilité de nmap : 
+  $scope.getHealthNmap = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/health/nmap',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.health['nmap'] = response.data.nmap;
+        //$scope.$apply();
+      },
+      // si la requête échoue :
+      function(error) {
+        $scope.sendToastData('Echosounder', "API erreur : " + error, "echo_toast_error");
+        console.log(error);
+      }
+    );
+  };
+
+  // fonction de vérification d'accessibilité des modules python : 
+  $scope.getHealthModules = function() {
+    let req = {
+      method : 'GET',
+      url : '/json/health/dependencies',
+    };
+
+    $http(req).then(
+      // si la requête passe :
+      
+      function(response) {
+        $scope.health['dependencies'] = response.data.dependencies;
+        //$scope.$apply();
       },
       // si la requête échoue :
       function(error) {
@@ -190,6 +239,7 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
   });
 
   $scope.getHealth();
+  console.log($scope);
 });
 
 EchoApp.controller("leftPanelMenu", function($scope, $rootScope, $http) {
