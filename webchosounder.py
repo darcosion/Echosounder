@@ -1,13 +1,35 @@
 #! /usr/bin/env python3
 
-from typing import List
-import ipaddress, json
-import echosounder
 from flask import Flask, jsonify, render_template, request
-from scapy.arch import get_if_addr
-from scapy.config import conf
+from typing import List
+import json
+from importlib import import_module
 
-LOCAL_IP = get_if_addr(conf.iface)
+## verification d'import des modules
+listmodules = [('ipaddress', 'ipaddress'), 
+                ('scapy', 'scapy'), 
+                ('impacket', 'impacket'), 
+                ('nmap', 'nmap'), 
+                ('echosounder', 'echosounder'),
+            ]
+listmoduleserror = []
+
+for name, short in listmodules:
+    try:
+        lib = import_module(name)
+    except Exception as e:
+        listmoduleserror.append({name:"Le module n'a pas été importé, problème de dépendance python ?"})
+        print(e)
+    else:
+        globals()[short] = lib
+
+if(not any('scapy' in x for x in listmoduleserror)):
+    from scapy.arch import get_if_addr
+    from scapy.config import conf
+
+    LOCAL_IP = get_if_addr(conf.iface)
+else:
+    LOCAL_IP = "127.0.0.1"
 
 app = Flask(__name__, template_folder='templates')
 app.config["CACHE_TYPE"] = "null"
@@ -20,7 +42,16 @@ def index():
 
 @app.route('/json/health')
 def health():
+    return jsonify(status='ok')
+
+@app.route('/json/health/nmap')
+def health_nmap():
     return jsonify(nmap=echosounder.check_nmap_exist())
+
+
+@app.route('/json/health/dependencies')
+def health_dependencies():
+    return jsonify(dependencies=listmoduleserror)
 
 @app.route('/json/address_family')
 def get_address_family():
