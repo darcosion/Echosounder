@@ -6,3 +6,4 @@ venv
 #spécifique aux db chargées
 *.json
 *.pfx2as
+*.csv
