@@ -1,6 +1,6 @@
+flask
+dnspython
+netifaces
 scapy
 python-nmap
-flask
-netifaces
-dnspython
 impacket
