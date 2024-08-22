@@ -1535,8 +1535,8 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
         console.log(id_node);
         let last_node_typeip = ipaddr.parse(id_last_node.split('\n')[0]).range();
         let node_typeip = ipaddr.parse(id_node.split('\n')[0]).range();
-        if((last_node_typeip == 'private' & node_typeip == 'unicast') |
-        (last_node_typeip == 'unicast' & node_typeip == 'private')
+        if((last_node_typeip == 'private' & node_typeip != 'private') |
+        (last_node_typeip != 'private' & node_typeip == 'private')
         ){
           edges.push({
             group:'edges',
