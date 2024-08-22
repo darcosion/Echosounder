@@ -4,3 +4,4 @@ netifaces
 scapy
 python-nmap
 impacket
+pyopenssl
