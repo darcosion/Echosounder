@@ -118,7 +118,6 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       function(response) {
         $scope.sendToastData('Echosounder', "Interface Info", "echo_toast_info");
         $scope.interfaceData = response.data;
-        console.log($scope.interfaceData);
         // on place en IPv4 l'ip dans listInterfaceIP
         $scope.listInterfaceIP = response.data[$scope.address_family['IPv4']];
       },
@@ -573,7 +572,6 @@ EchoApp.controller("notificationPanelMenu", function($scope, $timeout, $rootScop
 EchoApp.controller("graphNetwork", function($scope, $document, $http) {
   // contexte couleurs
   $scope.rootColor = getComputedStyle(document.documentElement);
-  console.log($scope.rootColor);
 
   // fonctions de récupérations de donnée Fast Scan
   $scope.getFastScan = function(cible) {
@@ -590,7 +588,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('FastPing', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoVlanGraph(response.data);
       },
@@ -617,7 +614,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('ARP Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoVlanGraph(response.data);
       },
@@ -644,7 +640,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Traceroute CIDR Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoTraceCIDRGraph(response.data);
       },
@@ -671,7 +666,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('DHCP CIDR Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on appel la fonction de création de graphs :
         $scope.createCytoCIDRGraph(response.data, cible);
       },
@@ -716,7 +710,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           
           function(response) {
             $scope.$parent.sendToastData('Traceroute Scan', "réception d'un scan", 'echo_toast_scan');
-            console.log(response.data);
             // on appel la fonction de création de graphs :
             $scope.createCytoTraceGraph(response.data);
           },
@@ -741,7 +734,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
         "192.0.0.0/24", 
         "192.0.2.0/24", 
         "192.88.99.0/24",
-        "192.175.48.0/24",
         "198.18.0.0/15", 
         "198.51.100.0/24", 
         "203.0.113.0/24",
@@ -765,7 +757,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           
           function(response) {
             $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan", 'echo_toast_scan');
-            console.log(response.data);
             // on appel la fonction de création de graphs :
             $scope.createCytoTraceCIDRGraph(response.data);
           },
@@ -794,7 +785,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'profiling', response.data['scan']);
         $scope.updateNodeOS(cible, response.data['scan']);
@@ -822,7 +812,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Services Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
@@ -849,7 +838,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Services Fast Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
@@ -876,7 +864,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Reverse PTR Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'hostname PTR', response.data['scan']);
       },
@@ -903,7 +890,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Fingerprint SSH Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'fingerprint ssh', response.data['scan']);
       },
@@ -929,7 +915,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SMB Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'smb', response.data['scan']);
       },
@@ -955,7 +940,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_info', response.data['scan']);
       },
@@ -981,7 +965,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP netstat', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_nestat', response.data['scan']);
       },
@@ -1007,7 +990,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP process', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_process', response.data['scan']);
       },
@@ -1033,7 +1015,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('NTP', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'ntp', response.data['scan']);
       },
@@ -1059,7 +1040,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('RDP Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'rdp_info', response.data['scan']);
       },
@@ -1085,7 +1065,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('TraceCible Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.createCytoTraceGraph(response.data);
       },
@@ -1122,7 +1101,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             if(node.data('label').includes(' ')) {
               node.data('label', node.data('label') + " & " + response.data.name);
@@ -1144,7 +1122,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             if(node.data('label').includes(' ')) {
               node.data('label', node.data('label') + " & " + response.data.name);
@@ -1172,7 +1149,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             node.data('label', node.data('label') + " " + response.data.name);
             // on spécifie que la résolution a été effectué
@@ -1443,7 +1419,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           id : (scan_data.local_data.gateway_ip + '\n' + scan_data.local_data.gateway_mac),
           label : ("gateway " + scan_data.local_data.gateway_ip + "\n" + scan_data.local_data.gateway_mac),
           type : 'IP',
-          typeip: ipaddr.parse(scan_data.local_data.gateway_ip).range(),
           data : scan_data.local_data,
           data_ip : scan_data.local_data.gateway_ip,
           parent : scan_data.vlan,
@@ -1461,7 +1436,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
               id : (nodeAdd.IP + '\n' + nodeAdd.mac),
               label : (nodeAdd.IP + '\n' + nodeAdd.mac),
               type : 'IP',
-              typeip : ipaddr.parse(nodeAdd.IP).range(),
               data : nodeAdd,
               data_ip : nodeAdd.IP,
               parent : scan_data.vlan,
@@ -1501,7 +1475,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
 
   // fonction de création du graph à partir d'un scan trace
   $scope.createCytoTraceGraph = function(scan_data) {
-    console.log(scan_data);
     let nodes = [];
     let edges = [];
 
@@ -1518,7 +1491,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
               id : (ip),
               label : (ip),
               type : 'IP',
-              typeip : ipaddr.parse(ip).range(),
               data : {'ip' : ip},
               data_ip : ip,
               parent : $scope.getVLANByIP(ip), // a retravailler : on doit préalablement voir si le noeud rentre dans le CIDR...
@@ -1567,6 +1539,7 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       let cidr = ipdata[1][0];
       let as_number = ipdata[1][1];
       let typeip = ipaddr.parse(ip).range();
+      console.log(typeip);
       if((typeip != 'private') && (typeip != 'multicast')) {
         // on crée un AS
         nodeAS.push(
@@ -1641,7 +1614,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
             id : (nodeAdd.ipv4 + '\n' + nodeAdd.mac),
             label : (nodeAdd.ipv4 + '\n' + nodeAdd.mac),
             type : 'IP',
-            typeip : ipaddr.parse(nodeAdd.ipv4).range(),
             data : nodeAdd,
             data_ip : nodeAdd.ipv4,
             parent : cidr,
