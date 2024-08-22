@@ -118,7 +118,6 @@ EchoApp.controller("ParentCtrl", function($scope, $http) {
       function(response) {
         $scope.sendToastData('Echosounder', "Interface Info", "echo_toast_info");
         $scope.interfaceData = response.data;
-        console.log($scope.interfaceData);
         // on place en IPv4 l'ip dans listInterfaceIP
         $scope.listInterfaceIP = response.data[$scope.address_family['IPv4']];
       },
@@ -436,7 +435,6 @@ EchoApp.controller("rightPanelMenu", function($scope, $rootScope, $http) {
 
 
   $scope.$on('updatePanelNodeData', function(event, node, typenode) {
-    console.log(node);
     if(typenode == 'IP') { // on déclenche l'affichage du menu 1 avec les données du node
       $scope.nodedata = node.data;
       $scope.showMenu1 = true;
@@ -765,7 +763,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           
           function(response) {
             $scope.$parent.sendToastData('Traceroute Local Scan', "réception d'un scan", 'echo_toast_scan');
-            console.log(response.data);
             // on appel la fonction de création de graphs :
             $scope.createCytoTraceCIDRGraph(response.data);
           },
@@ -794,7 +791,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Profiling Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'profiling', response.data['scan']);
         $scope.updateNodeOS(cible, response.data['scan']);
@@ -822,7 +818,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Services Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
@@ -849,7 +844,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Services Fast Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le graph en ajoutant des noeuds type service lié à la cible
         $scope.createCytoServiceGraph(response.data['scan']);
       },
@@ -876,7 +870,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Reverse PTR Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'hostname PTR', response.data['scan']);
       },
@@ -903,7 +896,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('Fingerprint SSH Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'fingerprint ssh', response.data['scan']);
       },
@@ -929,7 +921,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SMB Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'smb', response.data['scan']);
       },
@@ -955,7 +946,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_info', response.data['scan']);
       },
@@ -981,7 +971,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP netstat', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_nestat', response.data['scan']);
       },
@@ -1007,7 +996,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('SNMP process', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'snmp_process', response.data['scan']);
       },
@@ -1033,7 +1021,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('NTP', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'ntp', response.data['scan']);
       },
@@ -1059,7 +1046,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('RDP Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.updateNodebyIP(cible, 'rdp_info', response.data['scan']);
       },
@@ -1085,7 +1071,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
       
       function(response) {
         $scope.$parent.sendToastData('TraceCible Scan', "réception d'un scan", 'echo_toast_scan');
-        console.log(response.data);
         // on met à jour le node concerné via une fonction de sélection de node
         $scope.createCytoTraceGraph(response.data);
       },
@@ -1122,7 +1107,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             if(node.data('label').includes(' ')) {
               node.data('label', node.data('label') + " & " + response.data.name);
@@ -1144,7 +1128,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             if(node.data('label').includes(' ')) {
               node.data('label', node.data('label') + " & " + response.data.name);
@@ -1172,7 +1155,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           // si la requête passe :
           function(response) {
             $scope.$parent.sendToastData('AS Resolution', "Récupération de donnée RDAP", 'echo_toast_scan');
-            console.log(response.data);
             // on les fout dans le label du noeud
             node.data('label', node.data('label') + " " + response.data.name);
             // on spécifie que la résolution a été effectué
@@ -1414,6 +1396,15 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
           'opacity' : 0.5,
         },
       },
+      {
+        selector: 'edge[typelink = "upstream"]',
+        css: {
+          'line-color' : $scope.rootColor.getPropertyValue('--widget-strong-contour2'),
+          'target-arrow-color' : $scope.rootColor.getPropertyValue('--widget-strong-contour1'), 
+          'width': 4, // épaisseur de l'edge sélectionné
+          'opacity' : 0.8,
+        },
+      },
     ];
     $scope.cyto.style($scope.styles);
   };
@@ -1501,7 +1492,6 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
 
   // fonction de création du graph à partir d'un scan trace
   $scope.createCytoTraceGraph = function(scan_data) {
-    console.log(scan_data);
     let nodes = [];
     let edges = [];
 
@@ -1537,17 +1527,38 @@ EchoApp.controller("graphNetwork", function($scope, $document, $http) {
     for(let key in scan_data.scan){
       if(key == 0) {
       }else {
+        console.log(scan_data.scan);
+        console.log(key);
         let id_last_node = $scope.getNodeIdByIP(scan_data.scan[key-1][0]);
+        console.log(id_last_node);
         let id_node = $scope.getNodeIdByIP(scan_data.scan[key][0]);
-        edges.push({
-          group:'edges',
-          data : {
-            id : ('link ' + id_last_node + " " + id_node + " "),
-            source : id_last_node,
-            target : id_node,
-            type : 'traceroute',
-          }
-        });
+        console.log(id_node);
+        let last_node_typeip = ipaddr.parse(id_last_node.split('\n')[0]).range();
+        let node_typeip = ipaddr.parse(id_node.split('\n')[0]).range();
+        if((last_node_typeip == 'private' & node_typeip == 'unicast') |
+        (last_node_typeip == 'unicast' & node_typeip == 'private')
+        ){
+          edges.push({
+            group:'edges',
+            data : {
+              id : ('link ' + id_last_node + " " + id_node + " "),
+              source : id_last_node,
+              target : id_node,
+              type : 'traceroute',
+              typelink : 'upstream',
+            }
+          });
+        }else {
+          edges.push({
+            group:'edges',
+            data : {
+              id : ('link ' + id_last_node + " " + id_node + " "),
+              source : id_last_node,
+              target : id_node,
+              type : 'traceroute',
+            }
+          });
+        }
       }
     }
 
